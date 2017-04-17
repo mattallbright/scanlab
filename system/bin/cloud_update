@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# cloud_update
+# Authors: Matt Allbright
+# Designed to streamline the process of running git commands and deploying new
+# and updated scripts in the SCAN Lab.
+
+# These brackets are required for loading an entire program into memory. In this case
+# the program will be overwritten with a newer version whenever the repository is
+# cloned.
+{
+
+  # Check if git is installed.
+  apt -q list installed git
+
+  GITREQ=$?
+  echo "$GITREQ"
+
+  # Determines if git is installed, installs if exit code is not 0 (Installed).
+  if [ $GITREQ = 0 ]; then
+    
+    echo "Git is installed. Proceeding with update."
+
+  else
+
+    echo "Git is required for this setup and will now install in 5 seconds."
+    echo "If you do not want to install git, please crash this process (Ctrl-C)."
+    wait 5
+    apt-get -y install git
+
+  fi
+
+  echo -en '\n'
+  echo "Verifying directory exists..."
+
+  # Checks for proper folder in /opt/cloud
+  if [[ -d /opt/cloud/download ]]; then
+
+    # Cleans folder for git clone (required by git)
+    rm -rf /opt/cloud/download
+
+  fi
+
+  # Then clones git repo
+  echo "Cloning git!"
+  git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/
+  # Checks for staging folder in /opt/cloud
+
+  if [[ ! -d /opt/cloud/staging ]]; then
+
+    # Makes folder for git clone to deploy to
+    echo -en '\n'
+    echo "Creating staging directory!"
+    mkdir /opt/cloud/staging
+
+  else
+
+    echo "Cleaning staging directory!"
+    rm -rf /opt/cloud/staging
+    mkdir /opt/cloud/staging
+
+  fi
+
+  echo -en '\n'
+  echo "Resetting permissions..."
+
+  # Set permissions for all files in /download/
+  chmod -R 755 /opt/cloud/download/
+
+  echo -en '\n'
+
+  #Copy download to staging, overwriting any files
+  echo -en '\n'
+  echo "Staging the download directory!"
+
+  cp /opt/cloud/download/* /opt/cloud/staging/
+
+  echo "All actions completed."
+
+}
