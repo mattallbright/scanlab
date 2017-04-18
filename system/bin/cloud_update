@@ -14,7 +14,6 @@
   apt -q list installed git
 
   GITREQ=$?
-  echo "$GITREQ"
 
   # Determines if git is installed, installs if exit code is not 0 (Installed).
   if [ $GITREQ = 0 ]; then
@@ -38,16 +37,16 @@
 
     # Cleans folder for git clone (required by git)
     rm -rf /opt/cloud/download
+    wait
 
   fi
 
   # Then clones git repo
   echo "Cloning git!"
-  bash `git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/`
-  # Checks for staging folder in /opt/cloud
-
+  git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/
   wait
 
+  # Checks for staging folder in /opt/cloud
   if [[ ! -d /opt/cloud/staging ]]; then
 
     # Makes folder for git clone to deploy to
