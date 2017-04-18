@@ -43,7 +43,7 @@
 
   # Then clones git repo
   echo "Cloning git!"
-  git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/
+  bash `git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/`
   # Checks for staging folder in /opt/cloud
 
   wait
@@ -75,7 +75,7 @@
   echo -en '\n'
   echo "Staging the download directory!"
 
-  cp /opt/cloud/download/ /opt/cloud/staging/
+  cp -R /opt/cloud/download/ /opt/cloud/staging/
 
   echo "All actions completed."
 
