@@ -18,7 +18,7 @@
 
   # Determines if git is installed, installs if exit code is not 0 (Installed).
   if [ $GITREQ = 0 ]; then
-    
+
     echo "Git is installed. Proceeding with update."
 
   else
@@ -73,7 +73,7 @@
   echo -en '\n'
   echo "Staging the download directory!"
 
-  cp /opt/cloud/download/* /opt/cloud/staging/
+  cp /opt/cloud/download/ /opt/cloud/staging/
 
   echo "All actions completed."
 
