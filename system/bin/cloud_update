@@ -46,6 +46,8 @@
   git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/
   # Checks for staging folder in /opt/cloud
 
+  wait
+
   if [[ ! -d /opt/cloud/staging ]]; then
 
     # Makes folder for git clone to deploy to
