@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# slurm_fetch
+# Matt Allbright
+# Simple utility to reset slurm nodes on network.
+
+echo "Restarting all daemons."
+
+echo "Restarting hope"
+ssh root@hope /etc/init.d/slurmctld restart
+wait
+ssh root@hope /etc/init.d/slurmd restart
+wait
+ssh root@hope /etc/init.d/slurmdbd restart
+wait
+echo "Restarting empire"
+ssh root@empire /etc/init.d/slurmctld restart
+wait
+ssh root@empire /etc/init.d/slurmd restart
+wait
+echo "Restarting jedi"
+ssh root@jedi /etc/init.d/slurmd restart
+wait

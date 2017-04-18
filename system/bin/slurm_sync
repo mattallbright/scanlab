@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "Synching slurm.conf files."
+rsync -ar /etc/slurm-llnl/slurm.conf root@empire:/etc/slurm-llnl/
+rsync -ar /etc/slurm-llnl/slurm.conf root@jedi:/etc/slurm-llnl/
+
+/opt/cloud/staging/system/bin/slurm_reset
+
+echo "Would you like to display log rotation?"
+
+read -r -p "[y/N] " logrotate
+if [[ "$logrotate" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+        echo "Beginning log rotation."
+        sleep 2
+        /opt/cloud/staging/system/bin/slurm_rotate
+else
+        echo "Goodnight."
+fi

@@ -76,6 +76,16 @@
 
   cp -a /opt/cloud/download/. /opt/cloud/staging/
 
+  # Runs folder structure copy with relation to hostname
+  HOSTNAME=`hostname`
+
+  if [ -d /opt/cloud/staging/hostnames/$HOSTNAME ]; then
+
+    echo "Running hostname-specific processes for $HOSTNAME."
+    cp -a /opt/cloud/staging/hostnames/$HOSTNAME/. /opt/cloud/staging/
+
+  fi
+
   echo "All actions completed."
 
 }

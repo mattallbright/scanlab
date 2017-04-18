@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# slurm_fetch
+# Matt Allbright
+# Simple utility to fetch logs quickly from slurm nodes on network.
+
+rsync -ar root@hope:/var/log/slurm-llnl/ /data/var/slurm/logs/hope/
+rsync -ar root@empire:/var/log/slurm-llnl/ /data/var/slurm/logs/empire/
+rsync -ar root@jedi:/var/log/slurm-llnl/ /data/var/slurm/logs/jedi/
+chmod -R 777 /data/var/slurm/logs/
+
+nautilus /data/var/slurm/logs

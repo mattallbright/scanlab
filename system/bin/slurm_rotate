@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# slurm_fetch
+# Matt Allbright
+# Simple utility to read logs from slurm nodes over network. Similar to slurm_fetch
+# but without the com
+
+clear
+
+echo -e "controller daemon @ hope\n"
+ssh root@hope tail -n 30 /var/log/slurm-llnl/slurmctld.log
+
+echo -e "\n"
+read -n1 -r -p "Press space to continue..." next
+
+if [[ "$next" = '' ]]; then
+	break
+fi
+
+clear
+
+echo -e "worker daemon @ hope\n"
+ssh root@hope tail -n 30 /var/log/slurm-llnl/slurmd.log
+
+echo -e "\n"
+read -n1 -r -p "Press space to continue..." next
+
+if [[ "$next" = '' ]]; then
+        break
+fi
+
+clear
+
+echo -e "database daemon @ hope\n"
+ssh root@hope tail -n 30 /var/log/slurm-llnl/slurmdbd.log
+
+echo -e "\n"
+read -n1 -r -p "Press space to continue..." next
+
+if [[ "$next" = '' ]]; then
+	break
+fi
+
+clear
+
+echo -e "controller daemon @ empire\n"
+ssh root@empire tail -n 30 /var/log/slurm-llnl/slurmctld.log
+
+echo -e "\n"
+read -n1 -r -p "Press space to continue..." next
+
+if [[ "$next" = '' ]]; then
+        break
+fi
+
+clear
+
+echo -e "worker daemon @ empire\n"
+ssh root@empire tail -n 30 /var/log/slurm-llnl/slurmd.log
+
+echo -e "\n"
+read -n1 -r -p "Press space to continue..." next
+
+if [[ "$next" = '' ]]; then
+	break
+fi
+
+clear
+
+echo -e "worker daemon @ jedi\n"
+ssh root@jedi tail -n 30 /var/log/slurm-llnl/slurmd.log
+
+echo -e "\n"
+read -n1 -r -p "Press space to continue..." next
+
+if [[ "$next" = '' ]]; then
+	break
+fi
+
+/opt/cloud/staging/system/bin/slurm_rotate
