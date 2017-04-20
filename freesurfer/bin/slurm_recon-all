@@ -27,7 +27,6 @@ for img in ${imagearr[*]}; do
   img=${img#T1_}
   img=${img%.nii}
   clean_imagearr+=(${img})
-  echo ${img}
 done
 
 echo -e "\nPlease input a subject or several subjects separated by a space."
