@@ -19,6 +19,7 @@ echo -e "\nPlease input the directory which contains .nii input images."
 read image_dir
 
 echo -e "\nPlease input a subject or several subjects separated by a space."
+(cd $image_dir && ls *.nii | grep -E '[0-9][0-9]' | column -c 100)
 read subjects
 
 subjarr=($subjects)
