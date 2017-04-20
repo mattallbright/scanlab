@@ -46,6 +46,7 @@ for subj in ${subjarr[*]}; do
     # Runs recon-all.sbatch script with proper things.
     echo "Running recon-all for" ${subj}
     sbatch /opt/cloud/staging/freesurfer/bin/recon-all.sbatch $subjects_dir ${subj} $recon_input
+    gnome-terminal -e 'tail -F /data/var/jobs/recon-all/'$SLURM_JOB_ID.out
   else
     echo "Image file not found. Will not run recon-all for" ${subj}
   fi
