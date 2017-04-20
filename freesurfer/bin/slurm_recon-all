@@ -45,7 +45,7 @@ for subj in ${subjarr[*]}; do
 
     # Runs recon-all.sbatch script with proper things.
     echo "Running recon-all for" ${subj}
-    job_submitted=$(sbatch /opt/cloud/staging/freesurfer/bin/recon-all.sbatch $subjects_dir ${subj} $recon_input)
+    job_submitted=$(sbatch /opt/cloud/staging/freesurfer/opt/recon-all.sbatch $subjects_dir ${subj} $recon_input)
     wait
     echo $job_submitted
     job_submitted=${job_submitted#Submitted batch job }
