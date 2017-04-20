@@ -60,6 +60,6 @@ wait
 echo "If a terminal doesn't open automatically, check X11 settings or"
 echo "find output .out file located in /data/var/jobs/recon-all/"
 for job in ${jobarr[*]}; do
-  x-terminal-emulator -e 'tail -F /data/var/jobs/recon-all/'${job}.out
+  x-terminal-emulator -e 'tail -F /data/var/jobs/recon-all/'$job.out
   wait 20
 done
