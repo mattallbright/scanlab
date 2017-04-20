@@ -24,10 +24,10 @@ read subjects
 subjarr=($subjects)
 
 for subj in ${subjarr[*]}; do
-  if [ ls $image_dir/T1_*${subj}*.nii 1> /dev/null 2>&1 ]; then
+  recon_input=$(ls $image_dir/T1_*${subj}*.nii 2> /dev/null)
+  if [ $recon_input ]; then
     # Applies ls output for file to a path in a variable
     echo "Image file found."
-    recon_iput=$(ls /$image_dir/T1_*${subj}*.nii)
 
     # Runs recon-all.sbatch script with proper things.
     echo "Running recon-all for" ${subj}
