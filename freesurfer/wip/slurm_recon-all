@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# slurm_recon-all (complex)
+# Matt Allbright
+# This script quickly and easily runs recon-all on selected participants through
+# a user friendly text interface. It will feed variables from a for loop into a
+# separate sbatch file located at /opt/cloud/staging/freesurfer/bin/recon-all.sbatch
+
+clear
+
+echo "Welcome to slurm_recon-all."
+echo "This application allows users to quickly and easily submit one to several"
+echo "recon-all subject jobs to the local Slurm cluster."
+
+echo -e "\nPlease select a study."
+(cd /data && ls)
+read study
+
+echo -e "\nPlease select a subject or several subjects separated by a space."
+(cd /data/$study/indiv_analysis && ls -d */ | grep -E '[0-9][0-9][0-9]' | column -c 100)
+read subjects
+
+subjarr=($subjects)
+
+for subj in ${subjarr[*]}; do
+  echo "Running recon-all for" $subj
+  sbatch /opt/cloud/staging/freesurfer/bin/recon-all.sbatch $SUBJECTS_DIR ${subj} $recon_input
+  sleep 1 # pause to be kind to the scheduler
+done

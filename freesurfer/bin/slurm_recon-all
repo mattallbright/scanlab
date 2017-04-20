@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# slurm_recon-all (simple)
+# Matt Allbright
+# This script quickly and easily runs recon-all on selected participants through
+# a user friendly text interface. It will feed variables from a for loop into a
+# separate sbatch file located at /opt/cloud/staging/freesurfer/bin/recon-all.sbatch
+
+clear
+
+echo "Welcome to slurm_recon-all."
+echo "This application allows users to quickly and easily submit one to several"
+echo "recon-all subject jobs to the local Slurm cluster."
+
+echo -e "\nPlease input a SUBJECTS_DIR."
+read subjects_dir
+
+echo -e "\nPlease input the directory which contains .nii input images."
+read image_dir
+
+echo -e "\nPlease input a subject or several subjects separated by a space."
+read subjects
+
+subjarr=($subjects)
+
+for subj in ${subjarr[*]}; do
+  if [ ls $image_dir/T1_*${subj}*.nii 1> /dev/null 2>&1 ]; then
+    # Applies ls output for file to a path in a variable
+    echo "Image file found."
+    recon_iput=$(ls /$image_dir/T1_*${subj}*.nii)
+
+    # Runs recon-all.sbatch script with proper things.
+    echo "Running recon-all for" ${subj}
+    sbatch /opt/cloud/staging/freesurfer/bin/recon-all.sbatch $subjects_dir ${subj} $recon_input
+  else
+    echo "Image file not found. Will not run recon-all for" ${subj}
+  fi
+  sleep 1 # pause to be kind to the scheduler
+done

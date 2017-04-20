@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# slurm_fetch
+# slurm_rotate
 # Matt Allbright
-# Simple utility to read logs from slurm nodes over network. Similar to slurm_fetch
-# but without the com
+# Simple utility to read logs from slurm nodes over network. Similar to slurm_fetch,
+# slurm_rotate reads the most up to date logs by ssh'ing into other nodes. 
 
 clear
 

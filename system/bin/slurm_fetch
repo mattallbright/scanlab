@@ -2,7 +2,9 @@
 
 # slurm_fetch
 # Matt Allbright
-# Simple utility to fetch logs quickly from slurm nodes on network.
+# Simple utility to fetch logs quickly from slurm nodes on network. These logs
+# are essentially snapshots of what the program is doing at the precise moment
+# of fetching. Because of this, they easily become out of date.
 
 rsync -ar root@hope:/var/log/slurm-llnl/ /data/var/slurm/logs/hope/
 rsync -ar root@empire:/var/log/slurm-llnl/ /data/var/slurm/logs/empire/

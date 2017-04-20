@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# slurm_sync
+# Matt Allbright
+# Simple utility to sync slurm.conf files between nodes on the cluster. Required
+# for smooth performance and communication between nodes.
+
 echo "Synching slurm.conf files."
 rsync -ar /etc/slurm-llnl/slurm.conf root@empire:/etc/slurm-llnl/
 rsync -ar /etc/slurm-llnl/slurm.conf root@jedi:/etc/slurm-llnl/

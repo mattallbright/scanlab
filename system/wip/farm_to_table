@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# farm_to_table
+# Matt Allbright
+# This script will automatically pull data from Hermes for studies and then sort
+# individual files into the proper study directory. It is based on ideas from
+# previous "convertit"-type scripts used in the lab.

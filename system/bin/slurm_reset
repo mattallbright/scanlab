@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# slurm_fetch
+# slurm_reset
 # Matt Allbright
 # Simple utility to reset slurm nodes on network.
 
