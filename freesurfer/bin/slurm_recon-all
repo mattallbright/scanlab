@@ -18,8 +18,19 @@ read subjects_dir
 echo -e "\nPlease input the directory which contains .nii input images."
 read image_dir
 
+# Creates variable from command
+images=$(cd $image_dir && ls *.nii | grep -E '[0-9][0-9]' | column -c 100)
+# Turns variable into array
+imagearr=$images
+# Cleans array
+for img in ${imagearr[*]}; do
+  img=${img#T1_}
+  img=`echo "${img}" | grep -o "[0-9.]\+"`
+  clean_imagearr+=(${img})
+do
+
 echo -e "\nPlease input a subject or several subjects separated by a space."
-(cd $image_dir && ls *.nii | grep -E '[0-9][0-9]' | column -c 100)
+echo $clean_imagearr
 read subjects
 
 subjarr=($subjects)
