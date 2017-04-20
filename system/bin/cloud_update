@@ -9,6 +9,7 @@
 # the program will be overwritten with a newer version whenever the repository is
 # cloned.
 {
+  HOSTNAME=`hostname`
 
   # Check if git is installed.
   apt -q list installed git
@@ -25,7 +26,8 @@
     echo "Git is required for this setup and will now install in 5 seconds."
     echo "If you do not want to install git, please crash this process (Ctrl-C)."
     wait 5
-    apt-get -y install git
+
+    ssh root@$HOSTNAME apt-get -y install git
 
   fi
 
@@ -36,14 +38,14 @@
   if [[ -d /opt/cloud/download ]]; then
 
     # Cleans folder for git clone (required by git)
-    rm -rf /opt/cloud/download
+    ssh root@$HOSTNAME rm -rf /opt/cloud/download
     wait
 
   fi
 
   # Then clones git repo
   echo "Cloning git!"
-  git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/
+  ssh root@$HOSTNAME git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/
   wait
 
   # Checks for staging folder in /opt/cloud
@@ -52,13 +54,13 @@
     # Makes folder for git clone to deploy to
     echo -en '\n'
     echo "Creating staging directory!"
-    mkdir /opt/cloud/staging
+    ssh root@$HOSTNAME mkdir /opt/cloud/staging
 
   else
 
     echo "Cleaning staging directory!"
-    rm -rf /opt/cloud/staging
-    mkdir /opt/cloud/staging
+    ssh root@$HOSTNAME rm -rf /opt/cloud/staging
+    ssh root@$HOSTNAME mkdir /opt/cloud/staging
 
   fi
 
@@ -66,7 +68,7 @@
   echo "Resetting permissions..."
 
   # Set permissions for all files in /download/
-  chmod -R 755 /opt/cloud/download/
+  ssh root@$HOSTNAME chmod -R 755 /opt/cloud/download/
 
   echo -en '\n'
 
@@ -74,15 +76,13 @@
   echo -en '\n'
   echo "Staging the download directory!"
 
-  cp -a /opt/cloud/download/. /opt/cloud/staging/
+  ssh root@$HOSTNAME cp -a /opt/cloud/download/. /opt/cloud/staging/
 
   # Runs folder structure copy with relation to hostname
-  HOSTNAME=`hostname`
-
   if [ -d /opt/cloud/staging/hostnames/$HOSTNAME ]; then
 
     echo "Running hostname-specific processes for $HOSTNAME."
-    cp -a /opt/cloud/staging/hostnames/$HOSTNAME/. /opt/cloud/staging/
+    ssh root@$HOSTNAME cp -a /opt/cloud/staging/hostnames/$HOSTNAME/. /opt/cloud/staging/
 
   fi
 
