@@ -49,17 +49,12 @@ for subj in ${subjarr[*]}; do
     echo $job_submitted
     job_submitted=${job_submitted#Submitted batch job }
     jobarr+=(${job_submitted})
-    wait
-    x-terminal-emulator -e 'tail -F /data/var/jobs/recon-all/'$job_submitted.out
   else
     echo "Image file not found. Will not run recon-all for" ${subj}
   fi
   sleep 1 # pause to be kind to the scheduler
 done
 
-#echo "If a terminal doesn't open automatically, check X11 settings or"
-#echo "find output .out file located in /data/var/jobs/recon-all/"
-#for job in ${jobarr[*]}; do
-#  x-terminal-emulator -e 'tail -F /data/var/jobs/recon-all/'${job}.out
-#  sleep 1
-#done
+for job in ${jobarr[*]}; do
+  /opt/cloud/staging/freesurfer/opt/recon-show ${job}
+done
