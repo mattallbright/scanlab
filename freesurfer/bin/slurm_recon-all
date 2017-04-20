@@ -30,7 +30,9 @@ for img in ${imagearr[*]}; do
 done
 
 echo -e "\nPlease input a subject or several subjects separated by a space."
-echo $clean_imagearr
+for img in ${imagearr[*]}; do
+  echo ${img}
+done
 read subjects
 
 subjarr=($subjects)
