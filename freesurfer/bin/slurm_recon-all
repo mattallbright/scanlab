@@ -48,7 +48,8 @@ for subj in ${subjarr[*]}; do
     job_submitted=$(sbatch /opt/cloud/staging/freesurfer/bin/recon-all.sbatch $subjects_dir ${subj} $recon_input)
     echo $job_submitted
     job_submitted=${job_submitted#Submitted batch job }
-    gnome-terminal -e 'tail -F /data/var/jobs/recon-all/'$job_submitted.out
+    sleep 1
+    x-terminal-emulator -e 'tail -F /data/var/jobs/recon-all/'$job_submitted.out
   else
     echo "Image file not found. Will not run recon-all for" ${subj}
   fi
