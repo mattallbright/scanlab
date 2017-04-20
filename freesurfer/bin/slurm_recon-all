@@ -24,7 +24,7 @@ read subjects
 subjarr=($subjects)
 
 for subj in ${subjarr[*]}; do
-  if [ ls $image_dir/T1_*${subj}*.nii ]; then
+  if [[ ls $image_dir/T1_*${subj}*.nii ]]; then
     # Applies ls output for file to a path in a variable
     echo "Image file found."
     recon_iput=$(ls /$image_dir/T1_*${subj}*.nii)
