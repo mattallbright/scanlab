@@ -70,8 +70,6 @@
   # Set permissions for all files in /download/
   ssh root@$HOSTNAME chmod -R 755 /opt/cloud/download/
 
-  echo -en '\n'
-
   #Copy download to staging, overwriting any files
   echo -en '\n'
   echo "Staging the download directory!"
