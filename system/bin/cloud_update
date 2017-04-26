@@ -86,11 +86,6 @@
 
   ### Scanlab specific ###
 
-  echo -en '\n'
-  echo "Copying Slurm configuration files."
-  ssh root@$HOSTNAME rm -rf /etc/slurm-llnl/slurm.conf
-  ssh root@$HOSTNAME cp /opt/cloud/staging/etc/slurm/slurm.conf /etc/slurm-llnl/
-
   echo "All actions completed."
 
 }
