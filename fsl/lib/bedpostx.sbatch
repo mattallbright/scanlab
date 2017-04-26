@@ -11,4 +11,4 @@
 #SBATCH --ntasks=1
 #SBATCH --output=/data/var/jobs/bedpostx/%j.out
 
-bedpostx_gpu ${1} ${2} ${3} ${4} ${5} ${6} ${7}
+bedpostx ${1} ${2} ${3} ${4} ${5} ${6} ${7}

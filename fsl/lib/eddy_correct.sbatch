@@ -12,4 +12,4 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --output=/data/var/jobs/eddy_correct/%j.out
 
-eddy_correct ${1} ${2} ${3} ${4}
+eddy_correct ${1} ${2} ${3}
