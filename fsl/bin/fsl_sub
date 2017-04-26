@@ -162,7 +162,7 @@ $command -a x86_64 regscript rawdata outputdir ...
   -M <email-address>    Who to email, default = `whoami`@fmrib.ox.ac.uk.
   -j <jid>              Place a hold on this task until job jid has completed.
   -t <filename>         Specify a task file of commands to execute in parallel.
-												Tasks are similar to sbatch scripts, but lack basic options.
+                        Tasks are similar to sbatch scripts, but lack basic options.
   -N <jobname>          Specify jobname as it will appear on queue.
   -l <logdirname>       Where to output log files.
   -m <mailoptions>      Change the cluster mail options, see qsub sbatch for
@@ -170,8 +170,8 @@ $command -a x86_64 regscript rawdata outputdir ...
   -z <output>           If <output> image or file already exists, do nothing and exit.
   -F                    Use flags embedded in scripts to set Sluem queuing options.
   -s <pename>,<threads> Submit a multi-threaded task - requires a
-												Parallel Environment (<pename>) to be configured for the
-												requested queues.
+                        Parallel Environment (<pename>) to be configured for the
+                        requested queues.
                         <threads> specifies the number of threads to run
   -v                    Verbose mode.
 
@@ -191,7 +191,7 @@ long.q:     This queue is for jobs which last less than 24h. Jobs run with a
 verylong.q: This queue is for jobs which will take longer than 24h CPU time.
             There is one slot per node, and jobs on this queue have a nice value
             of 15.
-gpu.q:   		This queue is like the verylong.q but utilizes CUDA-based GPU
+gpu.q:      This queue is like the verylong.q but utilizes CUDA-based GPU
 						processing.
 
 EOF
