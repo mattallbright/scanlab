@@ -79,7 +79,7 @@
   echo -en '\n'
   echo "Copying Slurm configuration files."
   ssh root@$HOSTNAME rm -rf /etc/slurm-llnl/slurm.conf
-  ssh root@$HOSTNAME /opt/cloud/staging/etc/slurm/slurm.conf /etc/slurm-llnl/
+  ssh root@$HOSTNAME cp /opt/cloud/staging/etc/slurm/slurm.conf /etc/slurm-llnl/
 
   # Runs folder structure copy with relation to hostname
   if [ -d /opt/cloud/staging/hostnames/$HOSTNAME ]; then
