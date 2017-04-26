@@ -10,6 +10,8 @@ Usage() {
     echo ""
     echo "Usage: bedpostx <subject_directory> [options]"
     echo ""
+    echo "bedpostx_gpu (SCAN Lab v0.2) (TESTING)"
+    echo ""
     echo "expects to find bvals and bvecs in subject directory"
     echo "expects to find data and nodif_brain_mask in subject directory"
     echo "expects to find grad_dev in subject directory, if -g is set"
@@ -159,10 +161,19 @@ opts="--nf=$nfibres --fudge=$fudge --bi=$burnin --nj=$njumps --se=$sampleevery -
 defopts="--cnonlinear"
 opts="$opts $defopts $other"
 
-if [ $qsys -eq 0 ] && [ "x$SGE_ROOT" != "x" ]; then
-	queue="-q $FSLGECUDAQ"
+# Check for Slurm
+echo "Locating CUDA queue."
+if [ -n "$FSLGECUDAQ" -a "$nocuda" -eq 0 ]; then
+  sinfo --hide --partition=$FSLGECUDAQ 2>&1 >/dev/null
+	if [ $? -eq 0 ]; then
+		echo "Found CUDA queue."
+		if [ -x $0_gpu ]; then
+			queue="--partition=$FSLGECUDAQ"
+		fi
+	fi
 fi
 
+echo subjectdir is $subjdir
 
 #check that all required files exist
 
@@ -241,17 +252,8 @@ if [ ${gflag} -eq 1 ]; then
 else
 	pre_command="$FSLDIR/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask NULL 0 $njobs ${subjdir}.bedpostX"
 fi
-if [ $qsys -eq 0 ]; then
-	#SGE
-	splitID=`${FSLDIR}/bin/fsl_sub -T 40 -l ${subjdir}.bedpostX/logs -N bedpostx_preproc_gpu $pre_command`
-else
-	#TORQUE
-	echo $pre_command > ${subjdir}.bedpostX/temp
-	torque_command="qsub -V $queue -l nodes=1:ppn=1:gpus=1,walltime=00:40:00 -N bedpostx_preproc_gpu -o ${subjdir}.bedpostX/logs -e ${subjdir}.bedpostX/logs"
-	splitID=`exec $torque_command ${subjdir}.bedpostX/temp | awk '{print $1}' | awk -F. '{print $1}'`
-        rm ${subjdir}.bedpostX/temp
-	sleep 10
-fi
+preprocout=`${FSLDIR}/bin/fsl_sub -T 40 -l ${subjdir}.bedpostX/logs -N bedpostx_preproc_gpu $pre_command`
+preprocid=${preprocout#Submitted batch job }
 
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir.bedpostX/nodif_brain_mask -V  | cut -d ' ' -f1 `
@@ -261,7 +263,7 @@ echo Queuing parallel processing stage
 [ -f ${subjdir}.bedpostX/commands.txt ] && rm ${subjdir}.bedpostX/commands.txt
 
 monitor
-if [ "x$SGE_ROOT" = "x" ]; then
+if [ "x$FSLPARALLEL" = "x" ]; then
     ${subjdir}.bedpostX/monitor&
 fi
 
@@ -281,36 +283,13 @@ do
     	part=$(($part + 1))
 done
 
-if [ $qsys -eq 0 ]; then
-	#SGE
-	bedpostid=`${FSLDIR}/bin/fsl_sub $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -j $splitID -t ${subjdir}.bedpostX/commands.txt`
-else
-	#TORQUE
-	taskfile=${subjdir}.bedpostX/commands.txt
-	echo "command=\`cat "$taskfile" | head -\$PBS_ARRAYID | tail -1\` ; exec \$command" > ${subjdir}.bedpostX/temp
-	tasks=`wc -l $taskfile | awk '{print $1}'`
-	sge_tasks="-t 1-$tasks"
-	#PBS -t x-y: x and y are the array bounds
-	torque_command="qsub -V $queue -l nodes=1:ppn=1:gpus=1,walltime=3:00:00,pmem=16gb -N bedpostx_gpu -o ${subjdir}.bedpostX/logs -e ${subjdir}.bedpostX/logs -W depend=afterok:$splitID $sge_tasks"
-	bedpostid=`exec $torque_command ${subjdir}.bedpostX/temp | awk '{print $1}' | awk -F. '{print $1}'`
-        rm ${subjdir}.bedpostX/temp
-	sleep 10
-fi
-
+bedpostout=`${FSLDIR}/bin/fsl_sub $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -j $splitID -t ${subjdir}.bedpostX/commands.txt`
+bedpostid=${bedpostout#Submitted batch job }
 
 echo Queuing post processing stage
 post_command="${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs  --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}"
-if [ $qsys -eq 0 ]; then
-	#SGE
-	mergeid=`${FSLDIR}/bin/fsl_sub -T 120 -j $bedpostid -N bedpostx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command`
-else
-	#TORQUE
-	echo $post_command > ${subjdir}.bedpostX/temp
-	torque_command="qsub -V $queue -l nodes=1:ppn=1:gpus=1,walltime=00:40:00 -N bedpostx_postproc_gpu -o ${subjdir}.bedpostX/logs -e ${subjdir}.bedpostX/logs -W depend=afterokarray:$bedpostid"
-	mergeid=`exec $torque_command ${subjdir}.bedpostX/temp | awk '{print $1}' | awk -F. '{print $1}'`
-        rm ${subjdir}.bedpostX/temp
-	sleep 10
-fi
+mergeout=`${FSLDIR}/bin/fsl_sub -T 120 -j $bedpostid -N bedpostx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command`
+mergeid=${mergeout#Submitted batch job }
 
 echo $mergeid > ${subjdir}.bedpostX/logs/postproc_ID
 
@@ -320,7 +299,8 @@ if [ "x$SGE_ROOT" != "x" ]; then
     echo Type ${subjdir}.bedpostX/cancel to terminate all the queued tasks.
     cat <<EOC > ${subjdir}.bedpostX/cancel
 #!/bin/sh
-qdel $mergeid $bedpostid
+scancel $mergeid
+scancel $bedpostid
 EOC
     chmod +x ${subjdir}.bedpostX/cancel
 
