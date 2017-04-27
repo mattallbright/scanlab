@@ -309,11 +309,12 @@ fi
 
 # Split the dataset in parts
 echo Queuing preprocessing stages
-if [ ${gflag} -eq 1 ]; then
-	pre_command="${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask ${subjdir}/grad_dev 1 $njobs ${subjdir}.bedpostX"
-else
-	pre_command="${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask NULL 0 $njobs ${subjdir}.bedpostX"
-fi
+# if [ ${gflag} -eq 1 ]; then
+# 	pre_command="${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask ${subjdir}/grad_dev 1 $njobs ${subjdir}.bedpostX"
+# else
+# 	pre_command="${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask NULL 0 $njobs ${subjdir}.bedpostX"
+# fi
+pre_command="${FSLDIR}/bin/split_parts_gpu"
 preprocid=`${FSLDIR}/bin/fsl_sub -v -R -T 40 -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs $pre_command | grep -oP "Submitted batch job\s+\K\w+"`
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir.bedpostX/nodif_brain_mask -V  | cut -d ' ' -f1 `
