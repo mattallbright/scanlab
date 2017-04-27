@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Copyright (C) 2007-2014 University of Oxford
 # Authors: Dave Flitney, Stephen Smith, Matthew Webster and Duncan Mortimer
@@ -296,11 +296,11 @@ while [ $1 != -- ] ; do
       acceptable_arch=no
 			available_archs=`scontrol show nodes -o | awk '{for(i=1;i<=NF;i++){if($i~/^Arch/){print $i}}}' | cut -d '=' -f 2 | uniq`
 			for a in $available_archs; do
-				if [ "$2" = "$a" ] ; then
+				if [ $2 = $a ] ; then
 					acceptable_arch=yes
 				fi
 			done
-			if [ "$acceptable_arch" = "yes" ]; then
+			if [[ $acceptable_arch == "yes" ]]; then
 				slurm_arch="--constraint=$2"
 			else
 				echo "Sorry arch of $2 is not supported on this Slurm configuration!"
@@ -411,12 +411,12 @@ if [ -n $peName ]; then
 	fi
 
 	# Let Slurm figure out the number of nodes for MPI
-	if [ "$peName" = "mpi" ]; then
+	if [[ $peName = "mpi" ]]; then
 		# Can possibly tie leastThreads systems above into this for future project
 		echo "Process will run in MPI."
 
 		# Force Slurm to use one node for OpenMP
-	elif [ "$peName" = "openmp" ]; then
+	elif [[ $peName = "openmp" ]]; then
 		OMP_NUM_THREADS=$peThreads
 		export OMP_NUM_THREADS
 		peNodes="--nodes=1"
