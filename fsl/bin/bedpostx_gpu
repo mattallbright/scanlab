@@ -252,7 +252,7 @@ if [ ${gflag} -eq 1 ]; then
 else
 	pre_command="$FSLDIR/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask NULL 0 $njobs ${subjdir}.bedpostX"
 fi
-preprocout=`${FSLDIR}/bin/fsl_sub -T 40 -l ${subjdir}.bedpostX/logs -N bedpostx_preproc_gpu $pre_command`
+preprocout=`${FSLDIR}/bin/fsl_sub -v -T 40 -l ${subjdir}.bedpostX/logs -N bedpostx_preproc_gpu $pre_command`
 preprocid=${preprocout#Submitted batch job }
 
 
@@ -283,12 +283,12 @@ do
     	part=$(($part + 1))
 done
 
-bedpostout=`${FSLDIR}/bin/fsl_sub $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -j $splitID -t ${subjdir}.bedpostX/commands.txt`
+bedpostout=`${FSLDIR}/bin/fsl_sub -v $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -j $splitID -t ${subjdir}.bedpostX/commands.txt`
 bedpostid=${bedpostout#Submitted batch job }
 
 echo Queuing post processing stage
 post_command="${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs  --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}"
-mergeout=`${FSLDIR}/bin/fsl_sub -T 120 -j $bedpostid -N bedpostx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command`
+mergeout=`${FSLDIR}/bin/fsl_sub -v -T 120 -j $bedpostid -N bedpostx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command`
 mergeid=${mergeout#Submitted batch job }
 
 echo $mergeid > ${subjdir}.bedpostX/logs/postproc_ID
