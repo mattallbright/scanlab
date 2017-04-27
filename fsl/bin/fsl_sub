@@ -129,6 +129,7 @@ map_qname ()
 	timeEst=$1
 	queueCmd="--partition=$queue"
 	echo "Estimated time was $1 mins: queue name is $queue"
+	echo -en "\n"
 }
 
 ###########################################################################
@@ -281,11 +282,12 @@ while [ $1 != -- ] ; do
       if [ -e $2 -o `${FSLDIR}/bin/imtest $2` = 1 ] ; then
         exit 0
       fi
+			echo $2
       shift;;
     -T)
 			echo "Time set."
-			echo -en "\n"
 			map_qname $2
+			echo $2
 			shift;;
     -q)
 			echo "Queue set."
@@ -297,6 +299,7 @@ while [ $1 != -- ] ; do
 	  		echo "Invalid queue specified!"
 	  		exit 127
       fi
+			echo $2
       shift;;
     -a)
 			echo "Arch constraints set."
@@ -315,17 +318,20 @@ while [ $1 != -- ] ; do
 				echo "Should be one of:" $available_archs
 				exit 127
 		  fi
+			echo $2
       shift;;
     -p)
 			echo "Job priority set."
 			echo -en "\n"
 			slurm_priority="--priority=$2"
+			echo $2
       shift;;
     -j)
 			echo "Job wait set."
 			echo -en "\n"
       jid=$2
 			slurm_hold="--dependency=afterok:$jid"
+			echo $2
       shift;;
     -t)
 			echo "Tasksfile set."
@@ -343,16 +349,19 @@ while [ $1 != -- ] ; do
           echo "Task file (${taskfile}) does not exist"
           exit -1
       fi
+			echo $2
       shift;;
     -N)
 			echo "Job name set."
 			echo -en "\n"
       JobName="--job-name=$2";
+			echo $2
       shift;;
 		-M)
 			echo "Mail user set."
 			echo -en "\n"
 			mailto="--mail-user=$2";
+			echo $2
 			shift;;
     -m)
 			echo "Mail options set."
@@ -362,21 +371,25 @@ while [ $1 != -- ] ; do
 			else
 				echo "You failed to input a mail account!"
 			fi
+			echo $2
       shift;;
     -l)
 			echo "Log option set."
 			echo -en "\n"
       LogOpts="--output=$2";
+			echo $2
       shift;;
     -F)
 			echo "Scriptmode set."
 			echo -en "\n"
-      scriptmode=1;
+      scriptmode=1
+			echo $2
       ;;
     -v)
 			echo "Verbosity set."
 			echo -en "\n"
       verbose=1
+			echo $2
       ;;
     -s)
 			echo "PE option set."
@@ -384,6 +397,7 @@ while [ $1 != -- ] ; do
       pe_string=$2;
       peName=`echo $pe_string | cut -d',' -f 1`
       peThreads=`echo $pe_string | cut -d',' -f 2`
+			echo $2
       shift;;
   esac
   shift  # next flag
