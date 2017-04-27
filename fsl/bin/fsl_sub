@@ -175,11 +175,12 @@ $command -a x86_64 regscript rawdata outputdir ...
   -m <mailoptions>      Change the cluster mail options, see qsub sbatch for
                         details.
   -z <output>           If <output> image or file already exists, do nothing and exit.
-  -F                    Use flags embedded in scripts to set Sluem queuing options.
   -s <pename>,<threads> Submit a multi-threaded task - requires a
                         Parallel Environment (<pename>) to be configured for the
                         requested queues.
                         <threads> specifies the number of threads to run
+  -F                    Use flags embedded in scripts to set Slurm queuing options.
+	-R										Use inputs for applications through Slurm srun command.
   -v                    Verbose mode.
 
 	This is a modified version of FSL's fsl_sub that is compatible with the
@@ -362,6 +363,9 @@ while [ $1 != -- ] ; do
     -v)
       verbose=1
       ;;
+		-R)
+			scriptmode=2
+			;;
     -s)
       pe_string=$2;
       peName=`echo $pe_string | cut -d',' -f 1`
@@ -500,10 +504,12 @@ case $METHOD in
 
 			 # Non-tasks statement (means single srun/sbatch job)
 			 if [ "x$tasks" = "x" ] ; then
-				 if [ $scriptmode -ne 1 ] ; then
+				 if [ $scriptmode -eq 1 ] ; then
 					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority --wrap=\"$@\""
 					 # non-used options:
 					 # all used currently
+				 elif [ $scriptmode -eq 2 ] ; then
+				 	 slurm_command="srun --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@\""
 				 else
 					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@"\"
 				 fi
@@ -516,7 +522,11 @@ case $METHOD in
 				 sleep 2
 			 # Tasks statement (means multiple srun/sbatch jobs)
 			 else
-				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_hold $slurm_priority $slurm_tasks"
+				 if [ $scriptmode -eq 2 ] ; then
+					 slurm_command="srun --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
+				 else
+					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
+				 fi
 				 # Verbose clause for tasks system
 				 if [ $verbose -eq 1 ] ; then
 					 echo slurm_command: $slurm_command >&2
