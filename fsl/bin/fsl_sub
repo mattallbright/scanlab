@@ -319,6 +319,7 @@ while [ $1 != -- ] ; do
     -t)
       taskfile=$2
       if [ -f "$taskfile" ] ; then
+				echo "Task file found."
 	      tasks=`cat $taskfile | wc -l `
 	      if [ $tasks -eq 0 ]; then
     	    echo "Task file ${taskfile} is empty"
@@ -493,9 +494,13 @@ case $METHOD in
 			 if [ "x$tasks" = "x" ] ; then
 				 echo "Utilizing standard submissions."
 				 if [ $scriptmode -ne 1 ] ; then
-					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName "$logOpts"/%j.out $slurm_arch $slurm_hold $slurm_priority --wrap=\""$@"\""
+					 echo "Defaulting to non-script mode."
+					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName $logOpts/%j.out $slurm_arch $slurm_hold $slurm_priority --wrap=\""$@"\""
+					 # non-used options:
+					 # all used currently
 				 else
-					 slurm_command="sbatch $logOpts/%j.out ""$@"\"
+					 echo "Using script mode."
+					 slurm_command="sbatch ""$@"\"
 				 fi
 				 # Verbose clause
 				 if [ $verbose -eq 1 ] ; then
@@ -503,10 +508,11 @@ case $METHOD in
 					 echo executing: $@ >&2
 				 fi
 				 exec $slurm_command $@
+				 sleep 2
 			 # Tasks statement (means multiple srun/sbatch jobs)
 			 else
 				 echo "Utilizing task-based submissions."
-				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName "$logOpts"/%j.out $slurm_arch $slurm_hold $slurm_priority"
+				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName $slurm_hold $slurm_priority"
 				 # Verbose clause for tasks system
 				 if [ $verbose -eq 1 ] ; then
 					 echo slurm_command: $slurm_command >&2
