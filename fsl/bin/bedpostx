@@ -263,7 +263,13 @@ echo Queuing preprocessing stages
 preprocout=`${FSLDIR}/bin/fsl_sub -v -T 60 -N bpx_preproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc.sh ${subjdir} ${gflag}`
 preprocid=${preprocout#Submitted batch job }
 echo "Command is $preprocout"
+echo -en "\n"
 echo "ID is $preprocid"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
 
 echo Queuing parallel processing stage
 nslices=`${FSLDIR}/bin/fslval ${subjdir}/data dim3`
@@ -295,13 +301,25 @@ done
 bedpostout=`${FSLDIR}/bin/fsl_sub -v -j $preprocid -l ${subjdir}.bedpostX/logs -M $mailto -N bedpostx -t ${subjdir}.bedpostX/commands.txt`
 bedpostid=${bedpostout#Submitted batch job }
 echo "Command is $bedpostout"
+echo -en "\n"
 echo "ID is $bedpostid"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
 
 echo Queuing post processing stage
 mergeout=`${FSLDIR}/bin/fsl_sub -v -j $bedpostid -T 60 -N bpx_postproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc.sh $subjdir`
 mergeid=${mergeout#Submitted batch job }
 echo "Command is $mergeout"
+echo -en "\n"
 echo "ID is $mergeid"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
+echo -en "\n"
 
 echo $mergeid > ${subjdir}.bedpostX/logs/postproc_ID
 

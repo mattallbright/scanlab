@@ -234,7 +234,6 @@ omp_pe='openmp'
 
 queue=long.q
 queueCmd="--partition=long.q"
-mailTypes="--mail-type=BEGIN,END,FAIL"
 logOpts="--output=/data/var/jobs"
 JobName="--job-name=fsl_sub"
 scriptmode=0
@@ -277,14 +276,20 @@ fi
 while [ $1 != -- ] ; do
   case $1 in
     -z)
+			echo "Output set."
+			echo -en "\n"
       if [ -e $2 -o `${FSLDIR}/bin/imtest $2` = 1 ] ; then
         exit 0
       fi
       shift;;
     -T)
-		map_qname $2
-		shift;;
+			echo "Time set."
+			echo -en "\n"
+			map_qname $2
+			shift;;
     -q)
+			echo "Queue set."
+			echo -en "\n"
       queue=$2
       queueCmd="--partition=$queue"
       sinfo --hide --partition=$FSLGECUDAQ >/dev/null 2>&1
@@ -294,6 +299,8 @@ while [ $1 != -- ] ; do
       fi
       shift;;
     -a)
+			echo "Arch constraints set."
+			echo -en "\n"
       acceptable_arch=no
 			available_archs=`scontrol show nodes -o | awk '{for(i=1;i<=NF;i++){if($i~/^Arch/){print $i}}}' | cut -d '=' -f 2 | uniq`
 			for a in $available_archs; do
@@ -310,13 +317,19 @@ while [ $1 != -- ] ; do
 		  fi
       shift;;
     -p)
+			echo "Job priority set."
+			echo -en "\n"
 			slurm_priority="--priority=$2"
       shift;;
     -j)
+			echo "Job wait set."
+			echo -en "\n"
       jid=$2
 			slurm_hold="--dependency=afterok:$jid"
       shift;;
     -t)
+			echo "Tasksfile set."
+			echo -en "\n"
       taskfile=$2
       if [ -f "$taskfile" ] ; then
 				echo "Task file found."
@@ -332,12 +345,18 @@ while [ $1 != -- ] ; do
       fi
       shift;;
     -N)
+			echo "Job name set."
+			echo -en "\n"
       JobName="--job-name=$2";
       shift;;
 		-M)
+			echo "Mail user set."
+			echo -en "\n"
 			mailto="--mail-user=$2";
 			shift;;
     -m)
+			echo "Mail options set."
+			echo -en "\n"
 			if [ -n $mailto ]; then
       	mailTypes="--mail-type=$2";
 			else
@@ -345,15 +364,23 @@ while [ $1 != -- ] ; do
 			fi
       shift;;
     -l)
+			echo "Log option set."
+			echo -en "\n"
       LogOpts="--output=$2";
       shift;;
     -F)
+			echo "Scriptmode set."
+			echo -en "\n"
       scriptmode=1;
       ;;
     -v)
+			echo "Verbosity set."
+			echo -en "\n"
       verbose=1
       ;;
     -s)
+			echo "PE option set."
+			echo -en "\n"
       pe_string=$2;
       peName=`echo $pe_string | cut -d',' -f 1`
       peThreads=`echo $pe_string | cut -d',' -f 2`
@@ -367,11 +394,15 @@ shift
 # Don't change the following (but keep scrolling down!)
 ###########################################################################
 
+echo "Determining job-task existence."
+echo -en "\n"
 if [ -z "$taskfile" ] && [ -z "$1" ]; then
 	echo "Either supply a command to run or a parallel task file"
 	exit -1
 fi
 
+echo "Determining task viability."
+echo -en "\n"
 if [ -z "$taskfile" ] && [ ! -x "$1" ]; then
 	which $1 >/dev/null 2>&1
 	if [ $? -ne 0 ]; then
@@ -380,6 +411,8 @@ if [ -z "$taskfile" ] && [ ! -x "$1" ]; then
 	fi
 fi
 
+echo "Determining job-task naming conflicts."
+echo -en "\n"
 if [ "x$JobName" = x ] ; then
 	if [ "x$taskfile" != x ] ; then
 		JobName=`basename $taskfile`
@@ -388,6 +421,8 @@ if [ "x$JobName" = x ] ; then
 	fi
 fi
 
+echo "Determining job-task conflicts."
+echo -en "\n"
 if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 	echo "Spurious input after parsing command line: \"$@\"!"
 	echo "You appear to have specified both a task file and a command to run"
@@ -395,9 +430,16 @@ if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 fi
 
 # Sets up mail types
-MailOpts="$mailto $mailTypes"
+echo "Setting up mailing options."
+echo -en "\n"
+if [ -n $mailto ] && [ -z $mailto ]; then
+	mailTypes="--mail-type=BEGIN,END,FAIL"
+	MailOpts="$mailto $mailTypes"
+fi
 
 # Addition Parallel Environment triggers and clauses
+echo "Testing for parallel environments."
+echo -en "\n"
 if [ "x$peName" != "x" ]; then
 	# If threads are higher than most cores, set to most cores
 	if [ $peThreads -gt $totalThreads ]; then
@@ -481,19 +523,9 @@ case $METHOD in
 
 			 # Non-tasks statement (means single srun/sbatch job)
 			 echo "$tasksfile stores tasks."
-			 echo "$tasksfile stores tasks."
-			 echo "$tasksfile stores tasks."
-			 echo "$tasksfile stores tasks."
-			 echo "$tasksfile stores tasks."
-			 echo "$tasksfile stores tasks."
+			 echo -en "\n"
 			 echo "$Tasks tasks to run."
-			 echo "$Tasks tasks to run."
-			 echo "$Tasks tasks to run."
-			 echo "$Tasks tasks to run."
-			 echo "$Tasks tasks to run."
-			 echo "$Tasks tasks to run."
-			 echo "$Tasks tasks to run."
-			 echo "$Tasks tasks to run."
+			 echo -en "\n"
 			 if [ "x$tasks" = "x" ] ; then
 				 echo "Utilizing standard submissions."
 				 if [ $scriptmode -ne 1 ] ; then
@@ -512,6 +544,12 @@ case $METHOD in
 				 fi
 				 exec $slurm_command $@
 				 sleep 2
+				 echo -en "\n"
+				 echo -en "\n"
+				 echo -en "\n"
+				 echo -en "\n"
+				 echo -en "\n"
+				 echo -en "\n"
 			 # Tasks statement (means multiple srun/sbatch jobs)
 			 else
 				 echo "Utilizing task-based submissions."
@@ -532,6 +570,12 @@ exec \$command
 EOF
 				# Chill for a bit
 				sleep 2
+				echo -en "\n"
+				echo -en "\n"
+				echo -en "\n"
+				echo -en "\n"
+				echo -en "\n"
+				echo -en "\n"
 				fi
 				# Opens terminal that watches output of file.
 				x-terminal-emulator -e 'tail -F "$logOpts"'/$%j.out
