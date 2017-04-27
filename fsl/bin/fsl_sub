@@ -476,6 +476,7 @@ case $METHOD in
        ###########################################################################
 
 			 # Non-tasks statement (means single srun/sbatch job)
+			 echo $tasks
 			 if [ "x$tasks" = "x" ] ; then
 				 if [ $scriptmode -ne 1 ] ; then
 					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName "$logOpts"/%j.out $slurm_arch $slurm_hold $slurm_priority --wrap=\""$@"\""
