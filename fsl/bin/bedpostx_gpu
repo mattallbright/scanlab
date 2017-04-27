@@ -311,9 +311,9 @@ fi
 echo Queuing preprocessing stages
 [ -f ${subjdir}.bedpostX/preproc_commands.txt ] && rm ${subjdir}.bedpostX/preproc_commands.txt
 if [ ${gflag} -eq 1 ]; then
-  gflag_script="/opt/cloud/fsl/opt/split_parts.sbatch ${FSLDIR} ${subjdir} $njobs"
+  gflag_script="/opt/cloud/staging/fsl/opt/split_parts.sbatch ${FSLDIR} ${subjdir} $njobs"
 else
-  gflag_script="/opt/cloud/fsl/opt/split_parts_null.sbatch ${FSLDIR} ${subjdir} $njobs"
+  gflag_script="/opt/cloud/staging/fsl/opt/split_parts_null.sbatch ${FSLDIR} ${subjdir} $njobs"
 fi
 preprocid=`${FSLDIR}/bin/fsl_sub -v -T 40 -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs $gflag_script | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $preprocid"
