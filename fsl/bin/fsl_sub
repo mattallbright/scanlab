@@ -286,11 +286,9 @@ while [ $1 != -- ] ; do
       if [ -e $2 -o `${FSLDIR}/bin/imtest $2` = 1 ] ; then
         exit 0
       fi
-      echo $2
       shift;;
     -T)
       map_qname $2
-      echo $2
       shift;;
     -q)
       queue=$2
@@ -349,7 +347,7 @@ while [ $1 != -- ] ; do
       if [ "x$mailto" != "x" ]; then
         mailTypes="--mail-type=$2";
       else
-          echo "You failed to input a mail account!"
+        echo "You failed to input a mail account!"
         exit -1
       fi
       shift;;
@@ -504,7 +502,7 @@ case $METHOD in
 
        # Non-tasks statement (means single srun/sbatch job)
        if [ "x$tasks" = "x" ] ; then
-         if [ $scriptmode -eq 1 ] ; then
+         if [ $scriptmode -eq 0 ] ; then
            slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority --wrap=\"$@\""
            # non-used options:
            # all used currently
