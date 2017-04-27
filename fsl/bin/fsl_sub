@@ -212,7 +212,7 @@ if [ $nargs -eq 0 ] ; then
   usage
 fi
 
-set -- `getopt T:q:a:p:M:m:j:t:z:N:FRv:l:s: $*`
+set -- `getopt T:q:a:p:M:m:j:t:z:N:F:v:R:l:s: $*`
 result=$?
 if [ $result != 0 ] ; then
   echo "What? Your arguments make no sense!"
@@ -359,13 +359,13 @@ while [ $1 != -- ] ; do
       shift;;
     -F)
       scriptmode=1
-      shift;;
+      ;;
     -v)
       verbose=1
-      shift;;
+      ;;
     -R)
       scriptmode=2
-      shift;;
+      ;;
     -s)
       pe_string=$2;
       peName=`echo $pe_string | cut -d',' -f 1`
