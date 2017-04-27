@@ -124,11 +124,11 @@ export FSLSUBALREADYRUN
 
 map_qname ()
 {
-  if [ $1 -le 20 ] ; then
+  if [[ $1 -le 20 ]] ; then
     queue=veryshort.q
-  elif [ $1 -le 120 ] ; then
+  elif [[ $1 -le 120 ]] ; then
     queue=short.q
-  elif [ $1 -le 1440 ] ; then
+  elif [[ $1 -le 1440 ]] ; then
     queue=long.q
   else
     queue=verylong.q
