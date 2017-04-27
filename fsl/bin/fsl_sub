@@ -234,7 +234,7 @@ omp_pe='openmp'
 
 queue=long.q
 queueCmd="--partition=long.q"
-logOpts="--output=/data/var/jobs"
+logOpts="--output=/data/var/jobs/%j.out"
 JobName="--job-name=fsl_sub"
 scriptmode=0
 peName=""
@@ -346,7 +346,7 @@ while [ $1 != -- ] ; do
 			fi
       shift;;
     -l)
-      LogOpts="--output=$2/%j.out";
+      logOpts="--output=$2/%j.out";
       shift;;
     -F)
       scriptmode=1
@@ -396,7 +396,7 @@ if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 fi
 
 # Sets up mail types
-if [ -n $mailto ] && [ -z $mailto ]; then
+if [ -n $mailto ] && [ -z $mailTypes ]; then
 	mailTypes="--mail-type=BEGIN,END,FAIL"
 	MailOpts="$mailto $mailTypes"
 fi
