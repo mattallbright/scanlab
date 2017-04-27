@@ -346,7 +346,7 @@ bedpostid=`${FSLDIR}/bin/fsl_sub -v $queue -l ${subjdir}.bedpostX/logs -N bedpos
 echo "Job submitted as job $bedpostid"
 
 echo Queuing post processing stage
-echo "${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}"
+post_command="${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}"
 mergeid=`${FSLDIR}/bin/fsl_sub -v -F -T 120 -j $bedpostid -N bpx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $mergeid"
 
