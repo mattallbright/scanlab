@@ -311,13 +311,11 @@ fi
 echo Queuing preprocessing stages
 [ -f ${subjdir}.bedpostX/preproc_commands.txt ] && rm ${subjdir}.bedpostX/preproc_commands.txt
 if [ ${gflag} -eq 1 ]; then
-	echo "${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask ${subjdir}/grad_dev 1 $njobs ${subjdir}.bedpostX" \
-  >> ${subjdir}.bedpostX/preproc_commands.txt
+  gflag_script="/opt/cloud/fsl/opt/split_parts.sbatch ${FSLDIR} ${subjdir} $njobs"
 else
-	echo "${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask NULL 0 $njobs ${subjdir}.bedpostX" \
-  >> ${subjdir}.bedpostX/preproc_commands.txt
+  gflag_script="/opt/cloud/fsl/opt/split_parts_null.sbatch ${FSLDIR} ${subjdir} $njobs"
 fi
-preprocid=`${FSLDIR}/bin/fsl_sub -v -R -T 40 -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs -t ${subjdir}.bedpostX/preproc_commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
+preprocid=`${FSLDIR}/bin/fsl_sub -v -T 40 -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs $gflag_script | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $preprocid"
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir.bedpostX/nodif_brain_mask -V  | cut -d ' ' -f1 `
