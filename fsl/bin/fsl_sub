@@ -406,7 +406,7 @@ if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 fi
 
 # Sets up array-specific log files
-if [ "x$logOpts" != "x" ] && [ -z "$taskfile" ]; then
+if [ "x$logOpts" != "x" ] && [ "x$tasks" != "x" ]; then
   logOpts="--output=$logDir/%A_%a.out"
 fi
 
