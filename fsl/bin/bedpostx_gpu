@@ -317,7 +317,7 @@ else
 	echo "${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask NULL 0 $njobs ${subjdir}.bedpostX" \
   >> ${subjdir}.bedpostX/preproc_commands.txt
 fi
-preprocid=`${FSLDIR}/bin/fsl_sub -v -T 40 -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs -t ${subjdir}.bedpostX/preproc_commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
+preprocid=`${FSLDIR}/bin/fsl_sub -v -R -T 40 -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs -t ${subjdir}.bedpostX/preproc_commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $preprocid"
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir.bedpostX/nodif_brain_mask -V  | cut -d ' ' -f1 `
