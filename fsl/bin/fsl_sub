@@ -235,7 +235,7 @@ omp_pe='openmp'
 queue=long.q
 queueCmd="--partition=long.q"
 MailsOpts="BEGIN,END,FAIL"
-logOpts="--output=/data/var/logs"
+logOpts="--output=/data/var/jobs"
 JobName=fsl_sub
 scriptmode=0
 peName=""
@@ -478,9 +478,9 @@ case $METHOD in
 			 # Non-tasks statement (means single srun/sbatch job)
 			 if [ "x$tasks" = "x" ] ; then
 				 if [ $scriptmode -ne 1 ] ; then
-					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName "$logOpts"/$SLURM_JOB_ID.out $slurm_arch $slurm_hold $slurm_priority --wrap=\""$@"\""
+					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName "$logOpts"/%j.out $slurm_arch $slurm_hold $slurm_priority --wrap=\""$@"\""
 				 else
-					 slurm_command="sbatch $logOpts/$SLURM_JOB_ID.out ""$@"\"
+					 slurm_command="sbatch $logOpts/%j.out ""$@"\"
 				 fi
 				 # Verbose clause
 				 if [ $verbose -eq 1 ] ; then
@@ -490,7 +490,7 @@ case $METHOD in
 				 exec $slurm_command $@
 			 # Tasks statement (means multiple srun/sbatch jobs)
 			 else
-				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName "$logOpts"/$SLURM_JOB_ID.out $slurm_arch $slurm_hold $slurm_priority"
+				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName "$logOpts"/%j.out $slurm_arch $slurm_hold $slurm_priority"
 				 # Verbose clause for tasks system
 				 if [ $verbose -eq 1 ] ; then
 					 echo slurm_command: $slurm_command >&2
@@ -509,7 +509,7 @@ EOF
 				sleep 2
 				fi
 				# Opens terminal that watches output of file.
-				x-terminal-emulator -e 'tail -F "$logOpts"'/$SLURM_JOB_ID.out
+				x-terminal-emulator -e 'tail -F "$logOpts"'/$%j.out
 	;;
 
 ###########################################################################
