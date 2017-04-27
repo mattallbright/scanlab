@@ -6,10 +6,17 @@
 #   http://www.fmrib.ox.ac.uk/fsl
 #   fsl@fmrib.ox.ac.uk
 #
+#   Edits by Matt Allbright
+#   https://github.com/mattallbright
+#   allbrigh@psychiatry.arizona.edu
+#
 #   Developed at FMRIB (Oxford Centre for Functional Magnetic Resonance
 #   Imaging of the Brain), Department of Clinical Neurology, Oxford
 #   University, Oxford, UK
 #
+#   Modified at the SCAN Lab (Social, Cognitive, and Affective Neuroscience
+#   Laboratory), Department of Psychiatry, University of Arizona, Tucson,
+#   Arizona
 #
 #   LICENCE
 #
@@ -339,7 +346,7 @@ post_command="${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --ma
 mergeid=`${FSLDIR}/bin/fsl_sub -v -F -T 120 -j $bedpostid -N bpx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $mergeid"
 
-echo $mergeid > ${subjdir}.bedpostX/logs/postproc_ID
+echo $mergeid > ${subjdir}.bedpostX/logs/$mergeid.out
 
 if [ "x$FSLPARALLEL" != "x" ]; then
     echo

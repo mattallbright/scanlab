@@ -1,13 +1,18 @@
 #!/bin/bash
-#   Copyright (C) 2012 University of Oxford
+
+#   tbss_2_reg - TBSS nonlinear registration
 #
-#   Part of FSL - FMRIB's Software Library
-#   http://www.fmrib.ox.ac.uk/fsl
-#   fsl@fmrib.ox.ac.uk
+#   Stephen Smith, FMRIB Image Analysis Group
 #
 #   Edits by Matt Allbright
 #   https://github.com/mattallbright
 #   allbrigh@psychiatry.arizona.edu
+#
+#   Copyright (C) 2005-2008 University of Oxford
+#
+#   Part of FSL - FMRIB's Software Library
+#   http://www.fmrib.ox.ac.uk/fsl
+#   fsl@fmrib.ox.ac.uk
 #
 #   Developed at FMRIB (Oxford Centre for Functional Magnetic Resonance
 #   Imaging of the Brain), Department of Clinical Neurology, Oxford
@@ -69,71 +74,66 @@
 #   Innovation Limited ("Isis"), the technology transfer company of the
 #   University, to negotiate a licence. Contact details are:
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
+export LC_ALL=C
 
-# last 2 parameters are subjdir and bindir
-parameters=""
-while [ ! -z "$2" ]
-do
-	if [[ $1 =~ "--nf=" ]]; then
-    		numfib=`echo $1 | cut -d '=' -f2`
+Usage() {
+    cat <<EOF
+
+Usage: tbss_2_reg [options]
+
+Target-selection options - choose ONE of:
+ -T            : use FMRIB58_FA_1mm as target for nonlinear registrations (recommended)
+ -t <target>   : use <target> image as target for nonlinear registrations
+ -n            : find best target from all images in FA
+
+EOF
+    exit 1
+}
+
+do_reg(){
+
+    f=$1
+
+    for g in `$FSLDIR/bin/imglob *_FA.*` ; do
+
+	o=${g}_to_$f
+
+	if [ ! -f ${o}_warp.msf ] ; then
+	    echo $o
+	    touch ${o}_warp.msf
+	    echo "$FSLDIR/bin/fsl_reg $g $f ${g}_to_$f -e -FA" >> .commands
 	fi
- 	all=$all" "$1
-	subjdir=$1
-	shift
-done
-bindir=$1
 
-$bindir/bin/merge_parts_gpu $all
-
-fib=1
-while [ $fib -le $numfib ]
-do
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_th${fib}samples -Tmean ${subjdir}.bedpostX/mean_th${fib}samples
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_ph${fib}samples -Tmean ${subjdir}.bedpostX/mean_ph${fib}samples
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_f${fib}samples -Tmean ${subjdir}.bedpostX/mean_f${fib}samples
-
-    ${FSLDIR}/bin/make_dyadic_vectors ${subjdir}.bedpostX/merged_th${fib}samples ${subjdir}.bedpostX/merged_ph${fib}samples ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX/dyads${fib}
-    if [ $fib -ge 2 ];then
-	${FSLDIR}/bin/maskdyads ${subjdir}.bedpostX/dyads${fib} ${subjdir}.bedpostX/mean_f${fib}samples
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f${fib}samples -div ${subjdir}.bedpostX/mean_f1samples ${subjdir}.bedpostX/mean_f${fib}_f1samples
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/dyads${fib}_thr0.05 -mul ${subjdir}.bedpostX/mean_f${fib}_f1samples ${subjdir}.bedpostX/dyads${fib}_thr0.05_modf${fib}
-	${FSLDIR}/bin/imrm ${subjdir}.bedpostX/mean_f${fib}_f1samples
-    fi
-
-    fib=$(($fib + 1))
-
-done
-
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/mean_f1samples` -eq 1 ];then
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f1samples -mul 0 ${subjdir}.bedpostX/mean_fsumsamples
-    fib=1
-    while [ $fib -le $numfib ]
-    do
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_fsumsamples -add ${subjdir}.bedpostX/mean_f${fib}samples ${subjdir}.bedpostX/mean_fsumsamples
-	fib=$(($fib + 1))
     done
-fi
+}
 
+[ "$1" = "" ] && Usage
 
+echo [`date`] [`hostname`] [`uname -a`] [`pwd`] [$0 $@] >> .tbsslog
 
-echo Removing intermediate files
+/bin/rm -f FA/.commands
 
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_th1samples` -eq 1 ];then
-  if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_ph1samples` -eq 1 ];then
-    if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_f1samples` -eq 1 ];then
-      rm -rf ${subjdir}.bedpostX/diff_parts
-      rm -rf ${subjdir}.bedpostX/data*
-      rm -rf ${subjdir}.bedpostX/grad_dev*
+if [ $1 = -n ] ; then
+    cd FA
+    for f in `$FSLDIR/bin/imglob *_FA.*` ; do
+	do_reg $f
+    done
+else
+    if [ $1 = -T ] ; then
+	TARGET=$FSLDIR/data/standard/FMRIB58_FA_1mm
+    elif [ $1 = -t ] ; then
+	TARGET=$2
+    else
+	Usage
     fi
-  fi
+    if [ `${FSLDIR}/bin/imtest $TARGET` = 0 ] ; then
+	echo ""
+	echo "Error: target image $TARGET not valid"
+	Usage
+    fi
+    $FSLDIR/bin/imcp $TARGET FA/target
+    cd FA
+    do_reg target
 fi
 
-echo Creating identity xfm
-
-xfmdir=${subjdir}.bedpostX/xfms
-echo 1 0 0 0 > ${xfmdir}/eye.mat
-echo 0 1 0 0 >> ${xfmdir}/eye.mat
-echo 0 0 1 0 >> ${xfmdir}/eye.mat
-echo 0 0 0 1 >> ${xfmdir}/eye.mat
-
-echo Done
+${FSLDIR}/bin/fsl_sub -l tbss_logs -T 60 -N tbss_2_reg -t .commands

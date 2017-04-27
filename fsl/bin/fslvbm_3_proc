@@ -1,13 +1,18 @@
 #!/bin/bash
-#   Copyright (C) 2012 University of Oxford
+
+#   fslvbm_3_proc - FSLVBM - the rest of it!!
 #
-#   Part of FSL - FMRIB's Software Library
-#   http://www.fmrib.ox.ac.uk/fsl
-#   fsl@fmrib.ox.ac.uk
+#   Gwenaelle Douaud & Stephen Smith, FMRIB Image Analysis Group
 #
 #   Edits by Matt Allbright
 #   https://github.com/mattallbright
 #   allbrigh@psychiatry.arizona.edu
+#
+#   Copyright (C) 2007-2008 University of Oxford
+#
+#   Part of FSL - FMRIB's Software Library
+#   http://www.fmrib.ox.ac.uk/fsl
+#   fsl@fmrib.ox.ac.uk
 #
 #   Developed at FMRIB (Oxford Centre for Functional Magnetic Resonance
 #   Imaging of the Brain), Department of Clinical Neurology, Oxford
@@ -69,71 +74,53 @@
 #   Innovation Limited ("Isis"), the technology transfer company of the
 #   University, to negotiate a licence. Contact details are:
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
+export LC_ALL=C
 
-# last 2 parameters are subjdir and bindir
-parameters=""
-while [ ! -z "$2" ]
-do
-	if [[ $1 =~ "--nf=" ]]; then
-    		numfib=`echo $1 | cut -d '=' -f2`
-	fi
- 	all=$all" "$1
-	subjdir=$1
-	shift
+echo [`date`] [`hostname`] [`uname -a`] [`pwd`] [$0 $@] >> .fslvbmlog
+
+mkdir -p stats
+cd struc
+
+echo "Now running the preprocessing steps and the pre-analyses"
+
+/bin/rm -f fslvbm3a
+for g in `$FSLDIR/bin/imglob *_struc.*` ; do
+  echo $g
+  echo "${FSLDIR}/bin/fsl_reg ${g}_GM template_GM ${g}_GM_to_template_GM -fnirt \"--config=GM_2_MNI152GM_2mm.cnf --jout=${g}_JAC_nl\"; \
+        $FSLDIR/bin/fslmaths ${g}_GM_to_template_GM -mul ${g}_JAC_nl ${g}_GM_to_template_GM_mod -odt float" >> fslvbm3a
 done
-bindir=$1
+chmod a+x fslvbm3a
+fslvbm3a_id=`${FSLDIR}/bin/fsl_sub -T 40 -N fslvbm3a -t ./fslvbm3a | grep -oP "Submitted batch job\s+\K\w+"`
+echo Doing registrations: ID=$fslvbm3a_id
 
-$bindir/bin/merge_parts_gpu $all
+cd ../stats
 
-fib=1
-while [ $fib -le $numfib ]
-do
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_th${fib}samples -Tmean ${subjdir}.bedpostX/mean_th${fib}samples
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_ph${fib}samples -Tmean ${subjdir}.bedpostX/mean_ph${fib}samples
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_f${fib}samples -Tmean ${subjdir}.bedpostX/mean_f${fib}samples
+cat <<stage_preproc2 > fslvbm3b
+#!/bin/sh
 
-    ${FSLDIR}/bin/make_dyadic_vectors ${subjdir}.bedpostX/merged_th${fib}samples ${subjdir}.bedpostX/merged_ph${fib}samples ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX/dyads${fib}
-    if [ $fib -ge 2 ];then
-	${FSLDIR}/bin/maskdyads ${subjdir}.bedpostX/dyads${fib} ${subjdir}.bedpostX/mean_f${fib}samples
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f${fib}samples -div ${subjdir}.bedpostX/mean_f1samples ${subjdir}.bedpostX/mean_f${fib}_f1samples
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/dyads${fib}_thr0.05 -mul ${subjdir}.bedpostX/mean_f${fib}_f1samples ${subjdir}.bedpostX/dyads${fib}_thr0.05_modf${fib}
-	${FSLDIR}/bin/imrm ${subjdir}.bedpostX/mean_f${fib}_f1samples
-    fi
+\$FSLDIR/bin/imcp ../struc/template_GM template_GM
 
-    fib=$(($fib + 1))
+\$FSLDIR/bin/fslmerge -t GM_merg     \`\${FSLDIR}/bin/imglob ../struc/*_GM_to_template_GM.*\`
+\$FSLDIR/bin/fslmerge -t GM_mod_merg \`\${FSLDIR}/bin/imglob ../struc/*_GM_to_template_GM_mod.*\`
 
+\$FSLDIR/bin/fslmaths GM_merg -Tmean -thr 0.01 -bin GM_mask -odt char
+
+/bin/cp ../design.* .
+
+for i in GM_mod_merg ; do
+  for j in 2 3 4 ; do
+    \$FSLDIR/bin/fslmaths \$i -s \$j \${i}_s\${j}
+    \$FSLDIR/bin/randomise -i \${i}_s\${j} -o \${i}_s\${j} -m GM_mask -d design.mat -t design.con -V
+  done
 done
 
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/mean_f1samples` -eq 1 ];then
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f1samples -mul 0 ${subjdir}.bedpostX/mean_fsumsamples
-    fib=1
-    while [ $fib -le $numfib ]
-    do
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_fsumsamples -add ${subjdir}.bedpostX/mean_f${fib}samples ${subjdir}.bedpostX/mean_fsumsamples
-	fib=$(($fib + 1))
-    done
-fi
+stage_preproc2
 
+chmod a+x fslvbm3b
 
+fslvbm3b_id=`${FSLDIR}/bin/fsl_sub -T 15 -N fslvbm3b -j $fslvbm3a_id ./fslvbm3b | grep -oP "Submitted batch job\s+\K\w+"`
 
-echo Removing intermediate files
+echo Doing subject concatenation and initial randomise: ID=$fslvbm3b_id
 
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_th1samples` -eq 1 ];then
-  if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_ph1samples` -eq 1 ];then
-    if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_f1samples` -eq 1 ];then
-      rm -rf ${subjdir}.bedpostX/diff_parts
-      rm -rf ${subjdir}.bedpostX/data*
-      rm -rf ${subjdir}.bedpostX/grad_dev*
-    fi
-  fi
-fi
-
-echo Creating identity xfm
-
-xfmdir=${subjdir}.bedpostX/xfms
-echo 1 0 0 0 > ${xfmdir}/eye.mat
-echo 0 1 0 0 >> ${xfmdir}/eye.mat
-echo 0 0 1 0 >> ${xfmdir}/eye.mat
-echo 0 0 0 1 >> ${xfmdir}/eye.mat
-
-echo Done
+echo "Once this has finished, run randomise with 5000 permutations on the 'best' smoothed 4D GM_mod_merg. We recommend using the -T (TFCE) option. For example:"
+echo "randomise -i GM_mod_merg_s3 -o GM_mod_merg_s3 -m GM_mask -d design.mat -t design.con -n 5000 -T -V"

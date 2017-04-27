@@ -1,6 +1,8 @@
 #!/bin/bash
-#   Copyright (C) 2012 University of Oxford
+
+#   Copyright (C) 2010-2012 University of Oxford
 #
+#   Stamatios Sotiropoulos
 #   Part of FSL - FMRIB's Software Library
 #   http://www.fmrib.ox.ac.uk/fsl
 #   fsl@fmrib.ox.ac.uk
@@ -69,71 +71,112 @@
 #   Innovation Limited ("Isis"), the technology transfer company of the
 #   University, to negotiate a licence. Contact details are:
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
+export LC_ALL=C
 
-# last 2 parameters are subjdir and bindir
-parameters=""
-while [ ! -z "$2" ]
-do
-	if [[ $1 =~ "--nf=" ]]; then
-    		numfib=`echo $1 | cut -d '=' -f2`
-	fi
- 	all=$all" "$1
-	subjdir=$1
-	shift
-done
-bindir=$1
+# Not useful unless we're using SGE
+# if [ "x$FSLPARALLEL" = "x" ] ; then
+#   if [ -f /usr/local/share/sge/default/common/settings.sh ] ; then
+#     . /usr/local/share/sge/default/common/settings.sh
+#   elif [ -f /usr/local/sge/default/common/settings.sh ] ; then
+#     . /usr/local/sge/default/common/settings.sh
+#   fi
+# fi
 
-$bindir/bin/merge_parts_gpu $all
+Usage() {
+    echo ""
+    echo "Usage: qboot_parallel <subject directory> [options]"
+    echo ""
+    echo "expects to find bvals and bvecs in subject directory"
+    echo "expects to find data and nodif_brain_mask in subject directory"
+    echo ""
+    echo " You can pass on qboot options"
+    echo " Default qboot options are utilised otherwise"
+    echo " For example:  qboot_parallel <subject directory> --lmax=6 --lambda=0.006"
+    echo " Type 'qboot --help' for a list of available options "
+    echo ""
+   exit 1
+}
 
-fib=1
-while [ $fib -le $numfib ]
-do
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_th${fib}samples -Tmean ${subjdir}.bedpostX/mean_th${fib}samples
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_ph${fib}samples -Tmean ${subjdir}.bedpostX/mean_ph${fib}samples
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_f${fib}samples -Tmean ${subjdir}.bedpostX/mean_f${fib}samples
-
-    ${FSLDIR}/bin/make_dyadic_vectors ${subjdir}.bedpostX/merged_th${fib}samples ${subjdir}.bedpostX/merged_ph${fib}samples ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX/dyads${fib}
-    if [ $fib -ge 2 ];then
-	${FSLDIR}/bin/maskdyads ${subjdir}.bedpostX/dyads${fib} ${subjdir}.bedpostX/mean_f${fib}samples
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f${fib}samples -div ${subjdir}.bedpostX/mean_f1samples ${subjdir}.bedpostX/mean_f${fib}_f1samples
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/dyads${fib}_thr0.05 -mul ${subjdir}.bedpostX/mean_f${fib}_f1samples ${subjdir}.bedpostX/dyads${fib}_thr0.05_modf${fib}
-	${FSLDIR}/bin/imrm ${subjdir}.bedpostX/mean_f${fib}_f1samples
+make_absolute(){
+    dir=$1;
+    if [ -d ${dir} ]; then
+	OLDWD=`pwd`
+	cd ${dir}
+	dir_all=`pwd`
+	cd $OLDWD
+    else
+	dir_all=${dir}
     fi
+    echo ${dir_all}
+}
 
-    fib=$(($fib + 1))
+[ "$1" = "" ] && Usage
 
-done
+subjdir=`make_absolute $1`
+subjdir=`echo $subjdir | sed 's/\/$/$/g'`
 
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/mean_f1samples` -eq 1 ];then
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f1samples -mul 0 ${subjdir}.bedpostX/mean_fsumsamples
-    fib=1
-    while [ $fib -le $numfib ]
-    do
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_fsumsamples -add ${subjdir}.bedpostX/mean_f${fib}samples ${subjdir}.bedpostX/mean_fsumsamples
-	fib=$(($fib + 1))
-    done
+echo subjectdir is $subjdir
+
+shift
+opts="$*"
+
+#check that all required files exist
+
+if [ ! -d $subjdir ]; then
+	echo "subject directory $subjdir not found"
+	exit 1
+fi
+
+if [ ! -e ${subjdir}/bvecs ]; then
+	echo "${subjdir}/bvecs not found"
+	exit 1
+fi
+
+if [ ! -e ${subjdir}/bvals ]; then
+	echo "${subjdir}/bvals not found"
+	exit 1
+fi
+
+if [ `${FSLDIR}/bin/imtest ${subjdir}/data` -eq 0 ]; then
+	echo "${subjdir}/data not found"
+	exit 1
 fi
 
 
-
-echo Removing intermediate files
-
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_th1samples` -eq 1 ];then
-  if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_ph1samples` -eq 1 ];then
-    if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_f1samples` -eq 1 ];then
-      rm -rf ${subjdir}.bedpostX/diff_parts
-      rm -rf ${subjdir}.bedpostX/data*
-      rm -rf ${subjdir}.bedpostX/grad_dev*
-    fi
-  fi
+if [ `${FSLDIR}/bin/imtest ${subjdir}/nodif_brain_mask` -eq 0 ]; then
+	echo "${subjdir}/nodif_brain_mask not found"
+	exit 1
 fi
 
-echo Creating identity xfm
 
-xfmdir=${subjdir}.bedpostX/xfms
-echo 1 0 0 0 > ${xfmdir}/eye.mat
-echo 0 1 0 0 >> ${xfmdir}/eye.mat
-echo 0 0 1 0 >> ${xfmdir}/eye.mat
-echo 0 0 0 1 >> ${xfmdir}/eye.mat
+echo Making qboot directory structure
 
-echo Done
+mkdir -p ${subjdir}.qboot/
+mkdir -p ${subjdir}.qboot/diff_slices
+mkdir -p ${subjdir}.qboot/logs
+mkdir -p ${subjdir}.qboot/logs/pid_${$}
+
+echo Queuing preprocessing stages
+preprocid=`${FSLDIR}/bin/fsl_sub -F -T 60 -N qboot_preproc -l ${subjdir}.qboot/logs ${FSLDIR}/bin/qboot_preproc.sh ${subjdir} | grep -oP "Submitted batch job\s+\K\w+"`
+
+
+echo Queuing parallel processing stage
+nslices=`${FSLDIR}/bin/fslval ${subjdir}/data dim3`
+[ -f ${subjdir}.qboot/commands.txt ] && rm ${subjdir}.qboot/commands.txt
+
+ slice=0
+ while [ $slice -lt $nslices ]
+   do
+    slicezp=`$FSLDIR/bin/zeropad $slice 4`
+    if [ `$FSLDIR/bin/imtest ${subjdir}.qboot/diff_slices/data_slice_$slicezp/dyads1` -eq 1 ];then
+	echo "slice $slice has already been processed"
+    else
+	echo "${FSLDIR}/bin/qboot --data=${subjdir}/data_slice_${slicezp} --mask=${subjdir}/nodif_brain_mask_slice_${slicezp} -b ${subjdir}/bvals -r ${subjdir}/bvecs --forcedir --logdir=$subjdir.qboot/diff_slices/data_slice_${slicezp} ${opts}" >> ${subjdir}.qboot/commands.txt
+    fi
+    slice=$(($slice + 1))
+ done
+
+ qbootid=`${FSLDIR}/bin/fsl_sub -q long.q -j $preprocid -l ${subjdir}.qboot/logs -N qboot -t ${subjdir}.qboot/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
+
+ echo Queuing post processing stage
+ mergeid=`${FSLDIR}/bin/fsl_sub -F -j $qbootid -T 60 -N qboot_postproc -l ${subjdir}.qboot/logs ${FSLDIR}/bin/qboot_postproc.sh $subjdir | grep -oP "Submitted batch job\s+\K\w+"`

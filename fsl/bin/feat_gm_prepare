@@ -1,13 +1,18 @@
 #!/bin/bash
-#   Copyright (C) 2012 University of Oxford
+
+#   feat_gm_prepare - take structurals and prepare GM-density-based higher-level FEAT confound regressor
 #
-#   Part of FSL - FMRIB's Software Library
-#   http://www.fmrib.ox.ac.uk/fsl
-#   fsl@fmrib.ox.ac.uk
+#   Stephen Smith, FMRIB Image Analysis Group
 #
 #   Edits by Matt Allbright
 #   https://github.com/mattallbright
 #   allbrigh@psychiatry.arizona.edu
+#
+#   Copyright (C) 2008 University of Oxford
+#
+#   Part of FSL - FMRIB's Software Library
+#   http://www.fmrib.ox.ac.uk/fsl
+#   fsl@fmrib.ox.ac.uk
 #
 #   Developed at FMRIB (Oxford Centre for Functional Magnetic Resonance
 #   Imaging of the Brain), Department of Clinical Neurology, Oxford
@@ -69,71 +74,53 @@
 #   Innovation Limited ("Isis"), the technology transfer company of the
 #   University, to negotiate a licence. Contact details are:
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
-
-# last 2 parameters are subjdir and bindir
-parameters=""
-while [ ! -z "$2" ]
-do
-	if [[ $1 =~ "--nf=" ]]; then
-    		numfib=`echo $1 | cut -d '=' -f2`
-	fi
- 	all=$all" "$1
-	subjdir=$1
-	shift
-done
-bindir=$1
-
-$bindir/bin/merge_parts_gpu $all
-
-fib=1
-while [ $fib -le $numfib ]
-do
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_th${fib}samples -Tmean ${subjdir}.bedpostX/mean_th${fib}samples
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_ph${fib}samples -Tmean ${subjdir}.bedpostX/mean_ph${fib}samples
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_f${fib}samples -Tmean ${subjdir}.bedpostX/mean_f${fib}samples
-
-    ${FSLDIR}/bin/make_dyadic_vectors ${subjdir}.bedpostX/merged_th${fib}samples ${subjdir}.bedpostX/merged_ph${fib}samples ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX/dyads${fib}
-    if [ $fib -ge 2 ];then
-	${FSLDIR}/bin/maskdyads ${subjdir}.bedpostX/dyads${fib} ${subjdir}.bedpostX/mean_f${fib}samples
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f${fib}samples -div ${subjdir}.bedpostX/mean_f1samples ${subjdir}.bedpostX/mean_f${fib}_f1samples
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/dyads${fib}_thr0.05 -mul ${subjdir}.bedpostX/mean_f${fib}_f1samples ${subjdir}.bedpostX/dyads${fib}_thr0.05_modf${fib}
-	${FSLDIR}/bin/imrm ${subjdir}.bedpostX/mean_f${fib}_f1samples
-    fi
-
-    fib=$(($fib + 1))
-
-done
-
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/mean_f1samples` -eq 1 ];then
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f1samples -mul 0 ${subjdir}.bedpostX/mean_fsumsamples
-    fib=1
-    while [ $fib -le $numfib ]
-    do
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_fsumsamples -add ${subjdir}.bedpostX/mean_f${fib}samples ${subjdir}.bedpostX/mean_fsumsamples
-	fib=$(($fib + 1))
-    done
-fi
+export LC_ALL=C
 
 
+#  -> find all _original_ brain-extracted structurals (outside FEAT directories)
+#     -> run FAST and keep GM only
+#  -> find warp files from FEAT directories and apply to GM
+#  -> concatenate -> 4D -> demean
 
-echo Removing intermediate files
+Usage() {
+    echo "Usage: feat_gm_prepare <4D-GM-output> <list of first-level FEAT output directories>"
+    echo "Note: these all have to have had registration completed in them"
+    exit 1
+}
 
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_th1samples` -eq 1 ];then
-  if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_ph1samples` -eq 1 ];then
-    if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_f1samples` -eq 1 ];then
-      rm -rf ${subjdir}.bedpostX/diff_parts
-      rm -rf ${subjdir}.bedpostX/data*
-      rm -rf ${subjdir}.bedpostX/grad_dev*
-    fi
+[ "$2" = "" ] && Usage
+
+OUT=`${FSLDIR}/bin/remove_ext $1`
+shift
+
+# estimate how much we will need to smooth the structurals by, in the end
+echo Estimating smoothness of functional data...
+func_smoothing=`grep "fmri(smooth)" $1/design.fsf | tail -n 1 | awk '{print $3}'`
+standard_space_resolution=`${FSLDIR}/bin/fslval $1/reg/standard pixdim1`
+struc_smoothing=`${FSLDIR}/bin/match_smoothing $1/example_func $func_smoothing $1/reg/highres $standard_space_resolution`
+echo Structural-space GM PVE images will be smoothed by sigma=${struc_smoothing}mm to match the standard-space functional data
+
+# run segmentations, smoothing, and standard-space transformation
+CWD=`pwd`
+/bin/rm -rf ${OUT}.log
+mkdir ${OUT}.log
+for f in $@ ; do
+  ${FSLDIR}/bin/fslecho "cd ${f}/reg; $FSLDIR/bin/fast -R 0.3 -H 0.1 -o grot highres; $FSLDIR/bin/immv grot_pve_1 highresGM; /bin/rm grot*; $FSLDIR/bin/fslmaths highresGM -s $struc_smoothing highresGMs; \c" >> ${OUT}.log/featseg1
+  if [ `${FSLDIR}/bin/imtest ${f}/reg/highres2standard_warp` = 1 ] ; then
+      ${FSLDIR}/bin/fslecho "${FSLDIR}/bin/applywarp --ref=standard --in=highresGMs --out=highresGMs2standard --warp=highres2standard_warp; \c" >> ${OUT}.log/featseg1
+  else
+      ${FSLDIR}/bin/fslecho "${FSLDIR}/bin/flirt -in highresGMs -out highresGMs2standard -ref standard -applyxfm -init highres2standard.mat; \c" >> ${OUT}.log/featseg1
   fi
-fi
+  echo "cd $CWD" >> ${OUT}.log/featseg1
+  GMlist="$GMlist ${f}/reg/highresGMs2standard"
+done
+chmod a+x ${OUT}.log/featseg1
+echo Running segmentations...
+featseg1_id=`$FSLDIR/bin/fsl_sub -T 30 -N featseg1 -l ./${OUT}.log -t ./${OUT}.log/featseg1 | grep -oP "Submitted batch job\s+\K\w+"`
 
-echo Creating identity xfm
+# concatenate and de-mean GM images
+echo "${FSLDIR}/bin/fslmerge -t $OUT $GMlist; ${FSLDIR}/bin/fslmaths $OUT -Tmean -mul -1 -add $OUT $OUT" > ${OUT}.log/featseg2
+echo Running concatenation of all standard space GM images
+$FSLDIR/bin/fsl_sub -T 10 -N featseg2 -l ./${OUT}.log -j $featseg1_id -t ./${OUT}.log/featseg2 > /dev/null
 
-xfmdir=${subjdir}.bedpostX/xfms
-echo 1 0 0 0 > ${xfmdir}/eye.mat
-echo 0 1 0 0 >> ${xfmdir}/eye.mat
-echo 0 0 1 0 >> ${xfmdir}/eye.mat
-echo 0 0 0 1 >> ${xfmdir}/eye.mat
-
-echo Done
+echo "Once this is all complete you may want to add additional smoothing to $OUT in order to ameliorate possible effects of mis-registrations between functional and structural data, and to lessen the effect of the additional confound regressors"

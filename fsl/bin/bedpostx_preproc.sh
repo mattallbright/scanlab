@@ -5,10 +5,17 @@
 #   http://www.fmrib.ox.ac.uk/fsl
 #   fsl@fmrib.ox.ac.uk
 #
+#   Edits by Matt Allbright
+#   https://github.com/mattallbright
+#   allbrigh@psychiatry.arizona.edu
+#
 #   Developed at FMRIB (Oxford Centre for Functional Magnetic Resonance
 #   Imaging of the Brain), Department of Clinical Neurology, Oxford
 #   University, Oxford, UK
 #
+#   Modified at the SCAN Lab (Social, Cognitive, and Affective Neuroscience
+#   Laboratory), Department of Psychiatry, University of Arizona, Tucson,
+#   Arizona
 #
 #   LICENCE
 #
