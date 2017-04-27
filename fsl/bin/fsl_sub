@@ -416,7 +416,7 @@ if [ -n $peName ]; then
 		echo "Process will run in MPI."
 
 		# Force Slurm to use one node for OpenMP
-	elif [[ "$peName" = "openmp" ]]; then
+	elif [ "$peName" = "openmp" ]; then
 		OMP_NUM_THREADS=$peThreads
 		export OMP_NUM_THREADS
 		peNodes="--nodes=1"
