@@ -234,7 +234,6 @@ omp_pe='openmp'
 
 queue=long.q
 queueCmd="--partition=long.q"
-logOpts="--output=/data/var/jobs/%j.out"
 JobName="--job-name=fsl_sub"
 scriptmode=0
 peName=""
@@ -347,7 +346,8 @@ while [ $1 != -- ] ; do
 			fi
       shift;;
     -l)
-      logOpts="--output=$2/%j.out";
+			logDir=$2
+      logOpts="--output=$logDir/%j.out";
       shift;;
     -F)
       scriptmode=1
@@ -394,6 +394,16 @@ if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 	echo "Spurious input after parsing command line: \"$@\"!"
 	echo "You appear to have specified both a task file and a command to run"
 	exit -1
+fi
+
+# Sets up array-specific log files
+if [ "x$logOpts" != "x" ] && [ -z "$taskfile" ]; then
+	logOpts="--output=$logDir/%A_%a.out"
+fi
+
+# Sets up default logs
+if [ "x$logOpts" = "x" ]; then
+	logOpts="--output=/data/var/jobs/%j.out"
 fi
 
 # Sets up mail types
@@ -499,7 +509,7 @@ case $METHOD in
 				 sleep 2
 			 # Tasks statement (means multiple srun/sbatch jobs)
 			 else
-				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $slurm_hold $slurm_priority $slurm_tasks"
+				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_hold $slurm_priority $slurm_tasks"
 				 # Verbose clause for tasks system
 				 if [ $verbose -eq 1 ] ; then
 					 echo slurm_command: $slurm_command >&2
