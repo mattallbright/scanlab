@@ -352,14 +352,14 @@ while [[ $1 != -- ]] ; do
       fi
       shift;;
     -l)
-      logDir=$2
+      logDir=$2;
       logOpts="--output=$logDir/%j.out";
       shift;;
     -F)
       scriptmode=1;
       ;;
     -v)
-      verbose=1;
+      verbose=1
       ;;
     -R)
       scriptmode=2;
