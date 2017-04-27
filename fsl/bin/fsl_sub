@@ -318,12 +318,6 @@ while [ $1 != -- ] ; do
       shift;;
     -t)
       taskfile=$2
-			echo $tasksfile stores tasks.
-			echo $tasksfile stores tasks.
-			echo $tasksfile stores tasks.
-			echo $tasksfile stores tasks.
-			echo $tasksfile stores tasks.
-			echo $tasksfile stores tasks.
       if [ -f "$taskfile" ] ; then
 	      tasks=`cat $taskfile | wc -l `
 	      if [ $tasks -eq 0 ]; then
@@ -482,6 +476,12 @@ case $METHOD in
        ###########################################################################
 
 			 # Non-tasks statement (means single srun/sbatch job)
+			 echo "$tasksfile stores tasks."
+			 echo "$tasksfile stores tasks."
+			 echo "$tasksfile stores tasks."
+			 echo "$tasksfile stores tasks."
+			 echo "$tasksfile stores tasks."
+			 echo "$tasksfile stores tasks."
 			 echo "$Tasks tasks to run."
 			 echo "$Tasks tasks to run."
 			 echo "$Tasks tasks to run."
