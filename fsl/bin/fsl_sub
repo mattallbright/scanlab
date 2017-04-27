@@ -234,9 +234,9 @@ omp_pe='openmp'
 
 queue=long.q
 queueCmd="--partition=long.q"
-MailsOpts="BEGIN,END,FAIL"
+mailTypes="--mail-type=BEGIN,END,FAIL"
 logOpts="--output=/data/var/jobs"
-JobName=fsl_sub
+JobName="--job-name=fsl_sub"
 scriptmode=0
 peName=""
 peThreads=""
@@ -339,7 +339,7 @@ while [ $1 != -- ] ; do
 			shift;;
     -m)
 			if [ -n $mailto ]; then
-      	mailto="$mailto --mail-type=$2";
+      	mailTypes="--mail-type=$2";
 			else
 				echo "You failed to input a mail account!"
 			fi
@@ -393,6 +393,9 @@ if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 	echo "You appear to have specified both a task file and a command to run"
 	exit -1
 fi
+
+# Sets up mail types
+MailOpts="$mailto $mailTypes"
 
 # Addition Parallel Environment triggers and clauses
 if [ "x$peName" != "x" ]; then
@@ -495,7 +498,7 @@ case $METHOD in
 				 echo "Utilizing standard submissions."
 				 if [ $scriptmode -ne 1 ] ; then
 					 echo "Defaulting to non-script mode."
-					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName $logOpts/%j.out $slurm_arch $slurm_hold $slurm_priority --wrap=\""$@"\""
+					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts/%j.out $slurm_arch $slurm_hold $slurm_priority --wrap=\"$@\""
 					 # non-used options:
 					 # all used currently
 				 else
@@ -512,7 +515,7 @@ case $METHOD in
 			 # Tasks statement (means multiple srun/sbatch jobs)
 			 else
 				 echo "Utilizing task-based submissions."
-				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $mailto $JobName $slurm_hold $slurm_priority"
+				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $slurm_hold $slurm_priority"
 				 # Verbose clause for tasks system
 				 if [ $verbose -eq 1 ] ; then
 					 echo slurm_command: $slurm_command >&2
