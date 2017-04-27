@@ -338,7 +338,7 @@ while [ $1 != -- ] ; do
 			mailto="--mail-user=$2";
 			shift;;
     -m)
-			if [ -n $mailto ]; then
+			if [ "x$mailto" != "x" ]; then
       	mailTypes="--mail-type=$2";
 			else
 				echo "You failed to input a mail account!"
@@ -396,7 +396,7 @@ if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 fi
 
 # Sets up mail types
-if [ -n $mailto ] && [ -z $mailTypes ]; then
+if [ "x$mailto" != "x" ] && [ "x$mailTypes" = "x" ]; then
 	mailTypes="--mail-type=BEGIN,END,FAIL"
 	MailOpts="$mailto $mailTypes"
 fi
