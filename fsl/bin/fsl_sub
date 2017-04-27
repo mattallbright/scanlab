@@ -518,10 +518,6 @@ EOF
 				# Opens terminal that watches output of file.
 				x-terminal-emulator -e 'tail -F "$logOpts"'/$%j.out
 	;;
-				 # Chill for a bit
-				 sleep 2
-			 fi
-			 ;;
 
 ###########################################################################
 # Don't change the following - this runs the commands directly if a
