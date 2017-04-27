@@ -393,6 +393,12 @@ if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 fi
 
 # Addition Parallel Environment triggers and clauses
+echo -en '\n'$peName
+echo -en '\n'$peName
+echo -en '\n'$peName
+echo -en '\n'$peName
+echo -en '\n'$peName
+echo -en '\n'$peName
 if [ -n $peName ]; then
 	# If threads are higher than most cores, set to most cores
 	if [ $peThreads -gt $totalThreads ]; then
