@@ -237,6 +237,8 @@ queueCmd="--partition=long.q"
 MailsOpts="BEGIN,END,FAIL"
 logOpts="--output=/data/var/logs"
 JobName=fsl_sub
+scriptmode=0
+peName=""
 
 
 ###########################################################################
@@ -270,8 +272,6 @@ else
     verbose=$FSLSUBVERBOSE;
     echo "METHOD=$METHOD : args=$@" >&2
 fi
-
-scriptmode=0
 
 while [ $1 != -- ] ; do
   case $1 in
