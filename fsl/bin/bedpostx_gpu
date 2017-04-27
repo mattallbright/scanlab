@@ -316,7 +316,7 @@ echo Queuing preprocessing stages
 # fi
 pre_command="${FSLDIR}/bin/split_parts_gpu"
 preprocid=`${FSLDIR}/bin/fsl_sub -v -R -T 40 -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs $pre_command | grep -oP "Submitted batch job\s+\K\w+"`
-echo $preprocid
+echo "Job submitted as job $preprocid"
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir.bedpostX/nodif_brain_mask -V  | cut -d ' ' -f1 `
 echo Queuing parallel processing stage

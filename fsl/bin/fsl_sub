@@ -280,7 +280,7 @@ else
     echo "METHOD=$METHOD : args=$@" >&2
 fi
 
-while [ $1 != -- ] ; do
+while [[ $1 != -- ]] ; do
   case $1 in
     -z)
       if [ -e $2 -o `${FSLDIR}/bin/imtest $2` = 1 ] ; then
