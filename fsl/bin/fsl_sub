@@ -212,7 +212,7 @@ if [ $nargs -eq 0 ] ; then
   usage
 fi
 
-set -- `getopt T:q:a:p:M:m:j:t:z:N:F:v:R:l:s: $*`
+set -- `getopt T:q:a:p:M:m:j:t:z:N:FvR:l:s: $*`
 result=$?
 if [ $result != 0 ] ; then
   echo "What? Your arguments make no sense!"
@@ -509,7 +509,7 @@ case $METHOD in
            # non-used options:
            # all used currently
          elif [ $scriptmode -eq 2 ] ; then
-            slurm_command="srun --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@\""
+            slurm_command="srun $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@\""
          else
            slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@"\"
          fi
@@ -523,7 +523,7 @@ case $METHOD in
        # Tasks statement (means multiple srun/sbatch jobs)
        else
          if [ $scriptmode -eq 2 ] ; then
-           slurm_command="srun --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
+           slurm_command="srun $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
          else
            slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
          fi
