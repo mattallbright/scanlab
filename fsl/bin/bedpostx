@@ -65,6 +65,7 @@
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
 
 Usage() {
+    echo "bedpostx (SCANLab V0.1)"
     echo ""
     echo "Usage: bedpostx <subject directory> [options]"
     echo ""
@@ -95,7 +96,7 @@ monitor(){
     cat <<EOM > ${subjdir}.bedpostX/monitor
 #!/bin/sh
 echo
-echo "----- Bedpostx Monitor -----"
+echo "------- Bedpostx Monitor -------"
 finished=0
 lastprinted=0
 havedad=2
@@ -189,6 +190,7 @@ done
 opts="--nf=$nfibres --fudge=$fudge --bi=$burnin --nj=$njumps --se=$sampleevery --model=$model"
 defopts="--cnonlinear"
 opts="$opts $defopts $other"
+
 # Check for Slurm
 # echo "Locating CUDA queue."
 # if [ -n "$FSLGECUDAQ" ] && [ "$nocuda" -eq 0 ]; then
@@ -275,20 +277,20 @@ fi
 slice=0
 while [ $slice -lt $nslices ]
 do
-    slicezp=`$FSLDIR/bin/zeropad $slice 4`
-    if [ `$FSLDIR/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_$slicezp/dyads1` -eq 1 ] && [ -f ${subjdir}.bedpostX/logs/monitor/$slice ];then
-	echo "slice $slice has already been processed"
+  slicezp=`$FSLDIR/bin/zeropad $slice 4`
+  if [ `$FSLDIR/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_$slicezp/dyads1` -eq 1 ] && [ -f ${subjdir}.bedpostX/logs/monitor/$slice ];then
+    echo "slice $slice has already been processed"
+  else
+    [ -f ${subjdir}.bedpostX/logs/monitor/$slice ] && rm ${subjdir}.bedpostX/logs/monitor/$slice
+    if [ ${gflag} -eq 1 ]; then
+      gopts="$opts --gradnonlin=${subjdir}/grad_dev_slice_${slicezp}"
     else
-        [ -f ${subjdir}.bedpostX/logs/monitor/$slice ] && rm ${subjdir}.bedpostX/logs/monitor/$slice
-	if [ ${gflag} -eq 1 ]; then
-	    gopts="$opts --gradnonlin=${subjdir}/grad_dev_slice_${slicezp}"
-	else
-	    gopts=$opts
-	fi
-	echo "${FSLDIR}/bin/bedpostx_single_slice.sh ${subjdir} ${slice} $gopts" \
-	    >> ${subjdir}.bedpostX/commands.txt
+      gopts=$opts
     fi
-    slice=$(($slice + 1))
+    echo "${FSLDIR}/bin/bedpostx_single_slice.sh ${subjdir} ${slice} $gopts" \
+    >> ${subjdir}.bedpostX/commands.txt
+  fi
+  slice=$(($slice + 1))
 done
 bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid -l ${subjdir}.bedpostX/logs -N bedpostx -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $bedpostid"

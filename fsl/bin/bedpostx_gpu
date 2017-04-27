@@ -1,16 +1,75 @@
 #!/bin/bash
 
-#Copyright (C) 2004 University of Oxford
+#   Copyright (C) 2004 University of Oxford
 #
-#   SHCOPYRIGHT
+#   Part of FSL - FMRIB's Software Library
+#   http://www.fmrib.ox.ac.uk/fsl
+#   fsl@fmrib.ox.ac.uk
+#
+#   Developed at FMRIB (Oxford Centre for Functional Magnetic Resonance
+#   Imaging of the Brain), Department of Clinical Neurology, Oxford
+#   University, Oxford, UK
+#
+#
+#   LICENCE
+#
+#   FMRIB Software Library, Release 5.0 (c) 2012, The University of
+#   Oxford (the "Software")
+#
+#   The Software remains the property of the University of Oxford ("the
+#   University").
+#
+#   The Software is distributed "AS IS" under this Licence solely for
+#   non-commercial use in the hope that it will be useful, but in order
+#   that the University as a charitable foundation protects its assets for
+#   the benefit of its educational and research purposes, the University
+#   makes clear that no condition is made or to be implied, nor is any
+#   warranty given or to be implied, as to the accuracy of the Software,
+#   or that it will be suitable for any particular purpose or for use
+#   under any specific conditions. Furthermore, the University disclaims
+#   all responsibility for the use which is made of the Software. It
+#   further disclaims any liability for the outcomes arising from using
+#   the Software.
+#
+#   The Licensee agrees to indemnify the University and hold the
+#   University harmless from and against any and all claims, damages and
+#   liabilities asserted by third parties (including claims for
+#   negligence) which arise directly or indirectly from the use of the
+#   Software or the sale of any products based on the Software.
+#
+#   No part of the Software may be reproduced, modified, transmitted or
+#   transferred in any form or by any means, electronic or mechanical,
+#   without the express permission of the University. The permission of
+#   the University is not required if the said reproduction, modification,
+#   transmission or transference is done without financial return, the
+#   conditions of this Licence are imposed upon the receiver of the
+#   product, and all original and amended source code is included in any
+#   transmitted product. You may be held legally responsible for any
+#   copyright infringement that is caused or encouraged by your failure to
+#   abide by these terms and conditions.
+#
+#   You are not permitted under this Licence to use this Software
+#   commercially. Use for which any financial return is received shall be
+#   defined as commercial use, and includes (1) integration of all or part
+#   of the source code or the Software into a product for sale or license
+#   by or on behalf of Licensee to third parties or (2) use of the
+#   Software or any derivative of it for research with the final aim of
+#   developing software products for sale or license to a third party or
+#   (3) use of the Software or any derivative of it for research with the
+#   final aim of developing non-software products for sale or license to a
+#   third party, or (4) use of the Software to provide any service to an
+#   external organisation for which payment is received. If you are
+#   interested in using the Software commercially, please contact Isis
+#   Innovation Limited ("Isis"), the technology transfer company of the
+#   University, to negotiate a licence. Contact details are:
+#   innovation@isis.ox.ac.uk quoting reference DE/9564.
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${FSLDIR}/lib
 
 Usage() {
+    echo "bedpostx_gpu (SCANLab V0.1a) - Possibly Very Broken Edition"
     echo ""
-    echo "Usage: bedpostx <subject_directory> [options]"
-    echo ""
-    echo "bedpostx_gpu (SCAN Lab v0.2) (TESTING)"
+    echo "Usage: bedpostx_gpu <subject_directory> [options]"
     echo ""
     echo "expects to find bvals and bvecs in subject directory"
     echo "expects to find data and nodif_brain_mask in subject directory"
@@ -118,11 +177,13 @@ make_absolute(){
 
 [ "$1" = "" ] && Usage
 
+myopts="$@"
 subjdir=`make_absolute $1`
 subjdir=`echo $subjdir | sed 's/\/$/$/g'`
 
 echo "---------------------------------------------"
 echo "------------ BedpostX GPU Version -----------"
+echo "----------Possibly Not Good Edition----------"
 echo "---------------------------------------------"
 echo subjectdir is $subjdir
 
@@ -144,7 +205,7 @@ while [ ! -z "$1" ]
 do
   case "$1" in
       -QSYS) qsys=$2;shift;;
-      -Q) queue="-q $2";shift;;
+      -Q) queue=$2;shift;;
       -NJOBS) njobs=$2;shift;;
       -n) nfibres=$2;shift;;
       -w) fudge=$2;shift;;
@@ -183,44 +244,44 @@ if [ ! -d $subjdir ]; then
 fi
 
 if [ ! -e ${subjdir}/bvecs ]; then
-    if [ -e ${subjdir}/bvecs.txt ]; then
-	mv ${subjdir}/bvecs.txt ${subjdir}/bvecs
-    else
-	echo "${subjdir}/bvecs not found"
-	exit 1
-    fi
+  if [ -e ${subjdir}/bvecs.txt ]; then
+    mv ${subjdir}/bvecs.txt ${subjdir}/bvecs
+  else
+    echo "${subjdir}/bvecs not found"
+    exit 1
+  fi
 fi
 
 if [ ! -e ${subjdir}/bvals ]; then
-    if [ -e ${subjdir}/bvals.txt ]; then
-	mv ${subjdir}/bvals.txt ${subjdir}/bvals
-    else
-	echo "${subjdir}/bvals not found"
-	exit 1
-    fi
+  if [ -e ${subjdir}/bvals.txt ]; then
+    mv ${subjdir}/bvals.txt ${subjdir}/bvals
+  else
+    echo "${subjdir}/bvals not found"
+    exit 1
+  fi
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}/data` -eq 0 ]; then
-	echo "${subjdir}/data not found"
-	exit 1
+  echo "${subjdir}/data not found"
+  exit 1
 fi
 
 if [ ${gflag} -eq 1 ]; then
-    if [ `${FSLDIR}/bin/imtest ${subjdir}/grad_dev` -eq 0 ]; then
-	echo "${subjdir}/grad_dev not found"
-	exit 1
-    fi
+  if [ `${FSLDIR}/bin/imtest ${subjdir}/grad_dev` -eq 0 ]; then
+    echo "${subjdir}/grad_dev not found"
+    exit 1
+  fi
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}/nodif_brain_mask` -eq 0 ]; then
-	echo "${subjdir}/nodif_brain_mask not found"
-	exit 1
+  echo "${subjdir}/nodif_brain_mask not found"
+  exit 1
 fi
 
 if [ -e ${subjdir}.bedpostX/xfms/eye.mat ]; then
-	echo "${subjdir} has already been processed: ${subjdir}.bedpostX."
-	echo "Delete or rename ${subjdir}.bedpostX before repeating the process."
-	exit 1
+  echo "${subjdir} has already been processed: ${subjdir}.bedpostX."
+  echo "Delete or rename ${subjdir}.bedpostX before repeating the process."
+  exit 1
 fi
 
 echo Making bedpostx directory structure
@@ -228,12 +289,8 @@ echo Making bedpostx directory structure
 mkdir -p ${subjdir}.bedpostX/
 mkdir -p ${subjdir}.bedpostX/diff_parts
 mkdir -p ${subjdir}.bedpostX/logs
-mkdir -p ${subjdir}.bedpostX/logs/logs_gpu
 mkdir -p ${subjdir}.bedpostX/logs/monitor
-rm -f ${subjdir}.bedpostX/logs/monitor/*
 mkdir -p ${subjdir}.bedpostX/xfms
-
-#mailto=`whoami`@fmrib.ox.ac.uk
 
 echo Copying files to bedpost directory
 
@@ -243,23 +300,17 @@ if [ `${FSLDIR}/bin/imtest ${subjdir}/nodif` = 1 ] ; then
     ${FSLDIR}/bin/fslmaths ${subjdir}/nodif -mas ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX/nodif_brain
 fi
 
-
 # Split the dataset in parts
-echo Pre-processing stage
-
+echo Queuing preprocessing stages
 if [ ${gflag} -eq 1 ]; then
 	pre_command="$FSLDIR/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask ${subjdir}/grad_dev 1 $njobs ${subjdir}.bedpostX"
 else
 	pre_command="$FSLDIR/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask NULL 0 $njobs ${subjdir}.bedpostX"
 fi
-preprocout=`${FSLDIR}/bin/fsl_sub -v -T 40 -l ${subjdir}.bedpostX/logs -N bedpostx_preproc_gpu $pre_command`
-preprocid=${preprocout#Submitted batch job }
-
+preprocid=`${FSLDIR}/bin/fsl_sub -v -F -T 40 -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs $pre_command | grep -oP "Submitted batch job\s+\K\w+"`
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir.bedpostX/nodif_brain_mask -V  | cut -d ' ' -f1 `
-
 echo Queuing parallel processing stage
-
 [ -f ${subjdir}.bedpostX/commands.txt ] && rm ${subjdir}.bedpostX/commands.txt
 
 monitor
@@ -270,30 +321,27 @@ fi
 part=0
 while [ $part -lt $njobs ]
 do
-    	partzp=`$FSLDIR/bin/zeropad $part 4`
-
-	if [ ${gflag} -eq 1 ]; then
-	    gopts="$opts --gradnonlin=${subjdir}.bedpostX/grad_dev_$part"
-	else
-	    gopts=$opts
-	fi
-
-	echo "${FSLDIR}/bin/xfibres_gpu --data=${subjdir}.bedpostX/data_$part --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts/data_part_$partzp $gopts ${subjdir} $part $njobs $nvox" >> ${subjdir}.bedpostX/commands.txt
-
-    	part=$(($part + 1))
+  partzp=`$FSLDIR/bin/zeropad $part 4`
+  if [ ${gflag} -eq 1 ]; then
+    gopts="$opts --gradnonlin=${subjdir}.bedpostX/grad_dev_$part"
+  else
+    gopts=$opts
+  fi
+  echo "${FSLDIR}/bin/xfibres_gpu --data=${subjdir}.bedpostX/data_$part --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts/data_part_$partzp $gopts ${subjdir} $part $njobs $nvox" \
+  >> ${subjdir}.bedpostX/commands.txt
+  part=$(($part + 1))
 done
-
-bedpostout=`${FSLDIR}/bin/fsl_sub -v $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -j $splitID -t ${subjdir}.bedpostX/commands.txt`
-bedpostid=${bedpostout#Submitted batch job }
+bedpostid=`${FSLDIR}/bin/fsl_sub -v $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -j $preprocid -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
+echo "Job submitted as job $bedpostid"
 
 echo Queuing post processing stage
-post_command="${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs  --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}"
-mergeout=`${FSLDIR}/bin/fsl_sub -v -T 120 -j $bedpostid -N bedpostx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command`
-mergeid=${mergeout#Submitted batch job }
+post_command="${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}"
+mergeid=`${FSLDIR}/bin/fsl_sub -v -F -T 120 -j $bedpostid -N bpx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command | grep -oP "Submitted batch job\s+\K\w+"`
+echo "Job submitted as job $mergeid"
 
 echo $mergeid > ${subjdir}.bedpostX/logs/postproc_ID
 
-if [ "x$SGE_ROOT" != "x" ]; then
+if [ "x$FSLPARALLEL" != "x" ]; then
     echo
     echo Type ${subjdir}.bedpostX/monitor to show progress.
     echo Type ${subjdir}.bedpostX/cancel to terminate all the queued tasks.
@@ -301,6 +349,7 @@ if [ "x$SGE_ROOT" != "x" ]; then
 #!/bin/sh
 scancel $mergeid
 scancel $bedpostid
+scancel $preprocid
 EOC
     chmod +x ${subjdir}.bedpostX/cancel
 
