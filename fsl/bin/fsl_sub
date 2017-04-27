@@ -278,7 +278,6 @@ while [ $1 != -- ] ; do
   case $1 in
     -z)
 			echo "Output set."
-			echo -en "\n"
       if [ -e $2 -o `${FSLDIR}/bin/imtest $2` = 1 ] ; then
         exit 0
       fi
@@ -288,6 +287,7 @@ while [ $1 != -- ] ; do
 			echo "Time set."
 			map_qname $2
 			echo $2
+			echo -en "\n"
 			shift;;
     -q)
 			echo "Queue set."
@@ -300,10 +300,10 @@ while [ $1 != -- ] ; do
 	  		exit 127
       fi
 			echo $2
+			echo -en "\n"
       shift;;
     -a)
 			echo "Arch constraints set."
-			echo -en "\n"
       acceptable_arch=no
 			available_archs=`scontrol show nodes -o | awk '{for(i=1;i<=NF;i++){if($i~/^Arch/){print $i}}}' | cut -d '=' -f 2 | uniq`
 			for a in $available_archs; do
@@ -319,23 +319,23 @@ while [ $1 != -- ] ; do
 				exit 127
 		  fi
 			echo $2
+			echo -en "\n"
       shift;;
     -p)
 			echo "Job priority set."
-			echo -en "\n"
 			slurm_priority="--priority=$2"
 			echo $2
+			echo -en "\n"
       shift;;
     -j)
 			echo "Job wait set."
-			echo -en "\n"
       jid=$2
 			slurm_hold="--dependency=afterok:$jid"
 			echo $2
+			echo -en "\n"
       shift;;
     -t)
 			echo "Tasksfile set."
-			echo -en "\n"
       taskfile=$2
       if [ -f "$taskfile" ] ; then
 				echo "Task file found."
@@ -350,54 +350,55 @@ while [ $1 != -- ] ; do
           exit -1
       fi
 			echo $2
+			echo -en "\n"
       shift;;
     -N)
 			echo "Job name set."
-			echo -en "\n"
       JobName="--job-name=$2";
 			echo $2
+			echo -en "\n"
       shift;;
 		-M)
 			echo "Mail user set."
-			echo -en "\n"
 			mailto="--mail-user=$2";
 			echo $2
+			echo -en "\n"
 			shift;;
     -m)
 			echo "Mail options set."
-			echo -en "\n"
 			if [ -n $mailto ]; then
       	mailTypes="--mail-type=$2";
 			else
 				echo "You failed to input a mail account!"
 			fi
 			echo $2
+			echo -en "\n"
       shift;;
     -l)
 			echo "Log option set."
-			echo -en "\n"
       LogOpts="--output=$2";
 			echo $2
+			echo -en "\n"
       shift;;
     -F)
 			echo "Scriptmode set."
-			echo -en "\n"
       scriptmode=1
 			echo $2
+			echo -en "\n"
       ;;
     -v)
 			echo "Verbosity set."
-			echo -en "\n"
       verbose=1
+			echo -en "\n"
 			echo $2
       ;;
     -s)
 			echo "PE option set."
-			echo -en "\n"
       pe_string=$2;
       peName=`echo $pe_string | cut -d',' -f 1`
       peThreads=`echo $pe_string | cut -d',' -f 2`
 			echo $2
+			echo -en "\n"
       shift;;
   esac
   shift  # next flag
@@ -409,39 +410,47 @@ shift
 ###########################################################################
 
 echo "Determining job-task existence."
-echo -en "\n"
 if [ -z "$taskfile" ] && [ -z "$1" ]; then
 	echo "Either supply a command to run or a parallel task file"
 	exit -1
+else
+	echo "Looks good."
 fi
+echo -en "\n"
 
 echo "Determining task viability."
-echo -en "\n"
 if [ -z "$taskfile" ] && [ ! -x "$1" ]; then
 	which $1 >/dev/null 2>&1
 	if [ $? -ne 0 ]; then
 		echo "The command you have requested cannot be found or is not executable"
 		exit -1
 	fi
+else
+	echo "Looks good."
 fi
+echo -en "\n"
 
 echo "Determining job-task naming conflicts."
-echo -en "\n"
 if [ "x$JobName" = x ] ; then
 	if [ "x$taskfile" != x ] ; then
 		JobName=`basename $taskfile`
 	else
 		JobName=`basename $1`
 	fi
+else
+	echo "Looks good."
 fi
+echo -en "\n"
 
 echo "Determining job-task conflicts."
-echo -en "\n"
 if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 	echo "Spurious input after parsing command line: \"$@\"!"
 	echo "You appear to have specified both a task file and a command to run"
 	exit -1
+else
+	echo "Looks good."
 fi
+echo -en "\n"
 
 # Sets up mail types
 echo "Setting up mailing options."
@@ -449,11 +458,12 @@ echo -en "\n"
 if [ -n $mailto ] && [ -z $mailto ]; then
 	mailTypes="--mail-type=BEGIN,END,FAIL"
 	MailOpts="$mailto $mailTypes"
+else
+	echo "Not required."
 fi
 
 # Addition Parallel Environment triggers and clauses
 echo "Testing for parallel environments."
-echo -en "\n"
 if [ "x$peName" != "x" ]; then
 	# If threads are higher than most cores, set to most cores
 	if [ $peThreads -gt $totalThreads ]; then
@@ -491,8 +501,10 @@ if [ "x$peName" != "x" ]; then
 
 	# Set parallel environment options
 	peCmd="$peNodes --ntasks=$peThreads"
-
+else
+	echo "Not required."
 fi
+echo -en "\n"
 
 #Count node details by creating array of all non-down nodes with unique identifiers
 nodeNames=($(scontrol show nodes -o | grep -v State=DOWN* | awk '{for(i=1;i<=NF;i++){if($i~/^NodeName/){print $i}}}' | cut -d '=' -f 2 | uniq))

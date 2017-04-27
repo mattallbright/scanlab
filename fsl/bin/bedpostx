@@ -211,44 +211,44 @@ if [ ! -d $subjdir ]; then
 fi
 
 if [ ! -e ${subjdir}/bvecs ]; then
-    if [ -e ${subjdir}/bvecs.txt ]; then
-	mv ${subjdir}/bvecs.txt ${subjdir}/bvecs
-    else
-	echo "${subjdir}/bvecs not found"
-	exit 1
-    fi
+  if [ -e ${subjdir}/bvecs.txt ]; then
+    mv ${subjdir}/bvecs.txt ${subjdir}/bvecs
+  else
+    echo "${subjdir}/bvecs not found"
+    exit 1
+  fi
 fi
 
 if [ ! -e ${subjdir}/bvals ]; then
-    if [ -e ${subjdir}/bvals.txt ]; then
-	mv ${subjdir}/bvals.txt ${subjdir}/bvals
-    else
-	echo "${subjdir}/bvals not found"
-	exit 1
-    fi
+  if [ -e ${subjdir}/bvals.txt ]; then
+    mv ${subjdir}/bvals.txt ${subjdir}/bvals
+  else
+    echo "${subjdir}/bvals not found"
+    exit 1
+  fi
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}/data` -eq 0 ]; then
-	echo "${subjdir}/data not found"
-	exit 1
+  echo "${subjdir}/data not found"
+  exit 1
 fi
 
 if [ ${gflag} -eq 1 ]; then
-    if [ `${FSLDIR}/bin/imtest ${subjdir}/grad_dev` -eq 0 ]; then
-	echo "${subjdir}/grad_dev not found"
-	exit 1
-    fi
+  if [ `${FSLDIR}/bin/imtest ${subjdir}/grad_dev` -eq 0 ]; then
+    echo "${subjdir}/grad_dev not found"
+    exit 1
+  fi
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}/nodif_brain_mask` -eq 0 ]; then
-	echo "${subjdir}/nodif_brain_mask not found"
-	exit 1
+  echo "${subjdir}/nodif_brain_mask not found"
+  exit 1
 fi
 
 if [ -e ${subjdir}.bedpostX/xfms/eye.mat ]; then
-	echo "${subjdir} has already been processed: ${subjdir}.bedpostX."
-	echo "Delete or rename ${subjdir}.bedpostX before repeating the process."
-	exit 1
+  echo "${subjdir} has already been processed: ${subjdir}.bedpostX."
+  echo "Delete or rename ${subjdir}.bedpostX before repeating the process."
+  exit 1
 fi
 
 echo Making bedpostx directory structure
@@ -262,14 +262,7 @@ mkdir -p ${subjdir}.bedpostX/xfms
 echo Queuing preprocessing stages
 preprocout=`${FSLDIR}/bin/fsl_sub -v -T 60 -N bpx_preproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc.sh ${subjdir} ${gflag}`
 preprocid=${preprocout#Submitted batch job }
-echo "Command is $preprocout"
-echo -en "\n"
 echo "ID is $preprocid"
-echo -en "\n"
-echo -en "\n"
-echo -en "\n"
-echo -en "\n"
-echo -en "\n"
 
 echo Queuing parallel processing stage
 nslices=`${FSLDIR}/bin/fslval ${subjdir}/data dim3`
@@ -300,26 +293,13 @@ do
 done
 bedpostout=`${FSLDIR}/bin/fsl_sub -v -j $preprocid -l ${subjdir}.bedpostX/logs -M $mailto -N bedpostx -t ${subjdir}.bedpostX/commands.txt`
 bedpostid=${bedpostout#Submitted batch job }
-echo "Command is $bedpostout"
-echo -en "\n"
 echo "ID is $bedpostid"
-echo -en "\n"
-echo -en "\n"
-echo -en "\n"
-echo -en "\n"
 echo -en "\n"
 
 echo Queuing post processing stage
 mergeout=`${FSLDIR}/bin/fsl_sub -v -j $bedpostid -T 60 -N bpx_postproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc.sh $subjdir`
 mergeid=${mergeout#Submitted batch job }
-echo "Command is $mergeout"
-echo -en "\n"
 echo "ID is $mergeid"
-echo -en "\n"
-echo -en "\n"
-echo -en "\n"
-echo -en "\n"
-echo -en "\n"
 
 echo $mergeid > ${subjdir}.bedpostX/logs/postproc_ID
 
