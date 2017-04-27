@@ -321,6 +321,7 @@ while [ $1 != -- ] ; do
       taskfile=$2
       if [ -f "$taskfile" ] ; then
 	      tasks=`cat $taskfile | wc -l `
+				slurm_tasks="--array=1-$tasks"
 	      if [ $tasks -eq 0 ]; then
     	    echo "Task file ${taskfile} is empty"
     	    echo "Should be a text file listing all the commands to run!"
@@ -498,7 +499,7 @@ case $METHOD in
 				 sleep 2
 			 # Tasks statement (means multiple srun/sbatch jobs)
 			 else
-				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $slurm_hold $slurm_priority"
+				 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $slurm_hold $slurm_priority $slurm_tasks"
 				 # Verbose clause for tasks system
 				 if [ $verbose -eq 1 ] ; then
 					 echo slurm_command: $slurm_command >&2
@@ -508,9 +509,7 @@ case $METHOD in
 				 # Here bash will pipe in everything after EOF to slurm_command, executing tasks one by one
 				 exec $slurm_command <<EOF
 #!/bin/bash
-
 command=\`cat "$taskfile" | head -\$SLURM_ARRAY_TASK_ID | tail -1\`
-
 exec \$command
 EOF
 				# Chill for a bit
@@ -519,6 +518,10 @@ EOF
 				# Opens terminal that watches output of file.
 				x-terminal-emulator -e 'tail -F "$logOpts"'/$%j.out
 	;;
+				 # Chill for a bit
+				 sleep 2
+			 fi
+			 ;;
 
 ###########################################################################
 # Don't change the following - this runs the commands directly if a
