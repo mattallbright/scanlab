@@ -411,12 +411,12 @@ if [ -n $peName ]; then
 	fi
 
 	# Let Slurm figure out the number of nodes for MPI
-	if [ $peName == mpi ]; then
+	if [ $peName = mpi ]; then
 		# Can possibly tie leastThreads systems above into this for future project
 		echo "Process will run in MPI."
 
 		# Force Slurm to use one node for OpenMP
-	elif [ $peName == openmp ]; then
+	elif [ $peName = openmp ]; then
 		OMP_NUM_THREADS=$peThreads
 		export OMP_NUM_THREADS
 		peNodes="--nodes=1"
