@@ -239,6 +239,7 @@ logOpts="--output=/data/var/logs"
 JobName=fsl_sub
 scriptmode=0
 peName=""
+peThreads=""
 
 
 ###########################################################################
@@ -393,13 +394,7 @@ if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
 fi
 
 # Addition Parallel Environment triggers and clauses
-echo -en '\n'$peName
-echo -en '\n'$peName
-echo -en '\n'$peName
-echo -en '\n'$peName
-echo -en '\n'$peName
-echo -en '\n'$peName
-if [ -n $peName ]; then
+if [ "x$peName" != "x" ]; then
 	# If threads are higher than most cores, set to most cores
 	if [ $peThreads -gt $totalThreads ]; then
 		echo "PE parameters requested $peThreads. This number is higher than the total"
@@ -408,7 +403,7 @@ if [ -n $peName ]; then
 	fi
 
 	# Tasks determination
-	if [ -n $taskfile ] && [ -n $peThreads ]; then
+	if [ -n $taskfile ] && [ "x$peThreads" != "x" ]; then
 		if [ $peThreads -gt $tasks ]; then
 		echo "Threads requested at $peThreads, greater than $tasks tasks. Defaulting"
 		echo "to $tasks threads."
