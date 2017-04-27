@@ -401,40 +401,6 @@ if [ -n $mailto ] && [ -z $mailto ]; then
 	MailOpts="$mailto $mailTypes"
 fi
 
-# Addition Parallel Environment triggers and clauses
-if [ "x$peName" != "x" ]; then
-	# If threads are higher than most cores, set to most cores
-	if [ $peThreads -gt $totalThreads ]; then
-		peThreads=$totalThreads
-	fi
-
-	# Tasks determination
-	if [ -n $taskfile ] && [ "x$peThreads" != "x" ]; then
-		if [ $peThreads -gt $tasks ]; then
-		peThreads=$tasks
-		fi
-	fi
-
-	# Let Slurm figure out the number of nodes for MPI
-	if [[ $peName = "mpi" ]]; then
-		# Can possibly tie leastThreads systems above into this for future project
-
-		# Force Slurm to use one node for OpenMP
-	elif [[ $peName = "openmp" ]]; then
-		OMP_NUM_THREADS=$peThreads
-		export OMP_NUM_THREADS
-		peNodes="--nodes=1"
-
-		# Use for other systems (untested)
-	else
-		echo "$peName is not a valid PE."
-		exit -1
-	fi
-
-	# Set parallel environment options
-	peCmd="$peNodes --ntasks=$peThreads"
-fi
-
 #Count node details by creating array of all non-down nodes with unique identifiers
 nodeNames=($(scontrol show nodes -o | grep -v State=DOWN* | awk '{for(i=1;i<=NF;i++){if($i~/^NodeName/){print $i}}}' | cut -d '=' -f 2 | uniq))
 for name in ${nodeNames[*]}; do
@@ -461,6 +427,44 @@ for name in ${nodeNames[*]}; do
 		nodesWithLeastThreads=$(( $nodesWithLeastThreads + 1 ))
 	fi
 done
+
+# Addition Parallel Environment triggers and clauses
+if [ "x$peName" != "x" ]; then
+	# If threads are higher than most cores, set to most cores
+	if [ $peThreads -gt $totalThreads ]; then
+		peThreads=$totalThreads
+	fi
+
+	# Tasks determination
+	if [ -n $taskfile ] && [ "x$peThreads" != "x" ]; then
+		if [ $peThreads -gt $tasks ]; then
+		peThreads=$tasks
+		fi
+	fi
+
+	# Let Slurm figure out the number of nodes for MPI
+	if [[ $peName = "mpi" ]]; then
+		# Can possibly tie leastThreads systems above into this for future project
+		mpiNodes=$(( $peThreads / $leastThreads + 1))
+		if [ $mpiNodes -gt $nodesWithLeastThreads ]; then
+			mpiNodes = 6
+		fi
+		peNodes="--nodes=$mpiNodes"
+		# Force Slurm to use one node for OpenMP
+	elif [[ $peName = "openmp" ]]; then
+		OMP_NUM_THREADS=$peThreads
+		export OMP_NUM_THREADS
+		peNodes="--nodes=1"
+
+		# Use for other systems (untested)
+	else
+		echo "$peName is not a valid PE."
+		exit -1
+	fi
+
+	# Set parallel environment options
+	peCmd="$peNodes --ntasks=$peThreads"
+fi
 
 case $METHOD in
 
