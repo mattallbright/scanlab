@@ -260,7 +260,7 @@ mkdir -p ${subjdir}.bedpostX/logs/monitor
 mkdir -p ${subjdir}.bedpostX/xfms
 
 echo Queuing preprocessing stages
-preprocid=`${FSLDIR}/bin/fsl_sub -v -F -T 60 -N bpx_preproc -l ${subjdir}.bedpostX/logs /opt/cloud/staging/fsl/opt/bedpostx_preproc.sbatch ${subjdir} ${gflag} | grep -oP "Submitted batch job\s+\K\w+"`
+preprocid=`${FSLDIR}/bin/fsl_sub -v -F -T 60 -N bpx_preproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc.sh ${subjdir} ${gflag} | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $preprocid"
 
 echo Queuing parallel processing stage
@@ -294,7 +294,7 @@ bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid -l ${subjdir}.bedpostX/logs -N
 echo "Job submitted as job $bedpostid"
 
 echo Queuing post processing stage
-mergeid=`${FSLDIR}/bin/fsl_sub -v -F -j $bedpostid -T 60 -N bpx_postproc -l ${subjdir}.bedpostX/logs /opt/cloud/staging/fsl/opt/bin/bedpostx_postproc.sbatch $subjdir  | grep -oP "Submitted batch job\s+\K\w+"`
+mergeid=`${FSLDIR}/bin/fsl_sub -v -F -j $bedpostid -T 60 -N bpx_postproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc.sh $subjdir  | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $mergeid"
 
 echo $mergeid > ${subjdir}.bedpostX/logs/postproc_ID
