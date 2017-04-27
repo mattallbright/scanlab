@@ -91,13 +91,13 @@ export LC_ALL=C
 METHOD=SLURM
 unset module
 if [ "x$FSLPARALLEL" = "x" ] ; then
-	METHOD=NONE
+  METHOD=NONE
 else
-	SINFO=`which sinfo`
-	if [ "x$SINFO" = "x" ]; then
-		METHOD=NONE
-		echo "Warning: FSLPARALLEL environment variable is set but Slurm software not found, will run locally" >&2
-	fi
+  SINFO=`which sinfo`
+  if [ "x$SINFO" = "x" ]; then
+    METHOD=NONE
+    echo "Warning: FSLPARALLEL environment variable is set but Slurm software not found, will run locally" >&2
+  fi
 fi
 
 # stop submitted scripts from submitting jobs themselves
@@ -107,7 +107,7 @@ if [ "X$FSLSUBALREADYRUN" = "Xtrue" ] ; then
 fi
 
 if [ "X$METHOD" = "XNONE" ]; then
-	SINFO=echo
+  SINFO=echo
 fi
 FSLSUBALREADYRUN=true
 export FSLSUBALREADYRUN
@@ -124,18 +124,18 @@ export FSLSUBALREADYRUN
 
 map_qname ()
 {
-	if [ $1 -le 20 ] ; then
-		queue=veryshort.q
-	elif [ $1 -le 120 ] ; then
-		queue=short.q
-	elif [ $1 -le 1440 ] ; then
-		queue=long.q
-	else
-		queue=verylong.q
-	fi
-	timeEst=$1
-	queueCmd="--partition=$queue"
-	#echo "Estimated time was $1 mins: queue name is $queue"
+  if [ $1 -le 20 ] ; then
+    queue=veryshort.q
+  elif [ $1 -le 120 ] ; then
+    queue=short.q
+  elif [ $1 -le 1440 ] ; then
+    queue=long.q
+  else
+    queue=verylong.q
+  fi
+  timeEst=$1
+  queueCmd="--partition=$queue"
+  #echo "Estimated time was $1 mins: queue name is $queue"
 }
 
 ###########################################################################
@@ -183,9 +183,9 @@ $command -a x86_64 regscript rawdata outputdir ...
   -R                    Use inputs for applications through Slurm srun command.
   -v                    Verbose mode.
 
-	This is a modified version of FSL's fsl_sub that is compatible with the
-	Slurm workload manager. The above command line options work with SGE, but
-	they may not all work with Slurm. Testing is required.
+  This is a modified version of FSL's fsl_sub that is compatible with the
+  Slurm workload manager. The above command line options work with SGE, but
+  they may not all work with Slurm. Testing is required.
 
 Queues:
 
@@ -200,7 +200,7 @@ verylong.q: This queue is for jobs which will take longer than 24h CPU time.
             There is one slot per node, and jobs on this queue have a nice value
             of 15.
 gpu.q:      This queue is like the verylong.q but utilizes CUDA-based GPU
-						processing.
+            processing.
 
 EOF
 
@@ -286,54 +286,54 @@ while [ $1 != -- ] ; do
       if [ -e $2 -o `${FSLDIR}/bin/imtest $2` = 1 ] ; then
         exit 0
       fi
-			echo $2
+      echo $2
       shift;;
     -T)
-			map_qname $2
-			echo $2
-			shift;;
+      map_qname $2
+      echo $2
+      shift;;
     -q)
       queue=$2
       queueCmd="--partition=$queue"
       sinfo --hide --partition=$FSLGECUDAQ >/dev/null 2>&1
       if [ $? -eq 1 ]; then
-	  		echo "Invalid queue specified!"
-	  		exit 127
+        echo "Invalid queue specified!"
+        exit 127
       fi
       shift;;
     -a)
       acceptable_arch=no
-			available_archs=`scontrol show nodes -o | awk '{for(i=1;i<=NF;i++){if($i~/^Arch/){print $i}}}' | cut -d '=' -f 2 | uniq`
-			for a in $available_archs; do
-				if [ $2 = $a ] ; then
-					acceptable_arch=yes
-				fi
-			done
-			if [[ $acceptable_arch == "yes" ]]; then
-				slurm_arch="--constraint=$2"
-			else
-				echo "Sorry arch of $2 is not supported on this Slurm configuration!"
-				echo "Should be one of:" $available_archs
-				exit 127
-		  fi
+      available_archs=`scontrol show nodes -o | awk '{for(i=1;i<=NF;i++){if($i~/^Arch/){print $i}}}' | cut -d '=' -f 2 | uniq`
+      for a in $available_archs; do
+        if [ $2 = $a ] ; then
+          acceptable_arch=yes
+        fi
+      done
+      if [[ $acceptable_arch == "yes" ]]; then
+        slurm_arch="--constraint=$2"
+      else
+        echo "Sorry arch of $2 is not supported on this Slurm configuration!"
+        echo "Should be one of:" $available_archs
+        exit 127
+      fi
       shift;;
     -p)
-			slurm_priority="--priority=$2"
+      slurm_priority="--priority=$2"
       shift;;
     -j)
       jid=$2
-			slurm_hold="--dependency=afterok:$jid"
+      slurm_hold="--dependency=afterok:$jid"
       shift;;
     -t)
       taskfile=$2
       if [ -f "$taskfile" ] ; then
-	      tasks=`cat $taskfile | wc -l `
-				slurm_tasks="--array=1-$tasks"
-	      if [ $tasks -eq 0 ]; then
-    	    echo "Task file ${taskfile} is empty"
-    	    echo "Should be a text file listing all the commands to run!"
-    	    exit -1
-    	  fi
+        tasks=`cat $taskfile | wc -l `
+        slurm_tasks="--array=1-$tasks"
+        if [ $tasks -eq 0 ]; then
+          echo "Task file ${taskfile} is empty"
+          echo "Should be a text file listing all the commands to run!"
+          exit -1
+        fi
       else
           echo "Task file (${taskfile}) does not exist"
           exit -1
@@ -342,19 +342,19 @@ while [ $1 != -- ] ; do
     -N)
       JobName="--job-name=$2";
       shift;;
-		-M)
-			mailto="--mail-user=$2";
-			shift;;
+    -M)
+      mailto="--mail-user=$2";
+      shift;;
     -m)
-			if [ "x$mailto" != "x" ]; then
-      	mailTypes="--mail-type=$2";
-			else
-				echo "You failed to input a mail account!"
-				exit -1
-			fi
+      if [ "x$mailto" != "x" ]; then
+        mailTypes="--mail-type=$2";
+      else
+          echo "You failed to input a mail account!"
+        exit -1
+      fi
       shift;;
     -l)
-			logDir=$2
+      logDir=$2
       logOpts="--output=$logDir/%j.out";
       shift;;
     -F)
@@ -381,111 +381,111 @@ shift
 ###########################################################################
 
 if [ -z "$taskfile" ] && [ -z "$1" ]; then
-	echo "Either supply a command to run or a parallel task file"
-	exit -1
+  echo "Either supply a command to run or a parallel task file"
+  exit -1
 fi
 
 if [ -z "$taskfile" ] && [ ! -x "$1" ]; then
-	which $1 >/dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "The command you have requested cannot be found or is not executable"
-		exit -1
-	fi
+  which $1 >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    echo "The command you have requested cannot be found or is not executable"
+    exit -1
+  fi
 fi
 
 if [ "x$JobName" = x ] ; then
-	if [ "x$taskfile" != x ] ; then
-		JobName=`basename $taskfile`
-	else
-		JobName=`basename $1`
-	fi
+  if [ "x$taskfile" != x ] ; then
+    JobName=`basename $taskfile`
+  else
+    JobName=`basename $1`
+  fi
 fi
 
 if [ "x$tasks" != "x" ] && [ "x$@" != "x" ] ; then
-	echo "Spurious input after parsing command line: \"$@\"!"
-	echo "You appear to have specified both a task file and a command to run"
-	exit -1
+  echo "Spurious input after parsing command line: \"$@\"!"
+  echo "You appear to have specified both a task file and a command to run"
+  exit -1
 fi
 
 # Sets up array-specific log files
 if [ "x$logOpts" != "x" ] && [ -z "$taskfile" ]; then
-	logOpts="--output=$logDir/%A_%a.out"
+  logOpts="--output=$logDir/%A_%a.out"
 fi
 
 # Sets up default logs
 if [ "x$logOpts" = "x" ]; then
-	logOpts="--output=/data/var/jobs/%j.out"
+  logOpts="--output=/data/var/jobs/%j.out"
 fi
 
 # Sets up mail types
 if [ "x$mailto" != "x" ] && [ "x$mailTypes" = "x" ]; then
-	mailTypes="--mail-type=BEGIN,END,FAIL"
-	MailOpts="$mailto $mailTypes"
+  mailTypes="--mail-type=BEGIN,END,FAIL"
+  MailOpts="$mailto $mailTypes"
 fi
 
 #Count node details by creating array of all non-down nodes with unique identifiers
 nodeNames=($(scontrol show nodes -o | grep -v State=DOWN* | awk '{for(i=1;i<=NF;i++){if($i~/^NodeName/){print $i}}}' | cut -d '=' -f 2 | uniq))
 for name in ${nodeNames[*]}; do
-	totalThreads=`scontrol show node $name -o | awk '{for(i=1;i<=NF;i++){if($i~/^CPUTot/){print $i}}}' | cut -d '=' -f 2`
-	#Set first node as baseline for most/least cores available per node (unused)
-	if [ "$name" = ${nodeNames[0]} ]; then
-		mostThreads=$nodeThreads
-		mostThreadsName=${name}
-		leastThreads=$nodeThreads
-		leastThreadsName=${name}
-	fi
-	#Determine most and least cores in cluster (unused)
-	if [[ $nodeThreads -gt $mostThreads ]]; then
-		mostThreads=$nodeThreads
-		mostThreadsName=${name}
-	fi
-	if [[ $nodeThreads -lt $leastThreads ]]; then
-		leastThreads=$nodeThreads
-		leastThreadsName=${name}
-		nodesWithLeastThreads=0
-	fi
-	#Determine number of nodes with least cores (unused)
-	if [[ $nodeThreads -eq $leastThreads ]]; then
-		nodesWithLeastThreads=$(( $nodesWithLeastThreads + 1 ))
-	fi
+  totalThreads=`scontrol show node $name -o | awk '{for(i=1;i<=NF;i++){if($i~/^CPUTot/){print $i}}}' | cut -d '=' -f 2`
+  #Set first node as baseline for most/least cores available per node (unused)
+  if [ "$name" = ${nodeNames[0]} ]; then
+    mostThreads=$nodeThreads
+    mostThreadsName=${name}
+    leastThreads=$nodeThreads
+    leastThreadsName=${name}
+  fi
+  #Determine most and least cores in cluster (unused)
+  if [[ $nodeThreads -gt $mostThreads ]]; then
+    mostThreads=$nodeThreads
+    mostThreadsName=${name}
+  fi
+  if [[ $nodeThreads -lt $leastThreads ]]; then
+    leastThreads=$nodeThreads
+    leastThreadsName=${name}
+    nodesWithLeastThreads=0
+  fi
+  #Determine number of nodes with least cores (unused)
+  if [[ $nodeThreads -eq $leastThreads ]]; then
+    nodesWithLeastThreads=$(( $nodesWithLeastThreads + 1 ))
+  fi
 done
 
 # Addition Parallel Environment triggers and clauses
 if [ "x$peName" != "x" ]; then
-	# If threads are higher than most cores, set to most cores
-	if [ $peThreads -gt $totalThreads ]; then
-		peThreads=$totalThreads
-	fi
+  # If threads are higher than most cores, set to most cores
+  if [ $peThreads -gt $totalThreads ]; then
+    peThreads=$totalThreads
+  fi
 
-	# Tasks determination
-	if [ -n $taskfile ] && [ "x$peThreads" != "x" ]; then
-		if [ $peThreads -gt $tasks ]; then
-		peThreads=$tasks
-		fi
-	fi
+  # Tasks determination
+  if [ -n $taskfile ] && [ "x$peThreads" != "x" ]; then
+    if [ $peThreads -gt $tasks ]; then
+    peThreads=$tasks
+    fi
+  fi
 
-	# Let Slurm figure out the number of nodes for MPI
-	if [[ $peName = "mpi" ]]; then
-		# Can possibly tie leastThreads systems above into this for future project
-		mpiNodes=$(( $peThreads / $leastThreads + 1))
-		if [ $mpiNodes -gt $nodesWithLeastThreads ]; then
-			mpiNodes = 6
-		fi
-		peNodes="--nodes=$mpiNodes"
-		# Force Slurm to use one node for OpenMP
-	elif [[ $peName = "openmp" ]]; then
-		OMP_NUM_THREADS=$peThreads
-		export OMP_NUM_THREADS
-		peNodes="--nodes=1"
+  # Let Slurm figure out the number of nodes for MPI
+  if [[ $peName = "mpi" ]]; then
+    # Can possibly tie leastThreads systems above into this for future project
+    mpiNodes=$(( $peThreads / $leastThreads + 1))
+    if [ $mpiNodes -gt $nodesWithLeastThreads ]; then
+      mpiNodes = 6
+    fi
+    peNodes="--nodes=$mpiNodes"
+    # Force Slurm to use one node for OpenMP
+  elif [[ $peName = "openmp" ]]; then
+    OMP_NUM_THREADS=$peThreads
+    export OMP_NUM_THREADS
+    peNodes="--nodes=1"
 
-		# Use for other systems (untested)
-	else
-		echo "$peName is not a valid PE."
-		exit -1
-	fi
+    # Use for other systems (untested)
+  else
+    echo "$peName is not a valid PE."
+    exit -1
+  fi
 
-	# Set parallel environment options
-	peCmd="$peNodes --ntasks=$peThreads"
+  # Set parallel environment options
+  peCmd="$peNodes --ntasks=$peThreads"
 fi
 
 case $METHOD in
@@ -502,49 +502,49 @@ case $METHOD in
        # Test Parallel environment options
        ###########################################################################
 
-			 # Non-tasks statement (means single srun/sbatch job)
-			 if [ "x$tasks" = "x" ] ; then
-				 if [ $scriptmode -eq 1 ] ; then
-					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority --wrap=\"$@\""
-					 # non-used options:
-					 # all used currently
-				 elif [ $scriptmode -eq 2 ] ; then
-				 	 slurm_command="srun --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@\""
-				 else
-					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@"\"
-				 fi
-				 # Verbose clause
-				 if [ $verbose -eq 1 ] ; then
-					 echo slurm_command: $slurm_command >&2
-					 echo executing: $@ >&2
-				 fi
-				 exec $slurm_command $@
-				 sleep 2
-			 # Tasks statement (means multiple srun/sbatch jobs)
-			 else
-				 if [ $scriptmode -eq 2 ] ; then
-					 slurm_command="srun --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
-				 else
-					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
-				 fi
-				 # Verbose clause for tasks system
-				 if [ $verbose -eq 1 ] ; then
-					 echo slurm_command: $slurm_command >&2
-					 echo executing: $@ >&2
-					 echo control file: $taskfile >&2
-				 fi
-				 # Here bash will pipe in everything after EOF to slurm_command, executing tasks one by one
-				 exec $slurm_command <<EOF
+       # Non-tasks statement (means single srun/sbatch job)
+       if [ "x$tasks" = "x" ] ; then
+         if [ $scriptmode -eq 1 ] ; then
+           slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority --wrap=\"$@\""
+           # non-used options:
+           # all used currently
+         elif [ $scriptmode -eq 2 ] ; then
+            slurm_command="srun --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@\""
+         else
+           slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@"\"
+         fi
+         # Verbose clause
+         if [ $verbose -eq 1 ] ; then
+           echo slurm_command: $slurm_command >&2
+           echo executing: $@ >&2
+         fi
+         exec $slurm_command $@
+         sleep 2
+       # Tasks statement (means multiple srun/sbatch jobs)
+       else
+         if [ $scriptmode -eq 2 ] ; then
+           slurm_command="srun --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
+         else
+           slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority $slurm_tasks"
+         fi
+         # Verbose clause for tasks system
+         if [ $verbose -eq 1 ] ; then
+           echo slurm_command: $slurm_command >&2
+           echo executing: $@ >&2
+           echo control file: $taskfile >&2
+         fi
+         # Here bash will pipe in everything after EOF to slurm_command, executing tasks one by one
+         exec $slurm_command <<EOF
 #!/bin/bash
 command=\`cat "$taskfile" | head -\$SLURM_ARRAY_TASK_ID | tail -1\`
 exec \$command
 EOF
-				# Chill for a bit
-				sleep 2
-				fi
-				# Opens terminal that watches output of file.
-				x-terminal-emulator -e 'tail -F "$logOpts"'/$%j.out
-	;;
+        # Chill for a bit
+        sleep 2
+         fi
+        # Opens terminal that watches output of file.
+        x-terminal-emulator -e 'tail -F "$logOpts"'/$%j.out
+  ;;
 
 ###########################################################################
 # Don't change the following - this runs the commands directly if a
@@ -552,38 +552,38 @@ EOF
 ###########################################################################
 
     NONE)
-		if [ "x$tasks" = "x" ] ; then
-			if [ $verbose -eq 1 ] ; then
-				echo executing: $@ >&2
-			fi
+    if [ "x$tasks" = "x" ] ; then
+      if [ $verbose -eq 1 ] ; then
+        echo executing: $@ >&2
+      fi
 
-			/bin/sh <<EOF1 > ${LogDir}${JobName}.o$$ 2> ${LogDir}${JobName}.e$$
+      /bin/sh <<EOF1 > ${LogDir}${JobName}.o$$ 2> ${LogDir}${JobName}.e$$
 $@
 EOF1
-			ERR=$?
-			if [ $ERR -ne 0 ] ; then
-				cat ${LogDir}${JobName}.e$$ >&2
-				exit $ERR
-			fi
-		else
-			if [ $verbose -eq 1 ] ; then
-				echo "Running commands in: $taskfile" >&2
-			fi
+      ERR=$?
+      if [ $ERR -ne 0 ] ; then
+        cat ${LogDir}${JobName}.e$$ >&2
+        exit $ERR
+      fi
+    else
+      if [ $verbose -eq 1 ] ; then
+        echo "Running commands in: $taskfile" >&2
+      fi
 
-			n=1
-			while [ $n -le $tasks ] ; do
-				line=`sed -n -e ''${n}'p' $taskfile`
-				if [ $verbose -eq 1 ] ; then
-					echo executing: $line >&2
-				fi
-				/bin/sh <<EOF2 > ${LogDir}${JobName}.o$$.$n 2> ${LogDir}${JobName}.e$$.$n
+      n=1
+      while [ $n -le $tasks ] ; do
+        line=`sed -n -e ''${n}'p' $taskfile`
+        if [ $verbose -eq 1 ] ; then
+          echo executing: $line >&2
+        fi
+        /bin/sh <<EOF2 > ${LogDir}${JobName}.o$$.$n 2> ${LogDir}${JobName}.e$$.$n
 $line
 EOF2
-				n=`expr $n + 1`
-			done
-		fi
-		echo $$
-		;;
+        n=`expr $n + 1`
+      done
+    fi
+    echo $$
+    ;;
 
 esac
 
