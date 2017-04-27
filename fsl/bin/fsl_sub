@@ -487,7 +487,7 @@ case $METHOD in
 					 # non-used options:
 					 # all used currently
 				 else
-					 slurm_command="sbatch -get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@"\"
+					 slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority ""$@"\"
 				 fi
 				 # Verbose clause
 				 if [ $verbose -eq 1 ] ; then
