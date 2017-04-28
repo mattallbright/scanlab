@@ -328,7 +328,6 @@ fi
 
 part=0
 # Test command
-echo `hostname` \
 echo `id` \
 >> ${subjdir}.bedpostX/commands.txt
 while [ $part -lt $njobs ]
