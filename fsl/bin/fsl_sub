@@ -486,7 +486,7 @@ if [ "x$peName" != "x" ]; then
   peCmd="$peNodes --ntasks=$peThreads"
 fi
 
-if [ queue = "gpu.q" ];then
+if [ $queue = "gpu.q" ];then
   queueCmd="--partition=gpu.q --gres=gpu:1"
 fi
 case $METHOD in
