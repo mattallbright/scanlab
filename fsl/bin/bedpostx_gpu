@@ -124,7 +124,8 @@ else
 fi
 
 echo
-echo "----- Bedpostx Monitor -----"
+echo "------ Bedpostx GPU Monitor ------"
+echo "--- Possibly Not Good Edition ---"
 finished=0
 lastprinted=0
 havedad=2
@@ -326,6 +327,10 @@ if [ "x$FSLPARALLEL" = "x" ]; then
 fi
 
 part=0
+# Test command
+echo `hostname` \
+echo `id` \
+>> ${subjdir}.bedpostX/commands.txt
 while [ $part -lt $njobs ]
 do
   partzp=`$FSLDIR/bin/zeropad $part 4`
