@@ -1,21 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 #   Copyright (C) 2012 University of Oxford
 #
 #   Part of FSL - FMRIB's Software Library
 #   http://www.fmrib.ox.ac.uk/fsl
 #   fsl@fmrib.ox.ac.uk
 #
-#   Edits by Matt Allbright
-#   https://github.com/mattallbright
-#   allbrigh@psychiatry.arizona.edu
-#
 #   Developed at FMRIB (Oxford Centre for Functional Magnetic Resonance
 #   Imaging of the Brain), Department of Clinical Neurology, Oxford
 #   University, Oxford, UK
 #
-#   Modified at the SCAN Lab (Social, Cognitive, and Affective Neuroscience
-#   Laboratory), Department of Psychiatry, University of Arizona, Tucson,
-#   Arizona
 #
 #   LICENCE
 #
@@ -70,27 +63,21 @@
 #   University, to negotiate a licence. Contact details are:
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
 export LC_ALL=C
+
 subjdir=$1
-gflag=$2
+slice=$2
+shift
+shift
+opts=$*
 
 echo "subjdir is $subjdir"
 
-echo Copying files to bedpost directory
-cp ${subjdir}/bvecs ${subjdir}/bvals ${subjdir}.bedpostX
-${FSLDIR}/bin/imcp ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX
+slicezp=`${FSLDIR}/bin/zeropad $slice 4`
 
-if [ `${FSLDIR}/bin/imtest ${subjdir}/nodif` = 1 ] ; then
-    echo "Running fslmaths on $subjdir/nodif"
-    ${FSLDIR}/bin/fslmaths ${subjdir}/nodif -mas ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX/nodif_brain
-fi
-
-echo "Running fslslice on $subjdir/data"
-${FSLDIR}/bin/fslslice ${subjdir}/data
-echo "Running fslslice on $subjdir/nodif_brain_mask"
-${FSLDIR}/bin/fslslice ${subjdir}/nodif_brain_mask
-if [ ${gflag} = 1 ]; then
-    echo "Running fslslice on $subjdir/grad_dev"
-    ${FSLDIR}/bin/fslslice ${subjdir}/grad_dev
-fi
-
-echo Done
+echo "Running xfibres for slice $slice"
+${FSLDIR}/bin/xfibres\
+ --data=$subjdir/data_slice_$slicezp\
+ --mask=$subjdir/nodif_brain_mask_slice_$slicezp\
+ -b $subjdir/bvals -r $subjdir/bvecs\
+ --forcedir --logdir=$subjdir.bedpostX/diff_slices/data_slice_$slicezp \
+ $opts  > $subjdir.bedpostX/logs/log$slicezp  && echo Done && touch $subjdir.bedpostX/logs/monitor/$slice

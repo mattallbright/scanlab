@@ -101,37 +101,45 @@ do
 done
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/mean_f1samples` = 1 ];then
-    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f1samples -mul 0 ${subjdir}.bedpostX/mean_fsumsamples
-    fib=1
-    while [ $fib -le $numfib ]
-    do
-	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_fsumsamples -add ${subjdir}.bedpostX/mean_f${fib}samples ${subjdir}.bedpostX/mean_fsumsamples
-	fib=$(($fib + 1))
-    done
+  echo "Running fslmaths on f1samples"
+  ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_f1samples -mul 0 ${subjdir}.bedpostX/mean_fsumsamples
+  fib=1
+  while [ $fib -le $numfib ]
+  do
+    echo "Running fslmaths on fsumsamples"
+    ${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/mean_fsumsamples -add ${subjdir}.bedpostX/mean_f${fib}samples ${subjdir}.bedpostX/mean_fsumsamples
+    fib=$(($fib + 1))
+  done
 fi
 
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/mean_dsamples` = 1 ];then
+    echo "Running fslmerge on dsamples"
     ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/mean_dsamples  `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/mean_dsamples*`
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/mean_d_stdsamples` = 1 ];then
+    echo "Running fslmerge on d_stdsamples"
     ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/mean_d_stdsamples  `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/mean_d_stdsamples*`
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/mean_Rsamples` = 1 ];then
+    echo "Running fslmerge on Rsamples"
     ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/mean_Rsamples  `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/mean_Rsamples*`
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/mean_f0samples` = 1 ];then
+    echo "Running fslmerge on f0samples"
     ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/mean_f0samples  `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/mean_f0samples*`
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/mean_S0samples` = 1 ];then
+    echo "Running fslmerge on S0samples"
     ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/mean_S0samples  `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/mean_S0samples*`
 fi
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/mean_tausamples` = 1 ];then
+    echo "Running fslmerge on tausamples"
     ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/mean_tausamples  `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/mean_tausamples*`
 fi
 
