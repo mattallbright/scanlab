@@ -71,7 +71,7 @@
 #   University, to negotiate a licence. Contact details are:
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
 
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${FSLDIR}/lib
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${FSLDIR}/lib:/usr/local/cuda/lib64
 
 Usage() {
     echo "bedpostx_gpu (SCANLab V0.1a) - Possibly Very Broken Edition"
