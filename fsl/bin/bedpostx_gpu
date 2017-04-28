@@ -197,6 +197,7 @@ echo subjectdir is $subjdir
 
 #parse option arguments
 qsys=0
+queue="$FSLGECUDAQ"
 njobs=4
 nfibres=3
 fudge=1
@@ -206,7 +207,9 @@ sampleevery=25
 model=2
 gflag=0
 other=""
-queue=""
+if [ "x$SGE_ROOT" = "x" ]; then
+	queue=''
+fi
 
 shift
 while [ ! -z "$1" ]
@@ -295,7 +298,9 @@ echo Making bedpostx directory structure
 mkdir -p ${subjdir}.bedpostX/
 mkdir -p ${subjdir}.bedpostX/diff_parts
 mkdir -p ${subjdir}.bedpostX/logs
+mkdir -p ${subjdir}.bedpostX/logs/logs_gpu
 mkdir -p ${subjdir}.bedpostX/logs/monitor
+rm -f ${subjdir}.bedpostX/logs/monitor/*
 mkdir -p ${subjdir}.bedpostX/xfms
 
 echo Copying files to bedpost directory
