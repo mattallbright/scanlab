@@ -327,9 +327,6 @@ if [ "x$FSLPARALLEL" = "x" ]; then
 fi
 
 part=0
-# Test command
-echo `id` \
->> ${subjdir}.bedpostX/commands.txt
 while [ $part -lt $njobs ]
 do
   partzp=`$FSLDIR/bin/zeropad $part 4`
