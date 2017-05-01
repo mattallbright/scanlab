@@ -79,11 +79,8 @@ shift
 shift
 opts=$*
 
-numfib=`${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_0000/f*samples* | wc -w | awk '{print $1}'`
-
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/f0samples` = 1 ];then
-    numfib=$(($numfib - 1))
-fi
+#This is based on the parsed info from bedpostx_gpu. I'll add an option for it later.
+numfib=3
 
 echo "subjdir is $subjdir"
 
