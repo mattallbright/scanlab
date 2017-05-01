@@ -298,7 +298,7 @@ fi
 echo Making bedpostx directory structure
 
 mkdir -p ${subjdir}.bedpostX/
-mkdir -p ${subjdir}.bedpostX/diff_parts
+mkdir -p ${subjdir}.bedpostX/diff_slices
 mkdir -p ${subjdir}.bedpostX/logs
 mkdir -p ${subjdir}.bedpostX/logs/logs_gpu
 mkdir -p ${subjdir}.bedpostX/logs/monitor
