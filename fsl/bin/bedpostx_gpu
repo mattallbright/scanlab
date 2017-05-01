@@ -311,31 +311,31 @@ echo Queuing preprocessing stages
 preprocid=`${FSLDIR}/bin/fsl_sub -v -F $queue -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc_gpu.sh ${subjdir} ${gflag} $njobs | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $preprocid"
 
-# nvox=`${FSLDIR}/bin/fslstats $subjdir/nodif_brain_mask -V  | cut -d ' ' -f1 `
-# echo Queuing parallel processing stage
-# [ -f ${subjdir}.bedpostX/commands.txt ] && rm ${subjdir}.bedpostX/commands.txt
-#
-# monitor
-# if [ "x$FSLPARALLEL" = "x" ]; then
-#     ${subjdir}.bedpostX/monitor&
-# fi
-#
-# part=0
-# while [ $part -lt $njobs ]
-# do
-#   partzp=`$FSLDIR/bin/zeropad $part 4`
-#   if [ ${gflag} -eq 1 ]; then
-#     gopts="$opts --gradnonlin=${subjdir}.bedpostX/grad_dev_$part"
-#   else
-#     gopts=$opts
-#   fi
-#   echo "${FSLDIR}/bin/bedpostx_single_part_gpu.sh ${subjdir} ${part} $njobs $nvox $gopts" \
-#   >> ${subjdir}.bedpostX/commands.txt
-#   part=$(($part + 1))
-# done
-# bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
-# echo "Job submitted as job $bedpostid"
-#
+nvox=`${FSLDIR}/bin/fslstats $subjdir/nodif_brain_mask -V  | cut -d ' ' -f1 `
+echo Queuing parallel processing stage
+[ -f ${subjdir}.bedpostX/commands.txt ] && rm ${subjdir}.bedpostX/commands.txt
+
+monitor
+if [ "x$FSLPARALLEL" = "x" ]; then
+    ${subjdir}.bedpostX/monitor&
+fi
+
+part=0
+while [ $part -lt $njobs ]
+do
+  partzp=`$FSLDIR/bin/zeropad $part 4`
+  if [ ${gflag} -eq 1 ]; then
+    gopts="$opts --gradnonlin=${subjdir}.bedpostX/grad_dev_$part"
+  else
+    gopts=$opts
+  fi
+  echo "${FSLDIR}/bin/bedpostx_single_part_gpu.sh ${subjdir} ${part} $njobs $nvox $gopts" \
+  >> ${subjdir}.bedpostX/commands.txt
+  part=$(($part + 1))
+done
+bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
+echo "Job submitted as job $bedpostid"
+
 # echo Queuing post processing stage
 # mergeid=`${FSLDIR}/bin/fsl_sub -v -F -j $bedpostid $queue -N bpx_postproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR} | grep -oP "Submitted batch job\s+\K\w+"`
 # echo "Job submitted as job $mergeid"
