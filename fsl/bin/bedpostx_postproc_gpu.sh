@@ -71,20 +71,19 @@
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
 export LC_ALL=C
 
-subjdir=$1
-njobs=$2
-nvox=$3
-shift
-shift
-shift
-opts=$*
+parameters=""
+while [ ! -z "$2" ]
+do
+	if [[ $1 =~ "--nf=" ]]; then
+    		numfib=`echo $1 | cut -d '=' -f2`
+	fi
+ 	all=$all" "$1
+	subjdir=$1
+	shift
+done
+bindir=$1
 
-#This is based on the parsed info from bedpostx_gpu. I'll add an option for it later.
-numfib=3
-
-echo "subjdir is $subjdir"
-
-${FSLDIR}/bin/merge_parts_gpu --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}
+$bindir/bin/merge_parts_gpu $all
 
 fib=1
 while [ $fib -le $numfib ]
