@@ -308,7 +308,7 @@ echo Queuing preprocessing stages
 preprocid=`${FSLDIR}/bin/fsl_sub -v -F -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc_gpu.sh ${subjdir} ${gflag} $njobs | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $preprocid"
 
-nvox=`${FSLDIR}/bin/fslstats $subjdir.bedpostX/nodif_brain_mask -V  | cut -d ' ' -f1 `
+nvox=`${FSLDIR}/bin/fslstats $subjdir/nodif_brain_mask -V  | cut -d ' ' -f1 `
 echo Queuing parallel processing stage
 nslices=`${FSLDIR}/bin/fslval ${subjdir}/data dim3`
 [ -f ${subjdir}.bedpostX/commands.txt ] && rm ${subjdir}.bedpostX/commands.txt
