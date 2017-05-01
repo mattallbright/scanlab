@@ -79,15 +79,11 @@ shift
 shift
 opts=$*
 
-parameters=""
-while [ ! -z "$2" ]
-do
-	if [[ $1 =~ "--nf=" ]]; then
-    		numfib=`echo $1 | cut -d '=' -f2`
-	fi
- 	all=$all" "$1
-	shift
-done
+numfib=`${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_0000/f*samples* | wc -w | awk '{print $1}'`
+
+if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/f0samples` = 1 ];then
+    numfib=$(($numfib - 1))
+fi
 
 echo "subjdir is $subjdir"
 
