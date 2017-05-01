@@ -301,12 +301,12 @@ do
 done
 bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid -l ${subjdir}.bedpostX/logs -N bedpostx -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $bedpostid"
-#
-# echo Queuing post processing stage
-# mergeid=`${FSLDIR}/bin/fsl_sub -v -F -j $bedpostid -T 60 -N bpx_postproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc.sh $subjdir | grep -oP "Submitted batch job\s+\K\w+"`
-# echo "Job submitted as job $mergeid"
-#
-# echo $mergeid > ${subjdir}.bedpostX/logs/$mergeid.out
+
+echo Queuing post processing stage
+mergeid=`${FSLDIR}/bin/fsl_sub -v -F -j $bedpostid -T 60 -N bpx_postproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc.sh $subjdir | grep -oP "Submitted batch job\s+\K\w+"`
+echo "Job submitted as job $mergeid"
+
+echo $mergeid > ${subjdir}.bedpostX/logs/$mergeid.out
 
 if [ "x$FSLPARALLEL" != "x" ]; then
     echo
