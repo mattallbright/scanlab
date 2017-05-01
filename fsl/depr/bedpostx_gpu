@@ -304,13 +304,26 @@ mkdir -p ${subjdir}.bedpostX/logs/logs_gpu
 mkdir -p ${subjdir}.bedpostX/logs/monitor
 mkdir -p ${subjdir}.bedpostX/xfms
 
+echo Copying files to bedpost directory
+
+cp ${subjdir}/bvecs ${subjdir}/bvals ${subjdir}.bedpostX
+${FSLDIR}/bin/imcp ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX
+if [ `${FSLDIR}/bin/imtest ${subjdir}/nodif` = 1 ] ; then
+    ${FSLDIR}/bin/fslmaths ${subjdir}/nodif -mas ${subjdir}/nodif_brain_mask ${subjdir}.bedpostX/nodif_brain
+fi
+
+# Split the dataset in parts
 echo Queuing preprocessing stages
-preprocid=`${FSLDIR}/bin/fsl_sub -v -F -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc_gpu.sh ${subjdir} ${gflag} $njobs | grep -oP "Submitted batch job\s+\K\w+"`
+if [ ${gflag} -eq 1 ]; then
+  gflag_script="/opt/cloud/staging/fsl/opt/split_parts.sbatch ${FSLDIR} ${subjdir} $njobs"
+else
+  gflag_script="/opt/cloud/staging/fsl/opt/split_parts_null.sbatch ${FSLDIR} ${subjdir} $njobs"
+fi
+preprocid=`${FSLDIR}/bin/fsl_sub -v -F $queue -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs $gflag_script | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $preprocid"
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir.bedpostX/nodif_brain_mask -V  | cut -d ' ' -f1 `
 echo Queuing parallel processing stage
-nslices=`${FSLDIR}/bin/fslval ${subjdir}/data dim3`
 [ -f ${subjdir}.bedpostX/commands.txt ] && rm ${subjdir}.bedpostX/commands.txt
 
 monitor
@@ -318,29 +331,25 @@ if [ "x$FSLPARALLEL" = "x" ]; then
     ${subjdir}.bedpostX/monitor&
 fi
 
-slice=0
-while [ $slice -lt $nslices ]
+part=0
+while [ $part -lt $njobs ]
 do
-  slicezp=`$FSLDIR/bin/zeropad $slice 4`
-  if [ `$FSLDIR/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_$slicezp/dyads1` -eq 1 ] && [ -f ${subjdir}.bedpostX/logs/monitor/$slice ];then
-    echo "slice $slice has already been processed"
+  partzp=`$FSLDIR/bin/zeropad $part 4`
+  if [ ${gflag} -eq 1 ]; then
+    gopts="$opts --gradnonlin=${subjdir}.bedpostX/grad_dev_$part"
   else
-    [ -f ${subjdir}.bedpostX/logs/monitor/$slice ] && rm ${subjdir}.bedpostX/logs/monitor/$slice
-    if [ ${gflag} -eq 1 ]; then
-      gopts="$opts --gradnonlin=${subjdir}.bedpostX/grad_dev_slice_${slicezp}"
-    else
-      gopts=$opts
-    fi
-    echo "${FSLDIR}/bin/bedpostx_single_slice_gpu.sh ${subjdir} ${slice} $njobs $nvox $gopts" \
-    >> ${subjdir}.bedpostX/commands.txt
+    gopts=$opts
   fi
-  slice=$(($slice + 1))
+  echo "${FSLDIR}/bin/xfibres_gpu --data=${subjdir}.bedpostX/data_$part --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts/data_part_$partzp $gopts ${subjdir} $part $njobs $nvox" \
+  >> ${subjdir}.bedpostX/commands.txt
+  part=$(($part + 1))
 done
-bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
+bedpostid=`${FSLDIR}/bin/fsl_sub -v $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -j $preprocid -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $bedpostid"
 
 echo Queuing post processing stage
-mergeid=`${FSLDIR}/bin/fsl_sub -v -F -j $bedpostid $queue -N bpx_postproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc_gpu.sh $subjdir $njobs $nvox $gopts | grep -oP "Submitted batch job\s+\K\w+"`
+post_command="${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}"
+mergeid=`${FSLDIR}/bin/fsl_sub -v -F $queue -j $bedpostid -N bpx_postproc_gpu -l ${subjdir}.bedpostX/logs $post_command | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $mergeid"
 
 echo $mergeid > ${subjdir}.bedpostX/logs/$mergeid.out
