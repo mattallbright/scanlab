@@ -75,9 +75,13 @@ subjdir=$1
 echo "subjdir is $subjdir"
 
 numfib=`${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_0000/f*samples* | wc -w | awk '{print $1}'`
+echo "Running imglob"
+echo $numfib
 
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/f0samples` = 1 ];then
+    echo "Running imtest"
     numfib=$(($numfib - 1))
+    echo $numfib
 fi
 
 fib=1

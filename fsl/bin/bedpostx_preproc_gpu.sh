@@ -88,10 +88,10 @@ fi
 echo "Preparing splt_parts_gpu with options"
 if [ ${gflag} = 1 ]; then
   echo "Running split_parts_gpu on $subjdir with grad_dev"
-  ${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask ${subjdir}/bvals ${subjdir}/bvecs ${subjdir}/grad_dev 1 ${njobs} ${subjdir}.bedpostX
+  ${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask ${subjdir}/bvals ${subjdir}/bvecs ${subjdir}/grad_dev 1 ${njobs} ${subjdir}
 else
   echo "Running split_parts_gpu on $subjdir without grad_dev"
-  ${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask ${subjdir}/bvals ${subjdir}/bvecs NULL 0 ${njobs} ${subjdir}.bedpostX
+  ${FSLDIR}/bin/split_parts_gpu ${subjdir}/data ${subjdir}/nodif_brain_mask ${subjdir}/bvals ${subjdir}/bvecs NULL 0 ${njobs} ${subjdir}
 fi
 
 echo Done

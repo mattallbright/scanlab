@@ -83,8 +83,8 @@ partzp=`${FSLDIR}/bin/zeropad $part 4`
 
 echo "Running xfibres_gpu for part $part"
 ${FSLDIR}/bin/xfibres_gpu\
- --data=${subjdir}.bedpostX/data_$part\
+ --data=${subjdir}/data_$part\
  --mask=$subjdir/nodif_brain_mask\
  -b $subjdir/bvals -r $subjdir/bvecs\
  --forcedir --logdir=$subjdir.bedpostX/diff_parts/data_part_$partzp \
- $opts ${subjdir} $part $njobs $nvox > $subjdir.bedpostX/logs/log$slicezp  && echo Done && touch $subjdir.bedpostX/logs/monitor/$slice
+ $opts ${subjdir} $part $njobs $nvox > $subjdir.bedpostX/logs/log$partzp  && echo Done && touch $subjdir.bedpostX/logs/monitor/$part
