@@ -68,7 +68,7 @@ export LC_ALL=C
 # "${FSLDIR}/bin/xfibres_gpu --data=${subjdir}.bedpostX/data_$part --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts/data_part_$partzp $gopts ${subjdir} $part $njobs $nvox" \
 
 subjdir=$1
-slice=$2
+part=$2
 njobs=$3
 nvox=$4
 shift
@@ -79,12 +79,12 @@ opts=$*
 
 echo "subjdir is $subjdir"
 
-slicezp=`${FSLDIR}/bin/zeropad $slice 4`
+partzp=`${FSLDIR}/bin/zeropad $part 4`
 
-echo "Running xfibres_gpu for slice $slice"
+echo "Running xfibres_gpu for part $part"
 ${FSLDIR}/bin/xfibres_gpu\
- --data=${subjdir}.bedpostX/data_$slicezp\
- --mask=$subjdir/nodif_brain_mask_slice_$slicezp\
+ --data=${subjdir}.bedpostX/data_$part\
+ --mask=$subjdir/nodif_brain_mask\
  -b $subjdir/bvals -r $subjdir/bvecs\
- --forcedir --logdir=$subjdir.bedpostX/diff_slices/data_slice_$slicezp \
- $opts ${subjdir} $slice $njobs $nvox > $subjdir.bedpostX/logs/log$slicezp  && echo Done && touch $subjdir.bedpostX/logs/monitor/$slice
+ --forcedir --logdir=$subjdir.bedpostX/diff_parts/data_part_$partzp \
+ $opts ${subjdir} $part $njobs $nvox > $subjdir.bedpostX/logs/log$slicezp  && echo Done && touch $subjdir.bedpostX/logs/monitor/$slice

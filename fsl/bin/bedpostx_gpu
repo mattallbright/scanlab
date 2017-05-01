@@ -242,6 +242,9 @@ if [ -n "$FSLGECUDAQ" ]; then
 	if [ $? -eq 0 ]; then
 		echo "Found CUDA queue."
     queue="-q $FSLGECUDAQ"
+  else
+    echo "No CUDA queue found. Exiting..."
+    exit -1
 	fi
 fi
 
@@ -298,7 +301,7 @@ fi
 echo Making bedpostx directory structure
 
 mkdir -p ${subjdir}.bedpostX/
-mkdir -p ${subjdir}.bedpostX/diff_slices
+mkdir -p ${subjdir}.bedpostX/diff_parts
 mkdir -p ${subjdir}.bedpostX/logs
 mkdir -p ${subjdir}.bedpostX/logs/logs_gpu
 mkdir -p ${subjdir}.bedpostX/logs/monitor
@@ -310,7 +313,6 @@ echo "Job submitted as job $preprocid"
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir/nodif_brain_mask -V  | cut -d ' ' -f1 `
 echo Queuing parallel processing stage
-nslices=`${FSLDIR}/bin/fslval ${subjdir}/data dim3`
 [ -f ${subjdir}.bedpostX/commands.txt ] && rm ${subjdir}.bedpostX/commands.txt
 
 monitor
@@ -318,23 +320,18 @@ if [ "x$FSLPARALLEL" = "x" ]; then
     ${subjdir}.bedpostX/monitor&
 fi
 
-slice=0
-while [ $slice -lt $nslices ]
+part=0
+while [ $part -lt $njobs ]
 do
-  slicezp=`$FSLDIR/bin/zeropad $slice 4`
-  if [ `$FSLDIR/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_$slicezp/dyads1` -eq 1 ] && [ -f ${subjdir}.bedpostX/logs/monitor/$slice ];then
-    echo "slice $slice has already been processed"
+  partzp=`$FSLDIR/bin/zeropad $part 4`
+  if [ ${gflag} -eq 1 ]; then
+    gopts="$opts --gradnonlin=${subjdir}.bedpostX/grad_dev_$part"
   else
-    [ -f ${subjdir}.bedpostX/logs/monitor/$slice ] && rm ${subjdir}.bedpostX/logs/monitor/$slice
-    if [ ${gflag} -eq 1 ]; then
-      gopts="$opts --gradnonlin=${subjdir}.bedpostX/grad_dev_slice_${slicezp}"
-    else
-      gopts=$opts
-    fi
-    echo "${FSLDIR}/bin/bedpostx_single_slice_gpu.sh ${subjdir} ${slice} $njobs $nvox $gopts" \
-    >> ${subjdir}.bedpostX/commands.txt
+    gopts=$opts
   fi
-  slice=$(($slice + 1))
+  echo "${FSLDIR}/bin/bedpostx_single_part_gpu.sh ${subjdir} ${part} $njobs $nvox $gopts" \
+  >> ${subjdir}.bedpostX/commands.txt
+  part=$(($part + 1))
 done
 bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $bedpostid"

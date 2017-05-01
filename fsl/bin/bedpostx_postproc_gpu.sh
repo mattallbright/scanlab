@@ -79,22 +79,26 @@ shift
 shift
 opts=$*
 
+parameters=""
+while [ ! -z "$2" ]
+do
+	if [[ $1 =~ "--nf=" ]]; then
+    		numfib=`echo $1 | cut -d '=' -f2`
+	fi
+ 	all=$all" "$1
+	shift
+done
+
 echo "subjdir is $subjdir"
 
-numfib=`${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_0000/f*samples* | wc -w | awk '{print $1}'`
-
-if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/f0samples` = 1 ];then
-    numfib=$(($numfib - 1))
-fi
-
-srun ${FSLDIR}/bin/merge_parts_gpu --data=${subjdir}/data --mask=${subjdir}/nodif_brain_mask -b ${subjdir}/bvals -r ${subjdir}/bvecs --forcedir --logdir=${subjdir}.bedpostX/diff_slices $opts $nvox $njobs ${subjdir} ${FSLDIR}
+${FSLDIR}/bin/bedpostx_postproc_gpu.sh --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $gopts $nvox $njobs ${subjdir} ${FSLDIR}
 
 fib=1
 while [ $fib -le $numfib ]
 do
-	${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/merged_th${fib}samples `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/th${fib}samples*`
-	${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/merged_ph${fib}samples `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/ph${fib}samples*`
-	${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/merged_f${fib}samples  `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/f${fib}samples*`
+	# ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/merged_th${fib}samples `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/th${fib}samples*`
+	# ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/merged_ph${fib}samples `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/ph${fib}samples*`
+	# ${FSLDIR}/bin/fslmerge -z ${subjdir}.bedpostX/merged_f${fib}samples  `${FSLDIR}/bin/imglob ${subjdir}.bedpostX/diff_slices/data_slice_*/f${fib}samples*`
 	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_th${fib}samples -Tmean ${subjdir}.bedpostX/mean_th${fib}samples
 	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_ph${fib}samples -Tmean ${subjdir}.bedpostX/mean_ph${fib}samples
 	${FSLDIR}/bin/fslmaths ${subjdir}.bedpostX/merged_f${fib}samples -Tmean ${subjdir}.bedpostX/mean_f${fib}samples
@@ -160,11 +164,9 @@ echo Removing intermediate files
 if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_th1samples` -eq 1 ];then
 	if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_ph1samples` -eq 1 ];then
 		if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/merged_f1samples` -eq 1 ];then
-			rm -rf ${subjdir}.bedpostX/diff_slices
-			rm -rf ${subjdir}/data_slice_*
-			rm -f ${subjdir}/nodif_brain_mask_slice_*
-			if [ `${FSLDIR}/bin/imtest ${subjdir}/grad_dev_slice_0000` -eq 1 ];then
-				rm -rf ${subjdir}/grad_dev_slice_*
+			rm -rf ${subjdir}.bedpostX/diff_parts
+			rm -rf ${subjdir}.bedpostX/data_*
+      rm -rf ${subjdir}.bedpostX/grad_dev*
 			fi
 		fi
 	fi
