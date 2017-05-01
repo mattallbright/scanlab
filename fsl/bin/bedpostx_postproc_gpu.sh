@@ -87,7 +87,7 @@ if [ `${FSLDIR}/bin/imtest ${subjdir}.bedpostX/diff_slices/data_slice_0000/f0sam
     numfib=$(($numfib - 1))
 fi
 
-${FSLDIR}/bin/merge_parts_gpu --data=${subjdir}/data --mask=${subjdir}/nodif_brain_mask -b ${subjdir}/bvals -r ${subjdir}/bvecs --forcedir --logdir=${subjdir}.bedpostX/diff_slices $opts $nvox $njobs ${subjdir} ${FSLDIR}
+srun ${FSLDIR}/bin/merge_parts_gpu --data=${subjdir}/data --mask=${subjdir}/nodif_brain_mask -b ${subjdir}/bvals -r ${subjdir}/bvecs --forcedir --logdir=${subjdir}.bedpostX/diff_slices $opts $nvox $njobs ${subjdir} ${FSLDIR}
 
 fib=1
 while [ $fib -le $numfib ]
