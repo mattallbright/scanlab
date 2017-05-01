@@ -349,10 +349,11 @@ if [ "x$FSLPARALLEL" != "x" ]; then
     cat <<EOC > ${subjdir}.bedpostX/cancel
 #!/bin/sh
 scancel $mergeid
-scancel $bedpostid_1
-scancel $bedpostid_2
-scancel $bedpostid_3
-scancel $bedpostid_4
+part=1
+while [ $part -lt $njobs + 1 ]; do
+  scancel $bedpostid_$part
+  part=$(($part + 1))
+done
 scancel $bedpostid
 scancel $preprocid
 EOC
