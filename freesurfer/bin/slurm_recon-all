@@ -4,7 +4,7 @@
 # Matt Allbright
 # This script quickly and easily runs recon-all on selected participants through
 # a user friendly text interface. It will feed variables from a for loop into a
-# separate sbatch file located at /opt/cloud/staging/freesurfer/bin/recon-all.sbatch
+# separate sbatch wrapper located at /opt/cloud/staging/freesurfer/bin/recon-all
 
 clear
 
@@ -43,13 +43,19 @@ for subj in ${subjarr[*]}; do
     # Applies ls output for file to a path in a variable
     echo "Image file found."
 
-    # Runs recon-all.sbatch script with proper things.
+    # Runs recon-all script with proper things.
     echo "Running recon-all for" ${subj}
-    job_submitted=$(sbatch /opt/cloud/staging/freesurfer/opt/recon-all.sbatch $subjects_dir ${subj} $recon_input)
+    export SUBJECTS_DIR=$subjects_dir
+    export $FREESURFER_HOME
+    job_id=`sbatch $FREESURFER_HOME/bin/recon-all -subject ${subj} -i $recon_input -all -qcache | grep -oP "Submitted batch job\s+\K\w+"`
     wait
-    echo $job_submitted
-    job_submitted=${job_submitted#Submitted batch job }
-    jobarr+=(${job_submitted})
+    echo Submitted recon-all job as job $job_id
+    jobarr+=(${job_id})
+    wait
+    job_id_LGI=`sbatch --dependency=afterok:$job_id recon-all -subject ${subj} -localGI | grep -oP "Submitted batch job\s+\K\w+"`
+    wait
+    echo Submitted localGI job as job $job_id_LGI
+    lgiarr+=(${job_id_LGI})
     wait
   else
     echo "Image file not found. Will not run recon-all for" ${subj}
@@ -60,6 +66,12 @@ wait
 echo "If a terminal doesn't open automatically, check X11 settings or"
 echo "find output .out file located in /data/var/jobs/recon-all/"
 for job in ${jobarr[*]}; do
+  x-terminal-emulator -e 'tail -F /data/var/jobs/recon-all/'$job.out
+  echo "Waiting for 5 seconds for job to output."
+  sleep 5
+  echo "Terminal opened for job "${job}.
+done
+for job in ${lgiarr[*]}; do
   x-terminal-emulator -e 'tail -F /data/var/jobs/recon-all/'$job.out
   echo "Waiting for 5 seconds for job to output."
   sleep 5

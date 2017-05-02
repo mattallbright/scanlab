@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# recon-all (wrapper)
+# Matt Allbright
+# This script is fed into by any commands calling recon-all.
+
+#SBATCH --partition=long.q
+#SBATCH --get-user-env
+#SBATCH --ntasks=1
+#SBATCH --ntasks-per-core=1
+#SBATCH --output=/data/var/jobs/recon-all/%j.out
+
+"$@"
