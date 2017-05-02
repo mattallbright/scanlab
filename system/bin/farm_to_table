@@ -5,3 +5,9 @@
 # This script will automatically pull data from Hermes for studies and then sort
 # individual files into the proper study directory. It is based on ideas from
 # previous "convertit"-type scripts used in the lab.
+
+echo "Welcome to Farm to Table."
+echo "Farm to Table takes images and data from the machine Hermes and sorts"
+echo "these files into a structured system for use with FSL and FreeSurfer."
+
+echo "First, Farm to Table requests a study."
