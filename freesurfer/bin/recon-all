@@ -8,7 +8,7 @@
 #SBATCH --get-user-env
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-core=1
-#SBATCH --output=/data/var/jobs/recon-all/%j.out
+#SBATCH --output=/data/var/jobs/%j.out
 
 echo "$@"
 "$@"
