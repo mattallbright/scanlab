@@ -1,0 +1,15 @@
+TODO
+
+Automate file copy system from Hermes to Linux machines
+  Include CONVERTIT concepts
+  Include DTI
+  Include Tracula
+  Include flag to run specific studies or partics (-s -p)
+  Include art and preprocessing
+
+Look into automating FITBIR
+  Install full MIPAV
+  Install FITBIR Plugin
+
+bedpostx_gpu
+  Get bedpostx_gpu working
