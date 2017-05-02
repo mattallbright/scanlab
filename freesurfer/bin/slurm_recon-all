@@ -46,8 +46,7 @@ for subj in ${subjarr[*]}; do
     # Runs recon-all script with proper things.
     echo "Running recon-all for" ${subj}
     export SUBJECTS_DIR=$subjects_dir
-    export $FREESURFER_HOME
-    job_id=`sbatch $FREESURFER_HOME/bin/recon-all -subject ${subj} -i $recon_input -all -qcache | grep -oP "Submitted batch job\s+\K\w+"`
+    job_id=`sbatch /usr/local/freesurfer/bin/recon-all -subject ${subj} -i $recon_input -all -qcache | grep -oP "Submitted batch job\s+\K\w+"`
     wait
     echo Submitted recon-all job as job $job_id
     jobarr+=(${job_id})
