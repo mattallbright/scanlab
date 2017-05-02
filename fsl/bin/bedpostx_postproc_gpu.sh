@@ -80,7 +80,7 @@ shift
 shift
 opts=$*
 
-${FSLDIR}/bin/merge_parts_gpu --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $subjdir $nvox $njobs $opts
+${FSLDIR}/bin/merge_parts_gpu --data=${subjdir}/data --mask=$subjdir.bedpostX/nodif_brain_mask -b ${subjdir}.bedpostX/bvals -r ${subjdir}.bedpostX/bvecs --forcedir --logdir=$subjdir.bedpostX/diff_parts $opts $nvox $njobs $subjdir
 
 fib=1
 while [ $fib -le $numfib ]
