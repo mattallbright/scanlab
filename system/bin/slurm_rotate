@@ -3,7 +3,7 @@
 # slurm_rotate
 # Matt Allbright
 # Simple utility to read logs from slurm nodes over network. Similar to slurm_fetch,
-# slurm_rotate reads the most up to date logs by ssh'ing into other nodes. 
+# slurm_rotate reads the most up to date logs by ssh'ing into other nodes.
 
 clear
 
@@ -69,6 +69,16 @@ clear
 
 echo -e "worker daemon @ jedi\n"
 ssh root@jedi tail -n 30 /var/log/slurm-llnl/slurmd.log
+
+echo -e "\n"
+read -n1 -r -p "Press space to continue..." next
+
+if [[ "$next" = '' ]]; then
+	break
+fi
+
+echo -e "worker daemon @ hyperion\n"
+ssh root@hyperion tail -n 30 /var/log/slurm-llnl/slurmd.log
 
 echo -e "\n"
 read -n1 -r -p "Press space to continue..." next

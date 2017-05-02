@@ -13,6 +13,7 @@ ssh root@$HOSTNAME cp /opt/cloud/staging/etc/slurm/slurm.conf /etc/slurm-llnl/
 echo "Synching slurm.conf files."
 rsync -ar /etc/slurm-llnl/slurm.conf root@empire:/etc/slurm-llnl/
 rsync -ar /etc/slurm-llnl/slurm.conf root@jedi:/etc/slurm-llnl/
+rsync -ar /etc/slurm-llnl/slurm.conf root@hyperion:/etc/slurm-llnl/
 
 /opt/cloud/staging/system/bin/slurm_reset
 

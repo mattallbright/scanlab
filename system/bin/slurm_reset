@@ -21,3 +21,6 @@ wait
 echo "Restarting jedi"
 ssh root@jedi /etc/init.d/slurmd restart
 wait
+echo "Restarting hyperion"
+ssh root@hyperion /etc/init.d/slurmd restart
+wait
