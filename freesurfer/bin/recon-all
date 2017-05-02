@@ -10,5 +10,5 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --output=/data/var/jobs/%j.out
 
-echo "$@"
-"$@"
+echo "Options set to $@"
+recon-all_exec "$@"
