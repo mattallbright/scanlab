@@ -70,7 +70,7 @@ for job in ${jobarr[*]}; do
   sleep 5
   echo "Terminal opened for job "${job}.
   for jobLGI in ${lgiarr[*]}; do
-    x-terminal-emulator -e 'tail -F /data/var/jobs/'$job.out
+    x-terminal-emulator -e 'tail -F /data/var/jobs/'$jobLGI.out
     echo "Waiting for 5 seconds for job to output."
     sleep 5
     echo "Terminal opened for job "${jobLGI}.
