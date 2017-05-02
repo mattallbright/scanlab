@@ -84,8 +84,8 @@ Usage() {
     echo ""
     echo "<options>:"
     #echo "-QSYS (Queue System, 0 use fsl_sub: FMRIB, 1 TORQUE (default): WashU)"
-    echo "-Q (name of the GPU(s) queue, default gpu.q (defined in environment variable: FSLGECUDAQ)"
-    echo "-NJOBS (number of jobs to queue, the data is divided in NJOBS parts, usefull for a GPU cluster, default 4)"
+    #echo "-Q (name of the GPU(s) queue, default gpu.q (defined in environment variable: FSLGECUDAQ)"
+    echo "-NJOBS (number of jobs to queue, the data is divided in NJOBS parts, useful for a GPU cluster, default 4)"
     echo "-n (number of fibres per voxel, default 3)"
     echo "-w (ARD weight, more weight means less secondary fibres per voxel, default 1)"
     echo "-b (burnin period, default 1000)"
@@ -96,7 +96,7 @@ Usage() {
     echo ""
     echo ""
     echo "ALTERNATIVELY: you can pass on xfibres options onto directly bedpostx"
-    echo " For example:  bedpostx <subject directory> --noard --cnonlinear"
+    echo " For example:  bedpostx_gpu <subject directory> --noard --cnonlinear"
     echo " Type 'xfibres --help' for a list of available options "
     echo " Default options will be bedpostx default (see above), and not xfibres default."
     echo ""
@@ -217,8 +217,8 @@ shift
 while [ ! -z "$1" ]
 do
   case "$1" in
-      -QSYS) qsys=$2;shift;;
-      -Q) queue=$2;shift;;
+#      -QSYS) qsys=$2;shift;;
+#      -Q) queue=$2;shift;;
       -NJOBS) njobs=$2;shift;;
       -n) nfibres=$2;shift;;
       -w) fudge=$2;shift;;
@@ -235,13 +235,15 @@ opts="--nf=$nfibres --fudge=$fudge --bi=$burnin --nj=$njumps --se=$sampleevery -
 defopts="--cnonlinear"
 opts="$opts $defopts $other"
 
+queueCmd="-q $queue"
+
 # Check for Slurm
 echo "Locating CUDA queue."
 if [ -n "$FSLGECUDAQ" ]; then
   sinfo --hide --partition=$FSLGECUDAQ 2>&1 >/dev/null
 	if [ $? -eq 0 ]; then
 		echo "Found CUDA queue."
-    queue="-q $FSLGECUDAQ"
+    queueCmd="-q $FSLGECUDAQ"
   else
     echo "No CUDA queue found. Exiting..."
     exit -1
@@ -308,7 +310,7 @@ mkdir -p ${subjdir}.bedpostX/logs/monitor
 mkdir -p ${subjdir}.bedpostX/xfms
 
 echo Queuing preprocessing stages
-preprocid=`${FSLDIR}/bin/fsl_sub -v -F $queue -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc_gpu.sh ${subjdir} ${gflag} $njobs | grep -oP "Submitted batch job\s+\K\w+"`
+preprocid=`${FSLDIR}/bin/fsl_sub -v -F $queueCmd -N bpx_preproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc_gpu.sh ${subjdir} ${gflag} $njobs | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $preprocid"
 
 nvox=`${FSLDIR}/bin/fslstats $subjdir/nodif_brain_mask -V  | cut -d ' ' -f1 `
@@ -333,11 +335,11 @@ do
   >> ${subjdir}.bedpostX/commands.txt
   part=$(($part + 1))
 done
-bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid $queue -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
+bedpostid=`${FSLDIR}/bin/fsl_sub -v -j $preprocid $queueCmd -l ${subjdir}.bedpostX/logs -N bedpostx_gpu -t ${subjdir}.bedpostX/commands.txt | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $bedpostid"
 
 echo Queuing post processing stage
-mergeid=`${FSLDIR}/bin/fsl_sub -v -F -j $bedpostid $queue -N bpx_postproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc_gpu.sh ${subjdir} $nvox $njobs $gopts | grep -oP "Submitted batch job\s+\K\w+"`
+mergeid=`${FSLDIR}/bin/fsl_sub -v -F -j $bedpostid $queueCmd -N bpx_postproc_gpu -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc_gpu.sh ${subjdir} $nvox $njobs $gopts | grep -oP "Submitted batch job\s+\K\w+"`
 echo "Job submitted as job $mergeid"
 
 echo $mergeid > ${subjdir}.bedpostX/logs/$mergeid.out
