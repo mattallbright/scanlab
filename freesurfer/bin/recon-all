@@ -10,4 +10,5 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --output=/data/var/jobs/recon-all/%j.out
 
+echo "$@"
 "$@"
