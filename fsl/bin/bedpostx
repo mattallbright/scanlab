@@ -319,7 +319,8 @@ if [ "x$FSLPARALLEL" != "x" ]; then
 scancel $mergeid
 scancel $bedpostid
 slice=1
-while [ $slice -lt $nslices + 1 ]; do
+
+while [ $slice -lt 74 ]; do
   scancel $bedpostid_$slice
 done
 slice=$(($slice + 1))
