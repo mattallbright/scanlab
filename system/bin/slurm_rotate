@@ -77,6 +77,8 @@ if [[ "$next" = '' ]]; then
 	break
 fi
 
+clear
+
 echo -e "worker daemon @ hyperion\n"
 ssh root@hyperion tail -n 30 /var/log/slurm-llnl/slurmd.log
 
