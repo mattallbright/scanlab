@@ -321,6 +321,7 @@ scancel $bedpostid
 slice=1
 while [ $slice -lt $nslices + 1 ]; do
   scancel $bedpostid_$slice
+done
 slice=$(($slice + 1))
 scancel $preprocid
 EOC
