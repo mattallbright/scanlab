@@ -89,4 +89,40 @@ if [[ "$next" = '' ]]; then
 	break
 fi
 
+# clear
+#
+# echo -e "worker daemon @ norman\n"
+# ssh root@norman tail -n 30 /var/log/slurm-llnl/slurmd.log
+#
+# echo -e "\n"
+# read -n1 -r -p "Press space to continue..." next
+#
+# if [[ "$next" = '' ]]; then
+# 	break
+# fi
+
+# clear
+#
+# echo -e "worker daemon @ wilbur\n"
+# ssh root@wilbur tail -n 30 /var/log/slurm-llnl/slurmd.log
+#
+# echo -e "\n"
+# read -n1 -r -p "Press space to continue..." next
+#
+# if [[ "$next" = '' ]]; then
+# 	break
+# fi
+
+# clear
+#
+# echo -e "worker daemon @ rufus\n"
+# ssh root@rufus tail -n 30 /var/log/slurm-llnl/slurmd.log
+#
+# echo -e "\n"
+# read -n1 -r -p "Press space to continue..." next
+#
+# if [[ "$next" = '' ]]; then
+# 	break
+# fi
+
 /opt/cloud/staging/system/bin/slurm_rotate

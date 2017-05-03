@@ -24,3 +24,12 @@ wait
 echo "Restarting hyperion"
 ssh root@hyperion /etc/init.d/slurmd restart
 wait
+# echo "Restarting norman"
+# ssh root@norman /etc/init.d/slurmd restart
+# wait
+# echo "Restarting wilbur"
+# ssh root@wilbur /etc/init.d/slurmd restart
+# wait
+# echo "Restarting rufus"
+# ssh root@rufus /etc/init.d/slurmd restart
+# wait
