@@ -130,13 +130,12 @@ echo "other real cool software."
 
 echo "First, we need a study."
 # New menu variables
-NEWSTUDY="New study (not implemented)"
-touch /data/"$NEWSTUDY"
+studySelectArr=(/data/* "New study")
 
 # Create menu
-select studyDir in /data/*; do
+select studyDir in "${studySelectArr[@]}"; do
   case $studyDir in
-    "$NEWSTUDY")
+    "New study")
       echo "Creating new study..."
       echo "This system is not implemented yet."
       newStudy=1
@@ -149,27 +148,23 @@ select studyDir in /data/*; do
   esac
 done
 # Remove now unutilized option
-rm /data/"$NEWSTUDY"
 
 study=${studyDir#*/data/}
 getInfo $study
 
 echo "Next, we need participants."
 # New menu variables
-NEWPARTIC="New participant"
-MULTIPARTIC="Multiple participants"
-touch "$NEWPARTIC"
-touch "$MULTIPARTIC"
+particSelectArr=($studyDir/RAW_data/* "New participant" "Multiple participants")
 
 # Create menu
-select particSelect in $studyDir/RAW_data/*; do
+select particSelect in "${particSelectArr[@]}"; do
   case $particSelect in
-    "$NEWPARTIC")
+    "New participant")
       echo "Creating new participant..."
       newParticBool=1
       break
       ;;
-    "$MULTIPARTIC")
+    "Multiple participants")
       echo "Selected mutliple participants"
       multiParticBool=1
       break
@@ -181,8 +176,6 @@ select particSelect in $studyDir/RAW_data/*; do
   esac
 done
 # Remove now un-utilized option
-rm "$NEWPARTIC"
-rm "$MULTIPARTIC"
 
 # Init array
 particArr=()
