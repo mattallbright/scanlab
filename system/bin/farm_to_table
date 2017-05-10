@@ -6,8 +6,378 @@
 # individual files into the proper study directory. It is based on ideas from
 # previous "convertit"-type scripts used in the lab.
 
+#Functions
+
+# Function necessary to figure out the intracacies of each study
+# Why they were set up in completely different ways, and in completely different
+# structures, is beyond me
+getInfo() {
+  if [ $study = "tbimodel" ] || [ $study = "TBIMODEL" ]; then
+    longitudinalBool=0
+    # Forcing new prefix to TBIMODEL_000 standard
+    studyPrefix=$study
+    boldValues=("resting")
+    magPhaseBool=1
+  elif [ $study = "BLHC" ]; then
+    longitudinalBool=0
+    studyPrefix=$study
+    boldValues=("resting" "MSIT" "NBACK")
+    magPhaseBool=0
+    echo "$study is not set up properly with this system."
+    echo "Contact a system administrator."
+    exit 1
+  elif [ $study = "BL2" ]; then
+    longitudinalBool=1
+    studyPrefix=$study
+    boldValues=("resting" "MSIT" "NBACK")
+    magPhaseBool=0
+  elif [ $study = "blt" ]; then
+    longitudinalBool=1
+    studyPrefix=$study
+    boldValues=("rest" "MSIT" "NBACK")
+    magPhaseBool=0
+    echo "$study is not set up properly with this system."
+    echo "Contact a system administrator."
+    exit 1
+  elif [ $study = "BLPTSD" ]; then
+    longitudinalBool=1
+    studyPrefix=$study
+    boldValues=("resting" "ancitipation" "BMAT_fear" "BMAT_happy" "dot_probe" "fear_conditioning")
+    magPhaseBool=0
+  elif [ $study = "EWM" ]; then
+    longitudinalBool=0
+    studyPrefix=$study
+    boldValues=("resting" "Faces" "IAPS")
+    magPhaseBool=0
+  elif [ $study = "EIT" ]; then
+    longitudinalBool=0
+    studyPrefix=$study
+    boldValues=()
+    magPhaseBool=0
+  elif [ $study = "emot" ]; then
+    longitudinalBool=0
+    studyPrefix=$study
+    boldValues=("anger" "EmotDist" "faceint" "fear" "food" "happy" "memsupp" "sceneint" "trust")
+    magPhaseBool=0
+    echo "$study is not set up properly with this system."
+    echo "Contact a system administrator."
+    exit 1
+  elif [ $study = "ICBT" ]; then
+    longitudinalBool=1
+    studyPrefix=$study
+    boldValues=("EIT")
+    magPhaseBool=0
+    echo "$study is not set up properly with this system."
+    echo "Contact a system administrator."
+    exit 1
+  else
+    echo "Study not found: $study"
+    exit 1
+  fi
+}
+
+# Just grabs data from Hermes
+HermesFetch(){
+  # Bunch of error checking before forcing a fetch
+  if [ -d /Hermes ]; then
+    echo "Hermes directory doesn't exist!"
+    exit 1
+  elif [ "$(ls -A /Hermes)" ]; then
+    echo "Hermes isn't mounted properly!"
+    exit 1
+  fi
+  if [ -d $studyDir ]; then
+    echo "$study directory doesn't exist!"
+    exit 1
+  elif [ "$(ls -A $studyDir)" ]; then
+    echo "$study isn't mounted properly!"
+    exit 1
+  fi
+
+  if [ ! -d $particRawDir ]; then
+    mkdir -p $particRawDir
+    # Fetch data from RAW for $partic
+    echo "Locating data for $partic..."
+    # Strip partic to just the numbers
+    particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
+    # Find folder where number pattern is present
+    osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
+    cp -a $osirixDir/* $particRawDir
+  else
+    echo "The RAW directory already exists for this user. Would you like to copy"
+    echo "anyway? Typically RAW_data can be overwritten without consequence."
+    read rawResponse
+    if [[ "$rawResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+      # Fetch data from RAW for $partic
+      echo "Locating data for $partic..."
+      # Strip partic to just the numbers
+      particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
+      # Find folder where number pattern is present
+      osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
+      /bin/cp -rf $osirixDir/* $particRawDir
+    else
+      echo "Data will not be modified. Continuing with structure..."
+    fi
+  fi
+}
+
+# Start program
+
 echo "Welcome to Farm to Table."
 echo "Farm to Table takes images and data from the machine Hermes and sorts"
-echo "these files into a structured system for use with FSL and FreeSurfer."
+echo "these files into a structured system for use with FSL, FreeSurfer, and"
+echo "other real cool software."
 
-echo "First, Farm to Table requests a study."
+echo "First, we need a study."
+# New menu variables
+NEWSTUDY="New study (not implemented)"
+touch "$NEWSTUDY"
+
+# Create menu
+select studyDir in /data/*; do
+  case $studyDir in
+    "$NEWSTUDY")
+      echo "Creating new study..."
+      echo "This system is not implemented yet."
+      newStudy=1
+      break
+      ;;
+    *)
+      echo "Selected $studyDir"
+      break
+      ;;
+  esac
+done
+# Remove now unutilized option
+rm "$NEWSTUDY"
+
+study=${studyDir#*/data/}
+getInfo $study
+
+echo "Next, we need participants."
+# New menu variables
+NEWPARTIC="New participant"
+MULTIPARTIC="Multiple participants"
+touch "$NEWPARTIC"
+touch "$MULTIPARTIC"
+
+# Create menu
+select particSelect in $studyRawDir/RAW_data/*; do
+  case $particSelect in
+    "$NEWPARTIC")
+      echo "Creating new participant..."
+      newParticBool=1
+      break
+      ;;
+    "$MULTIPARTIC")
+      echo "Selected mutliple participants"
+      multiParticBool=1
+      break
+      ;;
+    *)
+      echo "Selected $particSelect"
+      break
+      ;;
+  esac
+done
+# Remove now un-utilized option
+rm "$NEWPARTIC"
+rm "$MULTIPARTIC"
+
+# Init array
+particArr=()
+
+# Other options setting up proper partic naming conventions
+if [ $newParticBool -eq 1 ]; then
+  echo "What is the number of the new participant you would like to process?"
+  echo "Numbers are three digits (e.g. 005 or 076)."
+  read newPartic
+  partic="$studyPrefix"_"$newPartic"
+  particArr=("$partic")
+elif [ $multiParticBool -eq 1 ]; then
+  echo "What are the numbers of the participants you would like to process?"
+  echo "Separate each with a space (e.g. 005 006 016 185)."
+  read particNums # Pull the numbers as delimited variables
+  particNumArr=($particNums) # Shove said numbers into an array
+  for partic in ${particNumArr[*]}; do
+    particArr+=("$studyPrefix"_"$partic") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+  done
+else
+  particRaw=${particSelect#*/RAW_data/}
+  particNumber=`echo $particSelect | grep -Eo '[0-9][0-9][0-9]'`
+  partic="$studyPrefix"_"$particNumber"
+  particArr=("$partic")
+fi
+
+# Get data from Hermes for the participant(s)
+for partic in ${particArr[*]}; do
+  echo "Starting download for $partic"
+  particRawDir="$studyDir/RAW_data/$partic"
+  HermesFetch $partic
+
+  # Create directory structure
+  particDir=$studyDir/indiv_analysis/$partic
+  if [ ! -d $particDir ]; then
+    mkdir -p $particDir
+  fi
+
+  # Longitudinal structuring
+  if [ $longitudinalBool -eq 1 ]; then
+    echo "Logitudinal study detected."
+    # Check baseline directory existence
+    if [ `find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1` ]; then
+      echo "Baseline detected."
+      baselineRawDir=`find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1`
+      baselineBool=1
+    else
+      baselineBool=0
+    fi
+    # Check post-treament directory existence
+    if [ `find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1` ]; then
+      echo "PostTX detected."
+      postTXRawDir=`find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1`
+      postTXBool=1
+    else
+      postTXBool=0
+    fi
+
+    # Baseline Anatomical
+    if [ $baselineBool -eq 1 ]; then
+      anatDirArr=($(ls -d $baselineRawDir/[tT]1_[mM][pP][rR][aA][gG][eE]_1[mM][mM]*/))
+      anatNum=1
+      if [ ! -d $particDir/anatomicals/Baseline ]; then
+        mkdir -p $particDir/anatomicals/Baseline
+      fi
+      for anatomical in ${anatDirArr[*]}; do
+        echo "Running dcm2nii for Anatomical $anatNum"
+        dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/Baseline "${anatomical}"
+        anatNum=$anatNum+1
+      done
+    fi
+
+    # PostTX Anatomical
+    if [ $postTXBool -eq 1 ]; then
+      anatArr=($(ls -d $postTXRawDir/[tT]1_[mM][pP][rR][aA][gG][eE]_1[mM][mM]*/))
+      anatNum=1
+      if [ ! -d $particDir/anatomicals/PostTX ]; then
+        mkdir -p $particDir/anatomicals/PostTX
+      fi
+      for anatomical in ${anatDirArr[*]}; do
+        echo "Running dcm2nii for Anatomical $anatNum"
+        dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/PostTX "${anatomical}"
+        anatNum=$anatNum+1
+      done
+    fi
+
+    # Checks if bold array is empty
+    if [ ${#boldValues[@]} -eq 0 ]; then
+      echo "No BOLD tasks for $partic"
+    else
+      # Run bold sorting
+      for bold_type in ${boldValues[*]}; do
+        # Checks postTX bool
+        if [ $baselineBool -eq 1 ]; then
+          # Makes directory if it doesn't exist
+          if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
+            mkdir -p $particDir/bold/${bold_type}/Baseline
+          fi
+          # If task directory exists run dcm2niix on it
+          if [ `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+            # Takes latest directory with bold
+            boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
+            dcm2niix -f "$partic"_${boldtype}_BV -o $particDir/bold/${bold_type}/Baseline "$boldDir"
+          else
+            echo "No data for $bold_type in $partic directory."
+          fi
+        fi
+        # Checks postTX bool
+        if [ $postTXBool -eq 1 ]; then
+          # Makes directory if it doesn't exist
+          if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
+            mkdir -p $particDir/bold/${bold_type}/PostTX
+          fi
+          # If task directory exists run dcm2niix on it
+          if [ `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+            boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
+            dcm2niix -f "$partic"_${boldtype}_PTX -o $particDir/bold/${bold_type}/PostTX "$boldDir"
+          else
+            echo "No data for $bold_type in $partic directory."
+          fi
+        fi
+      done
+    fi
+
+    # Baseline fieldmaps
+    if [ $magPhaseBool -eq 1 ]; then
+      # Running for Mag (note the sort -r)
+      echo "Beginning Magnitude-Phase fieldmap conversion..."
+      # Baseline
+      if [ $baselineBool -eq 1 ]; then
+        magDir=`find $baselineRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
+        if [ ! -d $particDir/fieldmaps/Baseline ]; then
+          mkdir -p $particDir/fieldmaps/Baseline
+        fi
+        echo "Running dcm2nii for Mag fieldmaps"
+        dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/Baseline "$magDir"
+      fi
+      # PostTX
+      if [ $postTXBool -eq 1 ]; then
+        magDir=`find $postTXRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
+        if [ ! -d $particDir/fieldmaps/PostTX ]; then
+          mkdir -p $particDir/fieldmaps/PostTX
+        fi
+        echo "Running dcm2nii for Mag fieldmaps"
+        dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/PostTX "$magDir"
+      fi
+
+      # Running same system for Phase
+      # Baseline
+      if [ $baselineBool -eq 1 ]; then
+        phaseDir=`find $baselineRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
+        echo "Running dcm2nii for Mag fieldmaps"
+        dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/Baseline "$phaseDir"
+      fi
+      # PostTX
+      if [ $postTXBool -eq 1 ]; then
+        phaseDir=`find $postTXRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
+        echo "Running dcm2nii for Mag fieldmaps"
+        dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/PostTX "$phaseDir"
+      fi
+    else
+      echo "No Magnitude of Phase fieldmaps found for $partic"
+    fi
+
+  # Non-logitudinal structuring
+  else
+    echo "Non-logitudinal study detected."
+    anatDirArr=($(ls -d $particRawDir/[tT]1_[mM][pP][rR][aA][gG][eE]_1[mM][mM]*/))
+    anatNum=1
+    if [ ! -d $particDir/anatomicals ]; then
+      mkdir -p $particDir/anatomicals
+    fi
+    for anatomical in ${anatDirArr[*]}; do
+      echo "Running dcm2nii for Anatomical $anatNum"
+      dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals "${anatomical}"
+      anatNum=$anatNum+1
+    done
+
+    if [ ${#boldValues[@]} -eq 0 ]; then
+      echo "No BOLD values for $partic"
+    else
+      for bold_type in ${boldValues[*]}; do
+        # Makes directory if it doesn't exist
+        if [ ! -d $particDir/bold/${bold_type} ]; then
+          mkdir -p $particDir/bold/${bold_type}
+        fi
+        # If task directory exists run dcm2niix on it
+        if [ `find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+          boldDir=`find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
+          dcm2niix -f "$partic"_${boldtype} -o $particDir/bold/${bold_type} "$boldDir"
+        else
+          echo "No data for $bold_type in $partic directory."
+        fi
+      done
+    fi
+  fi
+
+done
