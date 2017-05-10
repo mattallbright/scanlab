@@ -131,7 +131,7 @@ echo "other real cool software."
 echo "First, we need a study."
 # New menu variables
 NEWSTUDY="New study (not implemented)"
-touch "$NEWSTUDY"
+touch /data/"$NEWSTUDY"
 
 # Create menu
 select studyDir in /data/*; do
@@ -149,7 +149,7 @@ select studyDir in /data/*; do
   esac
 done
 # Remove now unutilized option
-rm "$NEWSTUDY"
+rm /data/"$NEWSTUDY"
 
 study=${studyDir#*/data/}
 getInfo $study
