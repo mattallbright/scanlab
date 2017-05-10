@@ -162,7 +162,7 @@ touch "$NEWPARTIC"
 touch "$MULTIPARTIC"
 
 # Create menu
-select particSelect in $studyRawDir/RAW_data/*; do
+select particSelect in $studyDir/RAW_data/*; do
   case $particSelect in
     "$NEWPARTIC")
       echo "Creating new participant..."
