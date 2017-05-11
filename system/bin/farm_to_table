@@ -135,8 +135,6 @@ HermesFetch(){
   fi
 }
 
-IFS=$'\n'
-
 # Start program
 
 echo "Welcome to Farm to Table."
@@ -192,6 +190,8 @@ particNumArr=($particNums) # Shove said numbers into an array
 for partic in ${particNumArr[*]}; do
   particArr+=("$studyPrefix$partic") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
 done
+
+IFS=$'\n'
 
 # Get data from Hermes for the participant(s)
 for partic in ${particArr[*]}; do
