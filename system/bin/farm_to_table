@@ -104,7 +104,7 @@ HermesFetch(){
       mkdir -p $particRawDir
       osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
       echo "Copying data from shared mount..."
-      cp -a "$osirixDir/." $particRawDir/
+      cp -rv "$osirixDir/." $particRawDir/
       dataNotFound=0
     else
       echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
@@ -123,7 +123,7 @@ HermesFetch(){
       if [ ! -z `find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` ]; then
         osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
         echo "Copying data from shared mount..."
-        cp -R "$osirixDir/." $particRawDir/
+        cp -rv "$osirixDir/." $particRawDir/
       else
         echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
         dataNotFound=0
