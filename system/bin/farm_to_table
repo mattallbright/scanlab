@@ -149,8 +149,7 @@ select studyDir in "${studySelectArr[@]}"; do
 done
 
 if [ $newStudyBool -eq 1 ]; then
-  echo "What is the number of the new participant you would like to process?"
-  echo "Numbers are three digits (e.g. 005 or 076)."
+  echo "What is the name of the study you would like to create? (e.g. EIT, tbimodel)"
   read study
   studyDir="/data/$study"
   if [ -d /data/$study ]; then
