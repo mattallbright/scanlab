@@ -232,8 +232,11 @@ for partic in ${particArr[*]}; do
           else
             baselineBool=0
           fi
+        else
+          baselineBool=1
         fi
       else
+        echo "Baseline not detected."
         baselineBool=0
       fi
       # Check post-treament directory existence
@@ -249,8 +252,11 @@ for partic in ${particArr[*]}; do
           else
             postTXBool=0
           fi
+        else
+          postTXBool=1
         fi
       else
+        echo "PostTX not detected."
         postTXBool=0
       fi
 
