@@ -105,8 +105,10 @@ HermesFetch(){
       osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
       echo "Copying data from shared mount..."
       cp -a "$osirixDir/." $particRawDir/
+      dataNotFound=0
     else
-      echo "No data found for $partic"
+      echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
+      dataNotFound=1
     fi
   else
     echo "The RAW directory already exists for this user. Would you like to copy"
@@ -123,10 +125,12 @@ HermesFetch(){
         echo "Copying data from shared mount..."
         cp -R "$osirixDir/." $particRawDir/
       else
-        echo "No data found for $partic"
+        echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
+        dataNotFound=0
       fi
     else
       echo "Data will not be modified. Continuing with structure..."
+      dataNotFound=1
     fi
   fi
 }
@@ -194,6 +198,11 @@ for partic in ${particArr[*]}; do
   echo "Starting download for $partic"
   particRawDir="$studyDir/RAW_data/$partic"
   HermesFetch $partic
+
+  if [ $dataNotFound -eq 1 ]; then
+    "No data found for $partic."
+    break
+  fi
 
   # Create directory structure
   particDir=$studyDir/indiv_analysis/$partic
