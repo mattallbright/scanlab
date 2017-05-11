@@ -131,6 +131,8 @@ HermesFetch(){
   fi
 }
 
+IFS=$'\n'
+
 # Start program
 
 echo "Welcome to Farm to Table."
@@ -221,7 +223,6 @@ for partic in ${particArr[*]}; do
 
     # Baseline Anatomical
     if [ $baselineBool -eq 1 ]; then
-      IFS=$'\n'
       anatDirArray=($(find $baselineRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
       anatNum=1
       if [ ! -d $particDir/anatomicals/Baseline ]; then
@@ -236,7 +237,6 @@ for partic in ${particArr[*]}; do
 
     # PostTX Anatomical
     if [ $postTXBool -eq 1 ]; then
-      IFS=$'\n'
       anatDirArray=($(find $postTXRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
       anatNum=1
       if [ ! -d $particDir/anatomicals/PostTX ]; then
@@ -253,6 +253,7 @@ for partic in ${particArr[*]}; do
     if [ ${#boldValues[@]} -eq 0 ]; then
       echo "No BOLD tasks for $partic"
     else
+      echo "Running BOLD for $partic"
       # Run bold sorting
       for bold_type in ${boldValues[*]}; do
         # Checks postTX bool
@@ -265,7 +266,7 @@ for partic in ${particArr[*]}; do
           if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
             # Takes latest directory with bold
             boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
-            dcm2niix -f "$partic"_${boldtype}_BV -o $particDir/bold/${bold_type}/Baseline "$boldDir"
+            dcm2niix -f "$partic"_${bold_type}_BV -o $particDir/bold/${bold_type}/Baseline "$boldDir"
           else
             echo "No data for $bold_type in $partic directory."
           fi
@@ -279,7 +280,7 @@ for partic in ${particArr[*]}; do
           # If task directory exists run dcm2niix on it
           if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
             boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
-            dcm2niix -f "$partic"_${boldtype}_PTX -o $particDir/bold/${bold_type}/PostTX "$boldDir"
+            dcm2niix -f "$partic"_${bold_type}_PTX -o $particDir/bold/${bold_type}/PostTX "$boldDir"
           else
             echo "No data for $bold_type in $partic directory."
           fi
@@ -330,7 +331,6 @@ for partic in ${particArr[*]}; do
   # Non-logitudinal structuring
   else
     echo "Non-logitudinal study detected."
-    IFS=$'\n'
     anatDirArray=($(find $particRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
     anatNum=1
     if [ ! -d $particDir/anatomicals ]; then
@@ -345,6 +345,7 @@ for partic in ${particArr[*]}; do
     if [ ${#boldValues[@]} -eq 0 ]; then
       echo "No BOLD values for $partic"
     else
+      echo "Running BOLD for $partic"
       for bold_type in ${boldValues[*]}; do
         # Makes directory if it doesn't exist
         if [ ! -d $particDir/bold/${bold_type} ]; then
@@ -353,11 +354,30 @@ for partic in ${particArr[*]}; do
         # If task directory exists run dcm2niix on it
         if [ ! -z `find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
           boldDir=`find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
-          dcm2niix -f "$partic"_${boldtype} -o $particDir/bold/${bold_type} "$boldDir"
+          dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type} "$boldDir"
         else
           echo "No data for $bold_type in $partic directory."
         fi
       done
+    fi
+
+    if [ $magPhaseBool -eq 1 ]; then
+      # Running for Mag (note the sort -r)
+      echo "Beginning Magnitude-Phase fieldmap conversion..."
+
+      magDir=`find $particRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
+      if [ ! -d $particDir/fieldmaps ]; then
+        mkdir -p $particDir/fieldmaps
+      fi
+      echo "Running dcm2nii for Mag fieldmaps"
+      dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps "$magDir"
+
+      # Running same system for Phase
+      phaseDir=`find $particRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
+      echo "Running dcm2nii for Mag fieldmaps"
+      dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps "$phaseDir"
+    else
+      echo "No Magnitude of Phase fieldmaps found for $partic"
     fi
   fi
 
