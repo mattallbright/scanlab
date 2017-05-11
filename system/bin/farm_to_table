@@ -138,7 +138,7 @@ select studyDir in "${studySelectArr[@]}"; do
     "New study")
       echo "Creating new study..."
       echo "This system is not implemented yet."
-      newStudy=1
+      newStudyBool=1
       break
       ;;
     *)
@@ -147,7 +147,19 @@ select studyDir in "${studySelectArr[@]}"; do
       ;;
   esac
 done
-# Remove now unutilized option
+
+if [ $newStudyBool -eq 1 ]; then
+  echo "What is the number of the new participant you would like to process?"
+  echo "Numbers are three digits (e.g. 005 or 076)."
+  read study
+  studyDir="/data/$study"
+  if [ -d /data/$study ]; then
+    echo "Study already exists!"
+    exit 1
+  else
+    echo "New study system not implemented"
+    exit 1
+  fi
 
 study=${studyDir#*/data/}
 getInfo $study
