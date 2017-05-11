@@ -102,7 +102,7 @@ HermesFetch(){
     particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
     # Find folder where number pattern is present
     osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
-    cp -a "$osirixDir/*" $particRawDir
+    cp -a "$osirixDir/." $particRawDir/
   else
     echo "The RAW directory already exists for this user. Would you like to copy"
     echo "anyway? Typically RAW_data can be overwritten without consequence."
@@ -114,7 +114,7 @@ HermesFetch(){
       particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
       # Find folder where number pattern is present
       osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
-      /bin/cp -rf "$osirixDir/*" $particRawDir
+      cp -R "$osirixDir/." $particRawDir/
     else
       echo "Data will not be modified. Continuing with structure..."
     fi
