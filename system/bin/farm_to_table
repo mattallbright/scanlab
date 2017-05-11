@@ -202,231 +202,231 @@ for partic in ${particArr[*]}; do
   if [ $dataNotFound -eq 1 ]; then
     echo "No Osirix data found for $partic."
     break
-  fi
-
-  # Create directory structure
-  particDir=$studyDir/indiv_analysis/$partic
-  if [ ! -d $particDir ]; then
-    echo "Creating directory for $partic"
-    dirAlreadyExists=0
-    mkdir -p $particDir
   else
-    echo "Directory detected."
-    dirAlreadyExists=1
-  fi
 
-  # Longitudinal structuring
-  if [ $longitudinalBool -eq 1 ]; then
-    echo "Logitudinal study detected."
-    # Check baseline directory existence
-    if [ ! -z `find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1` ]; then
-      echo "Baseline detected."
-      baselineRawDir=`find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1`
-      if [ $dirAlreadyExists -eq 1 ]; then
-        echo "The indiv_analysis directory already exists."
-        echo "Would you like to copy and possibly overwrite your Baseline indiv_analysis images?"
-        read overwriteBaseline
-        if [[ "$overwriteBaseline" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-          baselineBool=1
-        else
-          baselineBool=0
+    # Create directory structure
+    particDir=$studyDir/indiv_analysis/$partic
+    if [ ! -d $particDir ]; then
+      echo "Creating directory for $partic"
+      dirAlreadyExists=0
+      mkdir -p $particDir
+    else
+      echo "Directory detected."
+      dirAlreadyExists=1
+    fi
+
+    # Longitudinal structuring
+    if [ $longitudinalBool -eq 1 ]; then
+      echo "Logitudinal study detected."
+      # Check baseline directory existence
+      if [ ! -z `find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1` ]; then
+        echo "Baseline detected."
+        baselineRawDir=`find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1`
+        if [ $dirAlreadyExists -eq 1 ]; then
+          echo "The indiv_analysis directory already exists."
+          echo "Would you like to copy and possibly overwrite your Baseline indiv_analysis images?"
+          read overwriteBaseline
+          if [[ "$overwriteBaseline" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+            baselineBool=1
+          else
+            baselineBool=0
+          fi
         fi
+      else
+        baselineBool=0
       fi
-    else
-      baselineBool=0
-    fi
-    # Check post-treament directory existence
-    if [ ! -z `find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1` ]; then
-      echo "PostTX detected."
-      postTXRawDir=`find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1`
-      if [ $dirAlreadyExists -eq 1 ]; then
-        echo "The indiv_analysis directory already exists."
-        echo "Would you like to copy and possibly overwrite your PostTX indiv_analysis images?"
-        read overwritePostTX
-        if [[ "$overwritePostTX" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-          postTXBool=1
-        else
-          postTXBool=0
+      # Check post-treament directory existence
+      if [ ! -z `find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1` ]; then
+        echo "PostTX detected."
+        postTXRawDir=`find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1`
+        if [ $dirAlreadyExists -eq 1 ]; then
+          echo "The indiv_analysis directory already exists."
+          echo "Would you like to copy and possibly overwrite your PostTX indiv_analysis images?"
+          read overwritePostTX
+          if [[ "$overwritePostTX" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+            postTXBool=1
+          else
+            postTXBool=0
+          fi
         fi
+      else
+        postTXBool=0
       fi
-    else
-      postTXBool=0
-    fi
 
-    # Baseline Anatomical
-    if [ $baselineBool -eq 1 ]; then
-      anatDirArr=($(find $baselineRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
-      anatNum=1
-      if [ ! -d $particDir/anatomicals/Baseline ]; then
-        mkdir -p $particDir/anatomicals/Baseline
+      # Baseline Anatomical
+      if [ $baselineBool -eq 1 ]; then
+        anatDirArr=($(find $baselineRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
+        anatNum=1
+        if [ ! -d $particDir/anatomicals/Baseline ]; then
+          mkdir -p $particDir/anatomicals/Baseline
+        fi
+        for anatomical in ${anatDirArr[@]}; do
+          echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+          dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/Baseline "${anatomical}"
+          anatNum=$((anatNum+1))
+        done
       fi
-      for anatomical in ${anatDirArr[@]}; do
-        echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-        dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/Baseline "${anatomical}"
-        anatNum=$((anatNum+1))
-      done
-    fi
 
-    # PostTX Anatomical
-    if [ $postTXBool -eq 1 ]; then
-      anatDirArr=($(find $postTXRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
-      anatNum=1
-      if [ ! -d $particDir/anatomicals/PostTX ]; then
-        mkdir -p $particDir/anatomicals/PostTX
+      # PostTX Anatomical
+      if [ $postTXBool -eq 1 ]; then
+        anatDirArr=($(find $postTXRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
+        anatNum=1
+        if [ ! -d $particDir/anatomicals/PostTX ]; then
+          mkdir -p $particDir/anatomicals/PostTX
+        fi
+        for anatomical in ${anatDirArr[@]}; do
+          echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+          dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/PostTX "${anatomical}"
+          anatNum=$((anatNum+1))
+        done
       fi
-      for anatomical in ${anatDirArr[@]}; do
-        echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-        dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/PostTX "${anatomical}"
-        anatNum=$((anatNum+1))
-      done
-    fi
 
-    # Checks if bold array is empty
-    if [ ${#boldValues[@]} -eq 0 ]; then
-      echo "No BOLD tasks for $partic"
-    else
-      echo "Running BOLD for $partic"
-      # Run bold sorting
-      for bold_type in ${boldValues[*]}; do
-        # Checks postTX bool
+      # Checks if bold array is empty
+      if [ ${#boldValues[@]} -eq 0 ]; then
+        echo "No BOLD tasks for $partic"
+      else
+        echo "Running BOLD for $partic"
+        # Run bold sorting
+        for bold_type in ${boldValues[*]}; do
+          # Checks postTX bool
+          if [ $baselineBool -eq 1 ]; then
+            # Makes directory if it doesn't exist
+            if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
+              mkdir -p $particDir/bold/${bold_type}/Baseline
+            fi
+            # If task directory exists run dcm2niix on it
+            if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+              # Takes latest directory with bold
+              boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
+              dcm2niix -f "$partic"_${bold_type}_BV -o $particDir/bold/${bold_type}/Baseline "$boldDir"
+            else
+              echo "No data for $bold_type in baseline $partic directory."
+            fi
+          fi
+          # Checks postTX bool
+          if [ $postTXBool -eq 1 ]; then
+            # Makes directory if it doesn't exist
+            if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
+              mkdir -p $particDir/bold/${bold_type}/PostTX
+            fi
+            # If task directory exists run dcm2niix on it
+            if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+              boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
+              dcm2niix -f "$partic"_${bold_type}_PTX -o $particDir/bold/${bold_type}/PostTX "$boldDir"
+            else
+              echo "No data for $bold_type in post-treatment $partic directory."
+            fi
+          fi
+        done
+      fi
+
+      # Baseline fieldmaps
+      if [ $magPhaseBool -eq 1 ]; then
+        # Running for Mag (note the sort -r)
+        echo "Beginning Magnitude-Phase fieldmap conversion..."
+        # Baseline
         if [ $baselineBool -eq 1 ]; then
-          # Makes directory if it doesn't exist
-          if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
-            mkdir -p $particDir/bold/${bold_type}/Baseline
+          magDir=`find $baselineRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
+          if [ ! -d $particDir/fieldmaps/Baseline ]; then
+            mkdir -p $particDir/fieldmaps/Baseline
           fi
-          # If task directory exists run dcm2niix on it
-          if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
-            # Takes latest directory with bold
-            boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
-            dcm2niix -f "$partic"_${bold_type}_BV -o $particDir/bold/${bold_type}/Baseline "$boldDir"
-          else
-            echo "No data for $bold_type in baseline $partic directory."
-          fi
+          echo "Running dcm2nii for Mag fieldmaps"
+          dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/Baseline "$magDir"
         fi
-        # Checks postTX bool
+        # PostTX
         if [ $postTXBool -eq 1 ]; then
+          magDir=`find $postTXRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
+          if [ ! -d $particDir/fieldmaps/PostTX ]; then
+            mkdir -p $particDir/fieldmaps/PostTX
+          fi
+          echo "Running dcm2nii for Mag fieldmaps"
+          dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/PostTX "$magDir"
+        fi
+
+        # Running same system for Phase
+        # Baseline
+        if [ $baselineBool -eq 1 ]; then
+          phaseDir=`find $baselineRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
+          echo "Running dcm2nii for Mag fieldmaps"
+          dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/Baseline "$phaseDir"
+        fi
+        # PostTX
+        if [ $postTXBool -eq 1 ]; then
+          phaseDir=`find $postTXRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
+          echo "Running dcm2nii for Mag fieldmaps"
+          dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/PostTX "$phaseDir"
+        fi
+      else
+        echo "No Magnitude of Phase fieldmaps found for $partic"
+      fi
+
+      echo "Finished transfer and conversion for $partic"
+    # Non-logitudinal structuring
+    else
+      echo "Non-logitudinal study detected."
+      if [ $dirAlreadyExists -eq 1 ]; then
+        echo "The indiv_analysis directory already exists."
+        echo "Would you like to copy and possibly overwrite your indiv_analysis images?"
+        read overwritePartic
+        if [[ "$overwritePartic" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+          echo "Continuing with copy..."
+        else
+          particBool=0
+        fi
+      fi
+      anatDirArr=($(find $particRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
+      anatNum=1
+      if [ ! -d $particDir/anatomicals ]; then
+        mkdir -p $particDir/anatomicals
+      fi
+      for anatomical in ${anatDirArr[@]}; do
+        echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+        dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals "${anatomical}"
+        anatNum=$((anatNum+1))
+      done
+
+      if [ ${#boldValues[@]} -eq 0 ]; then
+        echo "No BOLD values for $partic"
+      else
+        echo "Running BOLD for $partic"
+        for bold_type in ${boldValues[*]}; do
           # Makes directory if it doesn't exist
-          if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
-            mkdir -p $particDir/bold/${bold_type}/PostTX
+          if [ ! -d $particDir/bold/${bold_type} ]; then
+            mkdir -p $particDir/bold/${bold_type}
           fi
           # If task directory exists run dcm2niix on it
-          if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
-            boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
-            dcm2niix -f "$partic"_${bold_type}_PTX -o $particDir/bold/${bold_type}/PostTX "$boldDir"
+          if [ ! -z `find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+            boldDir=`find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
+            dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type} "$boldDir"
           else
-            echo "No data for $bold_type in post-treatment $partic directory."
+            echo "No data for $bold_type in $partic directory."
           fi
-        fi
-      done
-    fi
-
-    # Baseline fieldmaps
-    if [ $magPhaseBool -eq 1 ]; then
-      # Running for Mag (note the sort -r)
-      echo "Beginning Magnitude-Phase fieldmap conversion..."
-      # Baseline
-      if [ $baselineBool -eq 1 ]; then
-        magDir=`find $baselineRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
-        if [ ! -d $particDir/fieldmaps/Baseline ]; then
-          mkdir -p $particDir/fieldmaps/Baseline
-        fi
-        echo "Running dcm2nii for Mag fieldmaps"
-        dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/Baseline "$magDir"
-      fi
-      # PostTX
-      if [ $postTXBool -eq 1 ]; then
-        magDir=`find $postTXRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
-        if [ ! -d $particDir/fieldmaps/PostTX ]; then
-          mkdir -p $particDir/fieldmaps/PostTX
-        fi
-        echo "Running dcm2nii for Mag fieldmaps"
-        dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/PostTX "$magDir"
+        done
       fi
 
-      # Running same system for Phase
-      # Baseline
-      if [ $baselineBool -eq 1 ]; then
-        phaseDir=`find $baselineRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
-        echo "Running dcm2nii for Mag fieldmaps"
-        dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/Baseline "$phaseDir"
-      fi
-      # PostTX
-      if [ $postTXBool -eq 1 ]; then
-        phaseDir=`find $postTXRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
-        echo "Running dcm2nii for Mag fieldmaps"
-        dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/PostTX "$phaseDir"
-      fi
-    else
-      echo "No Magnitude of Phase fieldmaps found for $partic"
-    fi
+      if [ $magPhaseBool -eq 1 ]; then
+        # Running for Mag (note the sort -r)
+        echo "Beginning Magnitude-Phase fieldmap conversion..."
 
-    echo "Finished transfer and conversion for $partic"
-  # Non-logitudinal structuring
-  else
-    echo "Non-logitudinal study detected."
-    if [ $dirAlreadyExists -eq 1 ]; then
-      echo "The indiv_analysis directory already exists."
-      echo "Would you like to copy and possibly overwrite your indiv_analysis images?"
-      read overwritePartic
-      if [[ "$overwritePartic" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        echo "Continuing with copy..."
-      else
-        particBool=0
-      fi
-    fi
-    anatDirArr=($(find $particRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
-    anatNum=1
-    if [ ! -d $particDir/anatomicals ]; then
-      mkdir -p $particDir/anatomicals
-    fi
-    for anatomical in ${anatDirArr[@]}; do
-      echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-      dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals "${anatomical}"
-      anatNum=$((anatNum+1))
-    done
-
-    if [ ${#boldValues[@]} -eq 0 ]; then
-      echo "No BOLD values for $partic"
-    else
-      echo "Running BOLD for $partic"
-      for bold_type in ${boldValues[*]}; do
-        # Makes directory if it doesn't exist
-        if [ ! -d $particDir/bold/${bold_type} ]; then
-          mkdir -p $particDir/bold/${bold_type}
+        magDir=`find $particRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
+        if [ ! -d $particDir/fieldmaps ]; then
+          mkdir -p $particDir/fieldmaps
         fi
-        # If task directory exists run dcm2niix on it
-        if [ ! -z `find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
-          boldDir=`find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
-          dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type} "$boldDir"
+        echo "Running dcm2nii for Mag fieldmaps"
+        dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps "$magDir"
+
+        if [ $magDir = `find $particRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1` ]; then
+          echo "Only one fieldmap was found. Verify files."
         else
-          echo "No data for $bold_type in $partic directory."
+          # Running same system for Phase
+          phaseDir=`find $particRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
+          echo "Running dcm2nii for Mag fieldmaps"
+          dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps "$phaseDir"
         fi
-      done
-    fi
-
-    if [ $magPhaseBool -eq 1 ]; then
-      # Running for Mag (note the sort -r)
-      echo "Beginning Magnitude-Phase fieldmap conversion..."
-
-      magDir=`find $particRawDir -maxdepth 1 -iname "*field*" -print | sort -r | tail -1`
-      if [ ! -d $particDir/fieldmaps ]; then
-        mkdir -p $particDir/fieldmaps
-      fi
-      echo "Running dcm2nii for Mag fieldmaps"
-      dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps "$magDir"
-
-      if [ $magDir = `find $particRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1` ]; then
-        echo "Only one fieldmap was found. Verify files."
       else
-        # Running same system for Phase
-        phaseDir=`find $particRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
-        echo "Running dcm2nii for Mag fieldmaps"
-        dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps "$phaseDir"
+        echo "No Magnitude or Phase fieldmaps found for $partic"
       fi
-    else
-      echo "No Magnitude or Phase fieldmaps found for $partic"
+      echo "Finished transfer and conversion for $partic"
     fi
-    echo "Finished transfer and conversion for $partic"
   fi
-
 done
