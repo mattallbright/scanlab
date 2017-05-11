@@ -200,7 +200,7 @@ for partic in ${particArr[*]}; do
   HermesFetch $partic
 
   if [ $dataNotFound -eq 1 ]; then
-    "No data found for $partic."
+    echo "No Osirix data found for $partic."
     break
   fi
 
