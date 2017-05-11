@@ -124,13 +124,14 @@ HermesFetch(){
         osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
         echo "Copying data from shared mount..."
         cp -rv "$osirixDir/." $particRawDir/
+        dataNotFound=0
       else
         echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
-        dataNotFound=0
+        dataNotFound=1
       fi
     else
       echo "Data will not be modified. Continuing with structure..."
-      dataNotFound=1
+      dataNotFound=0
     fi
   fi
 }
