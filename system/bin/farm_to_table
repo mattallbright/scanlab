@@ -145,17 +145,17 @@ echo "other real cool software."
 
 echo "First, we need a study."
 # New menu variables
-# studySelectArr=(/data/* "New study")
+studySelectArr=(/data/* "New study")
 
 # Create menu
 select studyDir in "${studySelectArr[@]}"; do
   case $studyDir in
-    # "New study")
-    #   echo "Creating new study..."
-    #   echo "This system is not implemented yet."
-    #   newStudyBool=1
-    #   break
-    #   ;;
+    "New study")
+      echo "Creating new study..."
+      echo "This system is not implemented yet."
+      newStudyBool=1
+      break
+      ;;
     *)
       echo "Selected $studyDir"
       newStudyBool=0
