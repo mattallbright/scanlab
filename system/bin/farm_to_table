@@ -34,7 +34,7 @@ getInfo() {
   elif [ $study = "blt" ]; then
     longitudinalBool=1
     studyPrefix=$study
-    boldValues=("rest" "MSIT" "NBACK")
+    boldValues=("resting" "MSIT" "NBACK")
     magPhaseBool=0
     echo "$study is not set up properly with this system."
     echo "Contact a system administrator."
@@ -57,7 +57,7 @@ getInfo() {
   elif [ $study = "emot" ]; then
     longitudinalBool=0
     studyPrefix=$study
-    boldValues=("anger" "EmotDist" "faceint" "fear" "food" "happy" "memsupp" "sceneint" "trust")
+    boldValues=("anger" "EmotDist" "faceint" "fear" "food" "happy" "memsupp" "sceneint" "trust" "resting")
     magPhaseBool=0
     echo "$study is not set up properly with this system."
     echo "Contact a system administrator."
@@ -79,7 +79,8 @@ getInfo() {
 # Just grabs data from Hermes
 HermesFetch(){
   # Bunch of error checking before forcing a fetch
-  if [ -d /Hermes ]; then
+  hermes="/Hermes"
+  if [ -d $hermes ]; then
     echo "Hermes directory doesn't exist!"
     exit 1
   elif [ "$(ls -A /Hermes)" ]; then
