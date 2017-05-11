@@ -101,9 +101,13 @@ HermesFetch(){
     # Strip partic to just the numbers
     particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
     # Find folder where number pattern is present
-    osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
-    echo "Copying data from shared mount..."
-    cp -a "$osirixDir/." $particRawDir/
+    if [ ! -z `find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` ]; then
+      osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
+      echo "Copying data from shared mount..."
+      cp -a "$osirixDir/." $particRawDir/
+    else
+      echo "No data found for $partic"
+    fi
   else
     echo "The RAW directory already exists for this user. Would you like to copy"
     echo "anyway? Typically RAW_data can be overwritten without consequence."
@@ -114,9 +118,13 @@ HermesFetch(){
       # Strip partic to just the numbers
       particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
       # Find folder where number pattern is present
-      osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
-      echo "Copying data from shared mount..."
-      cp -R "$osirixDir/." $particRawDir/
+      if [ ! -z `find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` ]; then
+        osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
+        echo "Copying data from shared mount..."
+        cp -R "$osirixDir/." $particRawDir/
+      else
+        echo "No data found for $partic"
+      fi
     else
       echo "Data will not be modified. Continuing with structure..."
     fi
@@ -168,57 +176,16 @@ fi
 study=${studyDir#*/data/}
 getInfo $study
 
-echo "Next, we need participants."
-# New menu variables
-particSelectArr=($studyDir/RAW_data/* "New participant" "Multiple participants")
-
-# Create menu
-select particSelect in "${particSelectArr[@]}"; do
-  case $particSelect in
-    "New participant")
-      echo "Creating new participant..."
-      newParticBool=1
-      break
-      ;;
-    "Multiple participants")
-      echo "Selected mutliple participants"
-      multiParticBool=1
-      break
-      ;;
-    *)
-      echo "Selected $particSelect"
-      newParticBool=0
-      multiParticBool=0
-      break
-      ;;
-  esac
-done
-# Remove now un-utilized option
-
 # Init array
 particArr=()
 
-# Other options setting up proper partic naming conventions
-if [ $newParticBool -eq 1 ]; then
-  echo "What is the number of the new participant you would like to process?"
-  echo "Numbers are three digits (e.g. 005 or 076)."
-  read newPartic
-  partic="$studyPrefix"_"$newPartic"
-  particArr=("$partic")
-elif [ $multiParticBool -eq 1 ]; then
-  echo "What are the numbers of the participants you would like to process?"
-  echo "Separate each with a space (e.g. 005 006 016 185)."
-  read particNums # Pull the numbers as delimited variables
-  particNumArr=($particNums) # Shove said numbers into an array
-  for partic in ${particNumArr[*]}; do
-    particArr+=("$studyPrefix"_"$partic") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
-  done
-else
-  particRaw=${particSelect#*/RAW_data/}
-  particNumber=`echo $particSelect | grep -Eo '[0-9][0-9][0-9]'`
-  partic="$studyPrefix"_"$particNumber"
-  particArr=("$partic")
-fi
+echo "What are the number(s) of the participants you would like to process?"
+echo "Separate each with a space (e.g. 005 006 016 185)."
+read particNums # Pull the numbers as delimited variables
+particNumArr=($particNums) # Shove said numbers into an array
+for partic in ${particNumArr[*]}; do
+  particArr+=("$studyPrefix"_"$partic") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+done
 
 # Get data from Hermes for the participant(s)
 for partic in ${particArr[*]}; do
@@ -236,7 +203,7 @@ for partic in ${particArr[*]}; do
   if [ $longitudinalBool -eq 1 ]; then
     echo "Logitudinal study detected."
     # Check baseline directory existence
-    if [ `find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1` ]; then
+    if [ ! -z `find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1` ]; then
       echo "Baseline detected."
       baselineRawDir=`find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1`
       baselineBool=1
@@ -244,7 +211,7 @@ for partic in ${particArr[*]}; do
       baselineBool=0
     fi
     # Check post-treament directory existence
-    if [ `find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1` ]; then
+    if [ ! -z `find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1` ]; then
       echo "PostTX detected."
       postTXRawDir=`find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1`
       postTXBool=1
@@ -254,7 +221,8 @@ for partic in ${particArr[*]}; do
 
     # Baseline Anatomical
     if [ $baselineBool -eq 1 ]; then
-      anatDirArr=("$(ls -d $baselineRawDir/[tT]1_[mM][pP][rR][aA][gG][eE]_1[mM][mM]*/)")
+      IFS=$'\n'
+      anatDirArray=($(find $baselineRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
       anatNum=1
       if [ ! -d $particDir/anatomicals/Baseline ]; then
         mkdir -p $particDir/anatomicals/Baseline
@@ -268,7 +236,8 @@ for partic in ${particArr[*]}; do
 
     # PostTX Anatomical
     if [ $postTXBool -eq 1 ]; then
-      anatArr=("$(ls -d $postTXRawDir/[tT]1_[mM][pP][rR][aA][gG][eE]_1[mM][mM]*/)")
+      IFS=$'\n'
+      anatDirArray=($(find $postTXRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
       anatNum=1
       if [ ! -d $particDir/anatomicals/PostTX ]; then
         mkdir -p $particDir/anatomicals/PostTX
@@ -293,7 +262,7 @@ for partic in ${particArr[*]}; do
             mkdir -p $particDir/bold/${bold_type}/Baseline
           fi
           # If task directory exists run dcm2niix on it
-          if [ `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+          if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
             # Takes latest directory with bold
             boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
             dcm2niix -f "$partic"_${boldtype}_BV -o $particDir/bold/${bold_type}/Baseline "$boldDir"
@@ -308,7 +277,7 @@ for partic in ${particArr[*]}; do
             mkdir -p $particDir/bold/${bold_type}/PostTX
           fi
           # If task directory exists run dcm2niix on it
-          if [ `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+          if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
             boldDir=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
             dcm2niix -f "$partic"_${boldtype}_PTX -o $particDir/bold/${bold_type}/PostTX "$boldDir"
           else
@@ -361,7 +330,8 @@ for partic in ${particArr[*]}; do
   # Non-logitudinal structuring
   else
     echo "Non-logitudinal study detected."
-    anatDirArr=("$(ls -d $particRawDir/[tT]1_[mM][pP][rR][aA][gG][eE]_1[mM][mM]*/)")
+    IFS=$'\n'
+    anatDirArray=($(find $particRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
     anatNum=1
     if [ ! -d $particDir/anatomicals ]; then
       mkdir -p $particDir/anatomicals
@@ -381,7 +351,7 @@ for partic in ${particArr[*]}; do
           mkdir -p $particDir/bold/${bold_type}
         fi
         # If task directory exists run dcm2niix on it
-        if [ `find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+        if [ ! -z `find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
           boldDir=`find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
           dcm2niix -f "$partic"_${boldtype} -o $particDir/bold/${bold_type} "$boldDir"
         else
