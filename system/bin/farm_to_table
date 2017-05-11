@@ -95,13 +95,13 @@ HermesFetch(){
   fi
 
   if [ ! -d $particRawDir ]; then
-    mkdir -p $particRawDir
     # Fetch data from RAW for $partic
     echo "Locating data for $partic..."
     # Strip partic to just the numbers
     particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
     # Find folder where number pattern is present
     if [ ! -z `find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` ]; then
+      mkdir -p $particRawDir
       osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
       echo "Copying data from shared mount..."
       cp -a "$osirixDir/." $particRawDir/
