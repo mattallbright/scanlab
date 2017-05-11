@@ -200,7 +200,9 @@ for partic in ${particArr[*]}; do
   HermesFetch $partic
 
   if [ $dataNotFound -eq 1 ]; then
-    echo "No Osirix data found for $partic."
+    echo "-----------------------------------------------"
+    echo "No Osirix data found for $partic. Moving on..."
+    echo "-----------------------------------------------"
   else
     # Create directory structure
     particDir=$studyDir/indiv_analysis/$partic
@@ -424,7 +426,11 @@ for partic in ${particArr[*]}; do
       else
         echo "No Magnitude or Phase fieldmaps found for $partic"
       fi
+      echo "-----------------------------------------------"
       echo "Finished transfer and conversion for $partic"
+      echo "-----------------------------------------------"
     fi
   fi
 done
+
+echo "Finished all participants."
