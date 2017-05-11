@@ -259,7 +259,7 @@ for partic in ${particArr[*]}; do
       if [ ! -d $particDir/anatomicals/Baseline ]; then
         mkdir -p $particDir/anatomicals/Baseline
       fi
-      for anatomical in ${anatDirArr[*]}; do
+      for anatomical in ${anatDirArr[@]}; do
         echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
         dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/Baseline "${anatomical}"
         anatNum=$((anatNum+1))
@@ -273,7 +273,7 @@ for partic in ${particArr[*]}; do
       if [ ! -d $particDir/anatomicals/PostTX ]; then
         mkdir -p $particDir/anatomicals/PostTX
       fi
-      for anatomical in ${anatDirArr[*]}; do
+      for anatomical in ${anatDirArr[@]}; do
         echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
         dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/PostTX "${anatomical}"
         anatNum=$((anatNum+1))
@@ -366,7 +366,7 @@ for partic in ${particArr[*]}; do
     if [ ! -d $particDir/anatomicals ]; then
       mkdir -p $particDir/anatomicals
     fi
-    for anatomical in ${anatDirArr[*]}; do
+    for anatomical in ${anatDirArr[@]}; do
       echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
       dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals "${anatomical}"
       anatNum=$((anatNum+1))
