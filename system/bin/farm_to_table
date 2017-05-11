@@ -160,6 +160,7 @@ if [ $newStudyBool -eq 1 ]; then
     echo "New study system not implemented"
     exit 1
   fi
+fi
 
 study=${studyDir#*/data/}
 getInfo $study
