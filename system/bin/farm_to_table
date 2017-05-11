@@ -15,7 +15,7 @@ getInfo() {
   if [ $study = "tbimodel" ] || [ $study = "TBIMODEL" ]; then
     longitudinalBool=0
     # Forcing new prefix to TBIMODEL_000 standard
-    studyPrefix=$study
+    studyPrefix="TM"
     boldValues=("resting")
     magPhaseBool=1
   elif [ $study = "BLHC" ]; then
@@ -260,9 +260,9 @@ for partic in ${particArr[*]}; do
         mkdir -p $particDir/anatomicals/Baseline
       fi
       for anatomical in ${anatDirArr[*]}; do
-        echo "Running dcm2nii for Anatomical $anatNum"
+        echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
         dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/Baseline "${anatomical}"
-        anatNum=$(($anatNum+1))
+        anatNum=$((anatNum+1))
       done
     fi
 
@@ -274,9 +274,9 @@ for partic in ${particArr[*]}; do
         mkdir -p $particDir/anatomicals/PostTX
       fi
       for anatomical in ${anatDirArr[*]}; do
-        echo "Running dcm2nii for Anatomical $anatNum"
+        echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
         dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/PostTX "${anatomical}"
-        anatNum=$(($anatNum+1))
+        anatNum=$((anatNum+1))
       done
     fi
 
@@ -367,9 +367,9 @@ for partic in ${particArr[*]}; do
       mkdir -p $particDir/anatomicals
     fi
     for anatomical in ${anatDirArr[*]}; do
-      echo "Running dcm2nii for Anatomical $anatNum"
+      echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
       dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals "${anatomical}"
-      anatNum=$anatNum+1
+      anatNum=$((anatNum+1))
     done
 
     if [ ${#boldValues[@]} -eq 0 ]; then
