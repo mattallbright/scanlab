@@ -20,7 +20,7 @@ getInfo() {
     magPhaseBool=1
   elif [ $study = "BLHC" ]; then
     longitudinalBool=0
-    studyPrefix=$study
+    studyPrefix="BLHC"
     boldValues=("resting" "MSIT" "NBACK")
     magPhaseBool=0
     echo "$study is not set up properly with this system."
@@ -28,12 +28,12 @@ getInfo() {
     exit 1
   elif [ $study = "BL2" ]; then
     longitudinalBool=1
-    studyPrefix=$study
+    studyPrefix="BL2_mTBI_"
     boldValues=("resting" "MSIT" "NBACK")
     magPhaseBool=0
   elif [ $study = "blt" ]; then
     longitudinalBool=1
-    studyPrefix=$study
+    studyPrefix="BL"
     boldValues=("resting" "MSIT" "NBACK")
     magPhaseBool=0
     echo "$study is not set up properly with this system."
@@ -41,22 +41,22 @@ getInfo() {
     exit 1
   elif [ $study = "BLPTSD" ]; then
     longitudinalBool=1
-    studyPrefix=$study
+    studyPrefix="BLPTSD_"
     boldValues=("resting" "ancitipation" "BMAT_fear" "BMAT_happy" "dot_probe" "fear_conditioning")
     magPhaseBool=0
   elif [ $study = "EWM" ]; then
     longitudinalBool=0
-    studyPrefix=$study
+    studyPrefix="EWM_"
     boldValues=("resting" "Faces" "IAPS")
     magPhaseBool=0
   elif [ $study = "EIT" ]; then
     longitudinalBool=0
-    studyPrefix=$study
+    studyPrefix="EIT_"
     boldValues=()
     magPhaseBool=0
   elif [ $study = "emot" ]; then
     longitudinalBool=0
-    studyPrefix=$study
+    studyPrefix="emot"
     boldValues=("anger" "EmotDist" "faceint" "fear" "food" "happy" "memsupp" "sceneint" "trust" "resting")
     magPhaseBool=0
     echo "$study is not set up properly with this system."
@@ -64,7 +64,7 @@ getInfo() {
     exit 1
   elif [ $study = "ICBT" ]; then
     longitudinalBool=1
-    studyPrefix=$study
+    studyPrefix="ICBT"
     boldValues=("EIT")
     magPhaseBool=0
     echo "$study is not set up properly with this system."
@@ -186,7 +186,7 @@ echo "Separate each with a space (e.g. 005 006 016 185)."
 read particNums # Pull the numbers as delimited variables
 particNumArr=($particNums) # Shove said numbers into an array
 for partic in ${particNumArr[*]}; do
-  particArr+=("$studyPrefix"_"$partic") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+  particArr+=("$studyPrefix$partic") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
 done
 
 # Get data from Hermes for the participant(s)
@@ -223,7 +223,7 @@ for partic in ${particArr[*]}; do
 
     # Baseline Anatomical
     if [ $baselineBool -eq 1 ]; then
-      anatDirArray=($(find $baselineRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
+      anatDirArr=($(find $baselineRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
       anatNum=1
       if [ ! -d $particDir/anatomicals/Baseline ]; then
         mkdir -p $particDir/anatomicals/Baseline
@@ -237,7 +237,7 @@ for partic in ${particArr[*]}; do
 
     # PostTX Anatomical
     if [ $postTXBool -eq 1 ]; then
-      anatDirArray=($(find $postTXRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
+      anatDirArr=($(find $postTXRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
       anatNum=1
       if [ ! -d $particDir/anatomicals/PostTX ]; then
         mkdir -p $particDir/anatomicals/PostTX
@@ -331,7 +331,7 @@ for partic in ${particArr[*]}; do
   # Non-logitudinal structuring
   else
     echo "Non-logitudinal study detected."
-    anatDirArray=($(find $particRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
+    anatDirArr=($(find $particRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
     anatNum=1
     if [ ! -d $particDir/anatomicals ]; then
       mkdir -p $particDir/anatomicals
