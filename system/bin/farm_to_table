@@ -79,15 +79,14 @@ getInfo() {
 # Just grabs data from Hermes
 HermesFetch(){
   # Bunch of error checking before forcing a fetch
-  hermes="/Hermes"
-  if [ -d $hermes ]; then
+  if [ -d "/Hermes" ]; then
     echo "Hermes directory doesn't exist!"
     exit 1
   elif [ "$(ls -A /Hermes)" ]; then
     echo "Hermes isn't mounted properly!"
     exit 1
   fi
-  if [ -d $studyDir ]; then
+  if [ -d "$studyDir" ]; then
     echo "$study directory doesn't exist!"
     exit 1
   elif [ "$(ls -A $studyDir)" ]; then
@@ -95,7 +94,7 @@ HermesFetch(){
     exit 1
   fi
 
-  if [ ! -d $particRawDir ]; then
+  if [ ! -d "$particRawDir" ]; then
     mkdir -p $particRawDir
     # Fetch data from RAW for $partic
     echo "Locating data for $partic..."
@@ -151,9 +150,10 @@ done
 
 if [ $newStudyBool -eq 1 ]; then
   echo "What is the name of the study you would like to create? (e.g. EIT, tbimodel)"
+  echo "Please refrain from using spaces or non-letter characters."
   read study
   studyDir="/data/$study"
-  if [ -d /data/$study ]; then
+  if [ -d "/data/$study" ]; then
     echo "Study already exists!"
     exit 1
   else
