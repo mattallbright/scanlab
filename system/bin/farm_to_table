@@ -183,6 +183,8 @@ select particSelect in "${particSelectArr[@]}"; do
       ;;
     *)
       echo "Selected $particSelect"
+      newParticBool=0
+      multiParticBool=0
       break
       ;;
   esac
