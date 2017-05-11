@@ -201,9 +201,7 @@ for partic in ${particArr[*]}; do
 
   if [ $dataNotFound -eq 1 ]; then
     echo "No Osirix data found for $partic."
-    break
   else
-
     # Create directory structure
     particDir=$studyDir/indiv_analysis/$partic
     if [ ! -d $particDir ]; then
