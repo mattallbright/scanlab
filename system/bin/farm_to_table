@@ -423,7 +423,7 @@ for partic in ${particArr[*]}; do
         fi
       else
         echo "DTI images are not taken for $study"
-
+      fi
       echo "Finished transfer and conversion for $partic"
     # Non-logitudinal structuring
     else
