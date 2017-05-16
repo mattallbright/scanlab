@@ -385,7 +385,7 @@ for partic in ${particArr[*]}; do
               mkdir -p $particDir/dti/Baseline
             fi
             echo "Running dcm2nii for DTI A -> P"
-            dcm2niix -f "$partic"_A-P -o $particDir/dti "$dtiAPBaselineDir"
+            dcm2niix -f "$partic"_A-P -o $particDir/dti/Baseline "$dtiAPBaselineDir"
 
             # Running same system for DTI P -> A
             dtiPABaselineDir=`find $baselineRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1`
@@ -393,7 +393,7 @@ for partic in ${particArr[*]}; do
               echo "A -> P and P -> A mismatch for $partic Baseline, verify folders exist."
             else
               echo "Running dcm2nii for DTI P -> A"
-              dcm2niix -f "$partic"_P-A -o $particDir/dti "$dtiPABaselineDir"
+              dcm2niix -f "$partic"_P-A -o $particDir/dti/Baseline "$dtiPABaselineDir"
             fi
           else
             echo "No DTI images found for $partic Baseline"
@@ -407,7 +407,7 @@ for partic in ${particArr[*]}; do
               mkdir -p $particDir/dti/PostTX
             fi
             echo "Running dcm2nii for DTI A -> P"
-            dcm2niix -f "$partic"_A-P -o $particDir/dti "$dtiAPPostTXDir"
+            dcm2niix -f "$partic"_A-P -o $particDir/dti/PostTX "$dtiAPPostTXDir"
 
             # Running same system for DTI P -> A
             dtiPAPostTXDir=`find $postTXRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1`
@@ -415,7 +415,7 @@ for partic in ${particArr[*]}; do
               echo "A -> P and P -> A mismatch for $partic PostTX, verify folders exist."
             else
               echo "Running dcm2nii for DTI P -> A"
-              dcm2niix -f "$partic"_P-A -o $particDir/dti "$dtiPAPostTXDir"
+              dcm2niix -f "$partic"_P-A -o $particDir/dti/PostTX "$dtiPAPostTXDir"
             fi
           else
             echo "No DTI images found for $partic PostTX"
