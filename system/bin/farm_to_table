@@ -198,7 +198,8 @@ echo "Separate each with a space (e.g. 005 006 016 185)."
 read particNums # Pull the numbers as delimited variables
 particNumArr=($particNums) # Shove said numbers into an array
 for partic in ${particNumArr[*]}; do
-  particArr+=("$studyPrefix$partic") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+  particNum=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
+  particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
 done
 
 IFS=$'\n'
