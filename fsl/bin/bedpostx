@@ -222,8 +222,8 @@ if [ ! -d $subjdir ]; then
 fi
 
 if [ ! -e ${subjdir}/bvecs ]; then
-  if [ -e ${subjdir}/bvecs.txt ]; then
-    mv ${subjdir}/bvecs.txt ${subjdir}/bvecs
+  if [ "$(ls ${subjdir}/*bvec* | wc -l)" -ge "1" ]; then
+    mv ${subjdir}/*bvec* ${subjdir}/bvecs
   else
     echo "${subjdir}/bvecs not found"
     exit 1
@@ -231,8 +231,8 @@ if [ ! -e ${subjdir}/bvecs ]; then
 fi
 
 if [ ! -e ${subjdir}/bvals ]; then
-  if [ -e ${subjdir}/bvals.txt ]; then
-    mv ${subjdir}/bvals.txt ${subjdir}/bvals
+  if [ "$(ls ${subjdir}/*bval* | wc -l)" -ge "1" ]; then
+    mv ${subjdir}/*bval* ${subjdir}/bvals
   else
     echo "${subjdir}/bvals not found"
     exit 1
