@@ -396,8 +396,8 @@ for partic in ${particArr[*]}; do
               echo "Running dcm2nii for DTI P -> A"
               dcm2niix -f "$partic"_P2A -o $particDir/dti/Baseline "$dtiPABaselineDir"
             fi
-            bvalBaseline=`find $particDir/dti/Baseline -maxdepth 1 -iname "*bval" -print | sort | tail -1`
-            bvecBaseline=`find $particDir/dti/Baseline -maxdepth 1 -iname "*bvec" -print | sort | tail -1`
+            bvalBaseline=`find $particDir/dti/Baseline -maxdepth 1 -iname "*bval*" -print | sort | tail -1`
+            bvecBaseline=`find $particDir/dti/Baseline -maxdepth 1 -iname "*bvec*" -print | sort | tail -1`
             mv $bvalBaseline $particDir/dti/Baseline/bvals
             mv $bvecBaseline $particDir/dti/Baseline/bvecs
           else
@@ -422,8 +422,8 @@ for partic in ${particArr[*]}; do
               echo "Running dcm2nii for DTI P -> A"
               dcm2niix -f "$partic"_P2A -o $particDir/dti/PostTX "$dtiPAPostTXDir"
             fi
-            bvalPostTX=`find $particDir/dti/PostTX -maxdepth 1 -iname "*bval" -print | sort | tail -1`
-            bvecPostTX=`find $particDir/dti/PostTX -maxdepth 1 -iname "*bvec" -print | sort | tail -1`
+            bvalPostTX=`find $particDir/dti/PostTX -maxdepth 1 -iname "*bval*" -print | sort | tail -1`
+            bvecPostTX=`find $particDir/dti/PostTX -maxdepth 1 -iname "*bvec*" -print | sort | tail -1`
             mv $bvalPostTX $particDir/dti/PostTX/bvals
             mv $bvecPostTX $particDir/dti/PostTX/bvecs
           else
@@ -523,8 +523,8 @@ for partic in ${particArr[*]}; do
             echo "Running dcm2nii for DTI P -> A"
             dcm2niix -f "$partic"_P2A -o $particDir/dti "$dtiPADir"
           fi
-          bval=`find $particDir/dti -maxdepth 1 -iname "*bval" -print | sort | tail -1`
-          bvec=`find $particDir/dti -maxdepth 1 -iname "*bvec" -print | sort | tail -1`
+          bval=`find $particDir/dti -maxdepth 1 -iname "*bval*" -print | sort | tail -1`
+          bvec=`find $particDir/dti -maxdepth 1 -iname "*bvec*" -print | sort | tail -1`
           mv $bval $particDir/dti/bvals
           mv $bvec $particDir/dti/bvecs
         else
