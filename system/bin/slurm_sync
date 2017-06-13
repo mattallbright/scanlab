@@ -14,9 +14,9 @@ echo "Synching slurm.conf files."
 rsync -ar /etc/slurm-llnl/slurm.conf root@empire:/etc/slurm-llnl/
 rsync -ar /etc/slurm-llnl/slurm.conf root@jedi:/etc/slurm-llnl/
 rsync -ar /etc/slurm-llnl/slurm.conf root@hyperion:/etc/slurm-llnl/
-# rsync -ar /etc/slurm-llnl/slurm.conf root@norman:/etc/slurm-llnl/
-# rsync -ar /etc/slurm-llnl/slurm.conf root@wilbur:/etc/slurm-llnl/
-# rsync -ar /etc/slurm-llnl/slurm.conf root@rufus:/etc/slurm-llnl/
+rsync -ar /etc/slurm-llnl/slurm.conf root@norman:/etc/slurm-llnl/
+rsync -ar /etc/slurm-llnl/slurm.conf root@wilbur:/etc/slurm-llnl/
+rsync -ar /etc/slurm-llnl/slurm.conf root@rufus:/etc/slurm-llnl/
 
 /opt/cloud/staging/system/bin/slurm_reset
 

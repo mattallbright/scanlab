@@ -10,9 +10,9 @@ rsync -ar root@hope:/var/log/slurm-llnl/ /data/var/slurm/logs/hope/
 rsync -ar root@empire:/var/log/slurm-llnl/ /data/var/slurm/logs/empire/
 rsync -ar root@jedi:/var/log/slurm-llnl/ /data/var/slurm/logs/jedi/
 rsync -ar root@hyperion:/var/log/slurm-llnl/ /data/var/slurm/logs/hyperion/
-# rsync -ar root@norman:/var/log/slurm-llnl/ /data/var/slurm/logs/norman/
-# rsync -ar root@wilbur:/var/log/slurm-llnl/ /data/var/slurm/logs/wilbur/
-# rsync -ar root@rufus:/var/log/slurm-llnl/ /data/var/slurm/logs/rufus/
+rsync -ar root@norman:/var/log/slurm-llnl/ /data/var/slurm/logs/norman/
+rsync -ar root@wilbur:/var/log/slurm-llnl/ /data/var/slurm/logs/wilbur/
+rsync -ar root@rufus:/var/log/slurm-llnl/ /data/var/slurm/logs/rufus/
 chmod -R 777 /data/var/slurm/logs/
 
 nautilus /data/var/slurm/logs
