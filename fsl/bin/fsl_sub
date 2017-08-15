@@ -507,21 +507,19 @@ case $METHOD in
        if [ "x$tasks" = "x" ] ; then
          if [ $scriptmode -eq 0 ] ; then
            slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority --wrap=\"$@\""
-           echo "Script 0" $slurm_command
            # non-used options:
            # all used currently
          elif [ $scriptmode -eq 2 ] ; then
            # srun for testing with -R option
            slurm_command="srun $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority \"$@\""
-           echo "Script 2" $slurm_command
          else
            slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority \"$@\""
-           echo "Script 1" $slurm_command
          fi
          # Verbose clause
          if [ $verbose -eq 1 ] ; then
            echo slurm_command: $slurm_command >&2
            echo executing: $@ >&2
+           echo scriptmode: $scriptmode >&2
          fi
          exec $slurm_command $@
          sleep 2
@@ -538,6 +536,7 @@ case $METHOD in
            echo slurm_command: $slurm_command >&2
            echo executing: $@ >&2
            echo control file: $taskfile >&2
+           echo scriptmode: $scriptmode >&2
          fi
          # Here bash will pipe in everything after EOF to slurm_command, executing tasks one by one
          exec $slurm_command <<EOF
