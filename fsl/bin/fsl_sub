@@ -512,8 +512,10 @@ case $METHOD in
          elif [ $scriptmode -eq 2 ] ; then
            # srun for testing with -R option
            slurm_command="srun $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority \"$@\""
+           echo "Script 2" $slurm_command
          else
            slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority \"$@\""
+           echo "Script 1" $slurm_command
          fi
          # Verbose clause
          if [ $verbose -eq 1 ] ; then
