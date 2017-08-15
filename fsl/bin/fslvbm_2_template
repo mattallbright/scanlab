@@ -140,7 +140,7 @@ done
 \$FSLDIR/bin/fslmaths template_GM -add template_GM_flipped -div 2 template_GM_init
 stage_tpl3
 chmod +x fslvbm2c
-echo "DEBUG 143"
+echo "fsl_sub -j $fslvbm2b_id -T 15 -N fslvbm2c ./fslvbm2c -v"
 fslvbm2c_id=`fsl_sub -j $fslvbm2b_id -T 15 -N fslvbm2c ./fslvbm2c -v | grep -oP "Submitted batch job\s+\K\w+"`
 echo Creating first-pass template: ID=$fslvbm2c_id
 
