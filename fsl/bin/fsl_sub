@@ -507,6 +507,7 @@ case $METHOD in
        if [ "x$tasks" = "x" ] ; then
          if [ $scriptmode -eq 0 ] ; then
            slurm_command="sbatch --get-user-env $queueCmd $pe_option $MailOpts $JobName $logOpts $slurm_arch $slurm_hold $slurm_priority --wrap=\"$@\""
+           echo "Script 0" $slurm_command
            # non-used options:
            # all used currently
          elif [ $scriptmode -eq 2 ] ; then
