@@ -540,7 +540,7 @@ case $METHOD in
            #echo executing: $@ >&2
            echo control file: $taskfile >&2
            echo scriptmode: $scriptmode >&2
-           command=\`cat "$taskfile" | head -\$SLURM_ARRAY_TASK_ID | tail -1\`
+           command=`cat "$taskfile" | head -$SLURM_ARRAY_TASK_ID | tail -1`
            echo $command
          fi
          # Here bash will pipe in everything after EOF to slurm_command, executing tasks one by one
