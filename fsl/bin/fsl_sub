@@ -542,10 +542,10 @@ case $METHOD in
            echo scriptmode: $scriptmode >&2
          fi
          # Here bash will pipe in everything after EOF to slurm_command, executing tasks one by one
-         exec $slurm_command <<EOF
+         exec $slurm_command && echo $slurm_command >&2 <<EOF
 #!/bin/bash
 command=\`cat "$taskfile" | head -\$SLURM_ARRAY_TASK_ID | tail -1\`
-exec '\$command'
+exec \$command
 EOF
         # Chill for a bit
         sleep 2
