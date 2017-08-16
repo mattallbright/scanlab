@@ -537,8 +537,11 @@ case $METHOD in
          # Verbose clause for tasks system
          if [ $verbose -eq 1 ] ; then
            echo slurm_command: $slurm_command >&2
+           #echo executing: $@ >&2
            echo control file: $taskfile >&2
            echo scriptmode: $scriptmode >&2
+           command=`cat "$taskfile" | head -$SLURM_ARRAY_TASK_ID | tail -1`
+           echo task example: $command >&2
          fi
          # Here bash will pipe in everything after EOF to slurm_command, executing tasks one by one
          exec $slurm_command <<EOF
