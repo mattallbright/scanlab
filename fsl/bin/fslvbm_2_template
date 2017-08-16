@@ -97,6 +97,7 @@ if [ $1 = -a ] ; then
 fi
 
 cd struc
+working_dir=`pwd`
 
 T=${FSLDIR}/data/standard/tissuepriors/avg152T1_gray
 
@@ -108,7 +109,7 @@ for g in `$FSLDIR/bin/imglob *_struc.*` ; do
           $FSLDIR/bin/immv ${g}_brain_pve_1 ${g}_GM" >> fslvbm2a
 done
 chmod a+x fslvbm2a
-fslvbm2a_id=`$FSLDIR/bin/fsl_sub -v -T 30 -N fslvbm2a -t ./fslvbm2a | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm2a_id=`$FSLDIR/bin/fsl_sub -v -T 30 -N fslvbm2a -t $working_dir/fslvbm2a | grep -oP "Submitted batch job\s+\K\w+"`
 echo Running segmentation: ID=$fslvbm2a_id
 
 ### Estimation of the registration parameters of GM to grey matter standard template
@@ -117,7 +118,7 @@ for g in `$FSLDIR/bin/imglob *_struc.*` ; do
   echo "${FSLDIR}/bin/fsl_reg ${g}_GM $T ${g}_GM_to_T -a" >> fslvbm2b
 done
 chmod a+x fslvbm2b
-fslvbm2b_id=`$FSLDIR/bin/fsl_sub -v -j $fslvbm2a_id -T $HOWLONG -N fslvbm2b -t ./fslvbm2b | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm2b_id=`$FSLDIR/bin/fsl_sub -v -j $fslvbm2a_id -T $HOWLONG -N fslvbm2b -t $working_dir/fslvbm2b | grep -oP "Submitted batch job\s+\K\w+"`
 echo Running initial registration: ID=$fslvbm2b_id
 
 ### Creation of the GM template by averaging all (or following the template_list for) the GM_nl_0 and GM_xflipped_nl_0 images
@@ -140,7 +141,7 @@ done
 \$FSLDIR/bin/fslmaths template_GM -add template_GM_flipped -div 2 template_GM_init
 stage_tpl3
 chmod +x fslvbm2c
-fslvbm2c_id=`fsl_sub -F -v -j $fslvbm2b_id -T 15 -N fslvbm2c ./fslvbm2c | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm2c_id=`fsl_sub -F -v -j $fslvbm2b_id -T 15 -N fslvbm2c $working_dir/fslvbm2c | grep -oP "Submitted batch job\s+\K\w+"`
 echo Creating first-pass template: ID=$fslvbm2c_id
 
 ### Estimation of the registration parameters of GM to grey matter standard template
@@ -150,7 +151,7 @@ for g in `$FSLDIR/bin/imglob *_struc.*` ; do
   echo "${FSLDIR}/bin/fsl_reg ${g}_GM $T ${g}_GM_to_T_init $REG -fnirt \"--config=GM_2_MNI152GM_2mm.cnf\"" >> fslvbm2d
 done
 chmod a+x fslvbm2d
-fslvbm2d_id=`$FSLDIR/bin/fsl_sub -v -j $fslvbm2c_id -T $HOWLONG -N fslvbm2d -t ./fslvbm2d | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm2d_id=`$FSLDIR/bin/fsl_sub -v -j $fslvbm2c_id -T $HOWLONG -N fslvbm2d -t $working_dir/fslvbm2d | grep -oP "Submitted batch job\s+\K\w+"`
 echo Running registration to first-pass template: ID=$fslvbm2d_id
 
 ### Creation of the GM template by averaging all (or following the template_list for) the GM_nl_0 and GM_xflipped_nl_0 images
@@ -173,7 +174,7 @@ done
 \$FSLDIR/bin/fslmaths template_GM -add template_GM_flipped -div 2 template_GM
 stage_tpl4
 chmod +x fslvbm2e
-fslvbm2e_id=`fsl_sub -F -v -j $fslvbm2d_id -T 15 -N fslvbm2e ./fslvbm2e | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm2e_id=`fsl_sub -F -v -j $fslvbm2d_id -T 15 -N fslvbm2e $working_dir/fslvbm2e | grep -oP "Submitted batch job\s+\K\w+"`
 echo Creating second-pass template: ID=$fslvbm2e_id
 
 echo "Study-specific template will be created, when complete, check results with:"
