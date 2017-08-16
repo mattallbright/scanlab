@@ -537,7 +537,6 @@ case $METHOD in
          # Verbose clause for tasks system
          if [ $verbose -eq 1 ] ; then
            echo slurm_command: $slurm_command >&2
-           #echo executing: $@ >&2
            echo control file: $taskfile >&2
            echo scriptmode: $scriptmode >&2
          fi
