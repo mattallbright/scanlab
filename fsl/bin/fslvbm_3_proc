@@ -99,7 +99,7 @@ done
 chmod a+x fslvbm3a_2
 echo "Running fslmaths"
 fslvbm3a_2_id=`${FSLDIR}/bin/fsl_sub -v -T 40 -N fslvbm3a_2 -j $fslvbm3a_id -t ./fslvbm3a | grep -oP "Submitted batch job\s+\K\w+"`
-echo Doing registrations (part deux): ID=$fslvbm3a_2_id
+echo Doing more registrations: ID=$fslvbm3a_2_id
 
 cd ../stats
 
