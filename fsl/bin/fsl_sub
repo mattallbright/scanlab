@@ -413,6 +413,9 @@ fi
 # Sets up default logs
 if [ "x$logOpts" = "x" ]; then
   logOpts="--output=/data/var/jobs/%j.out"
+  if [ "x$tasks" != "x" ]; then
+    logOpts="--output=/data/var/jobs/%A_%a.out"
+  fi
 fi
 
 # Sets up mail types
