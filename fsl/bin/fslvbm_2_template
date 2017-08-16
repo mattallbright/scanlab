@@ -140,8 +140,7 @@ done
 \$FSLDIR/bin/fslmaths template_GM -add template_GM_flipped -div 2 template_GM_init
 stage_tpl3
 chmod +x fslvbm2c
-echo "fsl_sub -j $fslvbm2b_id -T 15 -N fslvbm2c ./fslvbm2c -v"
-fslvbm2c_id=`fsl_sub -v -j $fslvbm2b_id -T 15 -N fslvbm2c ./fslvbm2c | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm2c_id=`fsl_sub -F -v -j $fslvbm2b_id -T 15 -N fslvbm2c ./fslvbm2c | grep -oP "Submitted batch job\s+\K\w+"`
 echo Creating first-pass template: ID=$fslvbm2c_id
 
 ### Estimation of the registration parameters of GM to grey matter standard template
@@ -174,7 +173,7 @@ done
 \$FSLDIR/bin/fslmaths template_GM -add template_GM_flipped -div 2 template_GM
 stage_tpl4
 chmod +x fslvbm2e
-fslvbm2e_id=`fsl_sub -v -j $fslvbm2d_id -T 15 -N fslvbm2e ./fslvbm2e | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm2e_id=`fsl_sub -F -v -j $fslvbm2d_id -T 15 -N fslvbm2e ./fslvbm2e | grep -oP "Submitted batch job\s+\K\w+"`
 echo Creating second-pass template: ID=$fslvbm2e_id
 
 echo "Study-specific template will be created, when complete, check results with:"
