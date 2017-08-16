@@ -138,6 +138,7 @@ cat <<stage_tpl3 > fslvbm2c
 if [ -f ../template_list ] ; then
     template_list=\`cat ../template_list\`
     template_list=\`\$FSLDIR/bin/remove_ext \$template_list\`
+    echo "List found."
 else
     template_list=\`echo *_struc.* | sed 's/_struc\./\./g'\`
     template_list=\`\$FSLDIR/bin/remove_ext \$template_list | sort -u\`
