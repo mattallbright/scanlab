@@ -105,8 +105,9 @@ T=${FSLDIR}/data/standard/tissuepriors/avg152T1_gray
 /bin/rm -f fslvbm2a
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
     echo $g
-    echo "$FSLDIR/bin/fast -R 0.3 -H 0.1 ${g}_brain ; \
-          $FSLDIR/bin/immv ${g}_brain_pve_1 ${g}_GM" >> fslvbm2a
+    echo "$FSLDIR/bin/fast -R 0.3 -H 0.1 ${g}_brain" >> fslvbm2a
+#    echo "$FSLDIR/bin/fast -R 0.3 -H 0.1 ${g}_brain ; \
+#          $FSLDIR/bin/immv ${g}_brain_pve_1 ${g}_GM" >> fslvbm2a
 done
 chmod a+x fslvbm2a
 fslvbm2a_id=`$FSLDIR/bin/fsl_sub -v -T 30 -N fslvbm2a -t $working_dir/fslvbm2a | grep -oP "Submitted batch job\s+\K\w+"`
