@@ -86,12 +86,20 @@ echo "Now running the preprocessing steps and the pre-analyses"
 /bin/rm -f fslvbm3a
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
   echo $g
-  echo "${FSLDIR}/bin/fsl_reg ${g}_GM template_GM ${g}_GM_to_template_GM -fnirt \"--config=GM_2_MNI152GM_2mm.cnf --jout=${g}_JAC_nl\"; \
-        $FSLDIR/bin/fslmaths ${g}_GM_to_template_GM -mul ${g}_JAC_nl ${g}_GM_to_template_GM_mod -odt float" >> fslvbm3a
+  echo "${FSLDIR}/bin/fsl_reg ${g}_GM template_GM ${g}_GM_to_template_GM -fnirt \"--config=GM_2_MNI152GM_2mm.cnf --jout=${g}_JAC_nl\"" >> fslvbm3a
 done
 chmod a+x fslvbm3a
 fslvbm3a_id=`${FSLDIR}/bin/fsl_sub -v -T 40 -N fslvbm3a -t ./fslvbm3a | grep -oP "Submitted batch job\s+\K\w+"`
 echo Doing registrations: ID=$fslvbm3a_id
+
+/bin/rm -f fslvbm3a_2
+for g in `$FSLDIR/bin/imglob *_struc.*` ; do
+  echo "$FSLDIR/bin/fslmaths ${g}_GM_to_template_GM -mul ${g}_JAC_nl ${g}_GM_to_template_GM_mod -odt float" >> fslvbm3a
+done
+chmod a+x fslvbm3a_2
+echo "Running fslmaths"
+fslvbm3a_id=`${FSLDIR}/bin/fsl_sub -v -T 40 -N fslvbm3a_2 -j $fslvbm3a_id -t ./fslvbm3a | grep -oP "Submitted batch job\s+\K\w+"`
+echo Doing registrations (part deux): ID=$fslvbm3a_2_id
 
 cd ../stats
 
@@ -118,7 +126,7 @@ stage_preproc2
 
 chmod a+x fslvbm3b
 
-fslvbm3b_id=`${FSLDIR}/bin/fsl_sub -v -T 15 -N fslvbm3b -j $fslvbm3a_id ./fslvbm3b | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm3b_id=`${FSLDIR}/bin/fsl_sub -v -F -T 15 -N fslvbm3b -j $fslvbm3a_2_id ./fslvbm3b | grep -oP "Submitted batch job\s+\K\w+"`
 
 echo Doing subject concatenation and initial randomise: ID=$fslvbm3b_id
 
