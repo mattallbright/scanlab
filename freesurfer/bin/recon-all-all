@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for subj in $(ls "$1"); do
+  sbatch \
+  --job-name=recon-all \
+  {FREESURFER_HOME}\bin\recon-all \
+  ${subj}
+  sleep 1
+done
