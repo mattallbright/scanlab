@@ -547,7 +547,7 @@ case $METHOD in
          exec $slurm_command <<EOF
 #!/bin/bash
 command=\`cat "$taskfile" | head -\$SLURM_ARRAY_TASK_ID | tail -1\`
-exec "\$command"
+exec /bin/sh -c "\$command"
 EOF
         # Chill for a bit
         sleep 2
