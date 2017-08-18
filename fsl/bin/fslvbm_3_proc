@@ -76,6 +76,12 @@
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
 export LC_ALL=C
 
+set -- `getopt thr: $*`
+result=$?
+if [ $result != 0 ] ; then
+  echo "What? Your arguments make no sense!"
+fi
+
 while [[ $1 != -- ]] ; do
   case $1 in
     -thr)
@@ -89,12 +95,6 @@ while [[ $1 != -- ]] ; do
   shift  # next flag
 done
 shift
-
-set -- `getopt thr: $*`
-result=$?
-if [ $result != 0 ] ; then
-  echo "What? Your arguments make no sense!"
-fi
 
 echo [`date`] [`hostname`] [`uname -a`] [`pwd`] [$0 $@] >> .fslvbmlog
 
@@ -131,7 +131,7 @@ cat <<stage_preproc2 > fslvbm3b
 \$FSLDIR/bin/fslmerge -t GM_merg     \`\${FSLDIR}/bin/imglob ../struc/*_GM_to_template_GM.*\`
 \$FSLDIR/bin/fslmerge -t GM_mod_merg \`\${FSLDIR}/bin/imglob ../struc/*_GM_to_template_GM_mod.*\`
 
-\$FSLDIR/bin/fslmaths GM_merg -Tmean -thr 0.01 -bin GM_mask -odt char
+\$FSLDIR/bin/fslmaths GM_merg -Tmean -thr ${THRESH} -bin GM_mask -odt char
 
 /bin/cp ../design.* .
 
