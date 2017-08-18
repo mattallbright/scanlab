@@ -76,6 +76,26 @@
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
 export LC_ALL=C
 
+while [[ $1 != -- ]] ; do
+  case $1 in
+    -thr)
+      if [ -z "$2" ] ; then
+        THRESH=0.01
+      else
+        THRESH="$2"
+      fi
+      shift;;
+  esac
+  shift  # next flag
+done
+shift
+
+set -- `getopt thr: $*`
+result=$?
+if [ $result != 0 ] ; then
+  echo "What? Your arguments make no sense!"
+fi
+
 echo [`date`] [`hostname`] [`uname -a`] [`pwd`] [$0 $@] >> .fslvbmlog
 
 mkdir -p stats
