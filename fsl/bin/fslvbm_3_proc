@@ -76,6 +76,8 @@
 #   innovation@isis.ox.ac.uk quoting reference DE/9564.
 export LC_ALL=C
 
+THRESH=0.01
+
 set -- `getopt thr: $*`
 result=$?
 if [ $result != 0 ] ; then
@@ -85,11 +87,7 @@ fi
 while [[ $1 != -- ]] ; do
   case $1 in
     -thr)
-      if [ -z "$2" ] ; then
-        THRESH=0.01
-      else
         THRESH="$2"
-      fi
       shift;;
   esac
   shift  # next flag
