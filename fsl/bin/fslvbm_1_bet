@@ -108,20 +108,20 @@ cd struc
 /bin/rm -f imagelist.txt
 cat <<stage_bet1 > fslvbm1b
 #!/bin/sh
-echo $1
+echo $subj
 if [ $bet = 0 ] ; then
-   $FSLDIR/bin/bet $1 ${1}_brain -f 0.4 "${2}"
+   $FSLDIR/bin/bet $subj ${subj}_brain -f 0.4 "${args}"
 else
-   $FSLDIR/bin/bet $1 ${1}_brain
-   $FSLDIR/bin/standard_space_roi ${1}_brain ${1}_cut -roiNONE -ssref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput $1
-   $FSLDIR/bin/bet ${1}_cut ${1}_brain -f 0.4 "${2}"
+   $FSLDIR/bin/bet $subj ${subj}_brain
+   $FSLDIR/bin/standard_space_roi ${subj}_brain ${subj}_cut -roiNONE -ssref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput $subj
+   $FSLDIR/bin/bet ${subj}_cut ${subj}_brain -f 0.4 "${args}"
 fi
-echo "$g ${g}_brain " >> imagelist.txt
+echo "$subj ${subj}_brain " >> imagelist.txt
 stage_bet1
 chmod +x fslvbm1b
 
 echo "Submitting to BET..."
-for g in `$FSLDIR/bin/imglob *_struc.*` ; do
+for subj in `$FSLDIR/bin/imglob *_struc.*` ; do
   fslvbm1b_id=`fsl_sub -F -v -j $fslvbm1a_id -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
   echo $fslvbm1b_id
   fslvbm1b_id_arr+=($fslvbm1b_id)
