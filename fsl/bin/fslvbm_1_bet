@@ -111,8 +111,10 @@ for g in `$FSLDIR/bin/imglob *_struc.*` ; do
 #!/bin/bash
 echo $g
 if [[ $bet = 0 ]] ; then
+  echo "Default method"
   \$FSLDIR/bin/bet $g ${g}_brain -f 0.4 ${args}
 else
+  echo "No default method"
   \$FSLDIR/bin/bet $g ${g}_brain
   \$FSLDIR/bin/standard_space_roi ${g}_brain ${g}_cut -roiNONE -ssref \${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput $g
   \$FSLDIR/bin/bet ${g}_cut ${g}_brain -f 0.4 ${args}
@@ -133,5 +135,5 @@ echo "Initializing slicesdir..."
 /bin/rm -f fslvbm1c
 echo "$FSLDIR/bin/slicesdir -o \`cat imagelist\`" >> fslvbm1c
 chmod a+x fslvbm1c
-fslvbm1c_id=`$FSLDIR/bin/fsl_sub -F -j $fslvbm1b1_id:$fslvbm1bN_id -N fslvbm1b -t ./fslvbm1c | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm1c_id=`$FSLDIR/bin/fsl_sub -F -j singleton -N fslvbm1b -t ./fslvbm1c | grep -oP "Submitted batch job\s+\K\w+"`
 echo Running slices: ID=$fslvbm1c_id
