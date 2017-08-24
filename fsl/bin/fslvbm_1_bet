@@ -115,8 +115,11 @@ if [[ $bet = 0 ]] ; then
   \$FSLDIR/bin/bet $g ${g}_brain -f 0.4 ${args}
 else
   echo "No default method"
+  echo "1st BET"
   \$FSLDIR/bin/bet $g ${g}_brain
+  echo "Standard Space ROI"
   \$FSLDIR/bin/standard_space_roi ${g}_brain ${g}_cut -roiNONE -ssref \${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput $g
+  echo "2nd BET"
   \$FSLDIR/bin/bet ${g}_cut ${g}_brain -f 0.4 ${args}
 fi
 stage_bet1

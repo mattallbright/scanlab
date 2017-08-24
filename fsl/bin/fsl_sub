@@ -326,8 +326,9 @@ while [[ $1 != -- ]] ; do
       taskfile=$2
       if [ -f "$taskfile" ] ; then
         tasks=`cat $taskfile | wc -l `
+      if [ $tasks -gt 1 ]; then
         slurm_tasks="--array=1-$tasks"
-        if [ $tasks -eq 0 ]; then
+      elif [ $tasks -eq 0 ]; then
           echo "Task file ${taskfile} is empty"
           echo "Should be a text file listing all the commands to run!"
           exit -1
@@ -547,7 +548,7 @@ case $METHOD in
          exec $slurm_command <<EOF
 #!/bin/bash
 command=\`cat "$taskfile" | head -\$SLURM_ARRAY_TASK_ID | tail -1\`
-exec /bin/sh -c "\$command"
+exec /bin/bash -c "\$command"
 EOF
         # Chill for a bit
         sleep 2
