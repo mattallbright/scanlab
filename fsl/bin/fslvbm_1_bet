@@ -94,14 +94,11 @@ fi
 shift
 
 mkdir -p struc
-/bin/rm -f fslvbm1a
 echo "Copying images..."
 for g in `$FSLDIR/bin/imglob *` ; do
-    echo "imcp $g struc/${g}_struc" >> fslvbm1a
+    echo "Copying $g"
+    imcp $g struc/${g}_struc
 done
-chmod a+x fslvbm1a
-fslvbm1a_id=`fsl_sub -F -N fslvbm1a -t ./fslvbm1a | grep -oP "Submitted batch job\s+\K\w+"`
-echo Running imcp: ID=$fslvbm1a_id
 
 cd struc
 
@@ -122,18 +119,15 @@ chmod +x fslvbm1b
 echo "Submitting to BET..."
 
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
-  echo $g
-  fslvbm1b_id=`$FSLDIR/bin/fsl_sub -j $fslvbm1a_id -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
-  wait
+  fslvbm1b_id=`$FSLDIR/bin/fsl_sub -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
   fslvbm1b_id_arr+=("$fslvbm1b_id")
   echo "$g ${g}_brain " >> imagelist.txt
 done
-
 fslvbm1b1_id=${fslvbm1b_id_arr[0]}
 fslvbm1bN_id=${fslvbm1b_id_arr[-1]}
 echo Running bet: ID=$fslvbm1b1_id to $fslvbm1bN_id
 
-echo "Done running BET, now running slicesdir:"
+echo "Initializing slicesdir:"
 /bin/rm -f fslvbm1c
 echo "$FSLDIR/bin/slicesdir -o \`cat imagelist.txt\`" >> fslvbm1c
 chmod a+x fslvbm1c
