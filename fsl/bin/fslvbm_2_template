@@ -134,7 +134,7 @@ echo Running initial registration: ID=$fslvbm2b_id
 
 ### Creation of the GM template by averaging all (or following the template_list for) the GM_nl_0 and GM_xflipped_nl_0 images
 cat <<stage_tpl3 > fslvbm2c
-#!/bin/sh
+#!/bin/bash
 if [ -f ../template_list ] ; then
     template_list=\`cat ../template_list\`
     template_list=\`\$FSLDIR/bin/remove_ext \$template_list\`
@@ -168,7 +168,7 @@ echo Running registration to first-pass template: ID=$fslvbm2d_id
 
 ### Creation of the GM template by averaging all (or following the template_list for) the GM_nl_0 and GM_xflipped_nl_0 images
 cat <<stage_tpl4 > fslvbm2e
-#!/bin/sh
+#!/bin/bash
 if [ -f ../template_list ] ; then
     template_list=\`cat ../template_list\`
     template_list=\`\$FSLDIR/bin/remove_ext \$template_list\`

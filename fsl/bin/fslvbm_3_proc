@@ -120,7 +120,7 @@ echo Doing more registrations: ID=$fslvbm3a_2_id
 cd ../stats
 
 cat <<stage_preproc2 > fslvbm3b
-#!/bin/sh
+#!/bin/bash
 
 \$FSLDIR/bin/imcp ../struc/template_GM template_GM
 

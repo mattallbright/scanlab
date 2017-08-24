@@ -104,7 +104,7 @@ cd struc
 
 /bin/rm -f imagelist
 cat <<stage_bet1 > fslvbm1b
-#!/bin/sh
+#!/bin/bash
 echo \$g
 if [ \$bet = 0 ] ; then
    \$FSLDIR/bin/bet \$g \${g}_brain -f 0.4 \${args}
@@ -127,7 +127,7 @@ fslvbm1b1_id=${fslvbm1b_id_arr[0]}
 fslvbm1bN_id=${fslvbm1b_id_arr[-1]}
 echo Running bet: ID=$fslvbm1b1_id:$fslvbm1bN_id
 
-echo "Initializing slicesdir:"
+echo "Initializing slicesdir..."
 /bin/rm -f fslvbm1c
 echo "$FSLDIR/bin/slicesdir -o \`cat imagelist\`" >> fslvbm1c
 chmod a+x fslvbm1c
