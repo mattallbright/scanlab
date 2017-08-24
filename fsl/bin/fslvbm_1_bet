@@ -121,6 +121,7 @@ chmod +x fslvbm1b
 
 echo "Submitting to BET..."
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
+  echo $g
   fslvbm1b_id=`fsl_sub -F -j $fslvbm1a_id -T 15 -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
   wait
   fslvbm1b_id_arr+=("$fslvbm1b_id")
