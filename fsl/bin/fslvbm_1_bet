@@ -108,20 +108,23 @@ cd struc
 /bin/rm -f imagelist.txt
 cat <<stage_bet1 > fslvbm1b
 #!/bin/sh
-echo \$subj
+echo \$g
 if [ \$bet = 0 ] ; then
-   \$FSLDIR/bin/bet \$subj \${subj}_brain -f 0.4 \${args}
+   \$FSLDIR/bin/bet \$g \${g}_brain -f 0.4 \${args}
 else
-   \$FSLDIR/bin/bet \$subj \${subj}_brain
-   \$FSLDIR/bin/standard_space_roi \${subj}_brain \${subj}_cut -roiNONE -ssref \${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput \$subj
-   \$FSLDIR/bin/bet \${subj}_cut \${subj}_brain -f 0.4 \${args}
+   \$FSLDIR/bin/bet \$g \${g}_brain
+   \$FSLDIR/bin/standard_space_roi \${g}_brain \${g}_cut -roiNONE -ssref \${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput \$g
+   \$FSLDIR/bin/bet \${g}_cut \${g}_brain -f 0.4 \${args}
 fi
-echo "\$subj \${subj}_brain " >> imagelist.txt
+echo "\$g \${g}_brain " >> imagelist.txt
 stage_bet1
 chmod +x fslvbm1b
 
+fslvbm1b_id_arr=()
+
 echo "Submitting to BET..."
-for subj in `$FSLDIR/bin/imglob *_struc.*` ; do
+for g in `$FSLDIR/bin/imglob *_struc.*` ; do
+  echo $g
   fslvbm1b_id=`fsl_sub -F -v -j $fslvbm1a_id -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
   echo $fslvbm1b_id
   fslvbm1b_id_arr+=($fslvbm1b_id)
@@ -134,5 +137,5 @@ echo "Done running BET, now running slicesdir:"
 /bin/rm -f fslvbm1c
 echo "$FSLDIR/bin/slicesdir -o \`cat imagelist.txt\`" >> fslvbm1c
 chmod a+x fslvbm1c
-fslvbm1c_id=`$FSLDIR/bin/fsl_sub -F -v -j singleton -N fslvbm1b -t ./fslvbm1c | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm1c_id=`$FSLDIR/bin/fsl_sub -F -j singleton -N fslvbm1b -t ./fslvbm1c | grep -oP "Submitted batch job\s+\K\w+"`
 echo Running slices: ID=$fslvbm1c_id
