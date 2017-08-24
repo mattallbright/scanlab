@@ -120,13 +120,15 @@ stage_bet1
 chmod +x fslvbm1b
 
 echo "Submitting to BET..."
+
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
   echo $g
-  fslvbm1b_id=`fsl_sub -F -j $fslvbm1a_id -T 15 -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
+  fslvbm1b_id=`$FSLDIR/bin/fsl_sub -F -j $fslvbm1a_id -T 15 -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
   wait
   fslvbm1b_id_arr+=("$fslvbm1b_id")
   echo "$g ${g}_brain " >> imagelist.txt
 done
+
 fslvbm1b1_id=${fslvbm1b_id_arr[0]}
 fslvbm1bN_id=${fslvbm1b_id_arr[-1]}
 echo Running bet: ID=$fslvbm1b1_id to $fslvbm1bN_id
