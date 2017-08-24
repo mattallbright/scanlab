@@ -104,8 +104,8 @@ fslvbm1a_id=`fsl_sub -F -N fslvbm1a -t ./fslvbm1a | grep -oP "Submitted batch jo
 echo Running imcp: ID=$fslvbm1a_id
 
 cd struc
-imagelist=""
 
+/bin/rm -f imagelist.txt
 cat <<stage_bet1 > fslvbm1b
 #!/bin/sh
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
@@ -117,7 +117,7 @@ for g in `$FSLDIR/bin/imglob *_struc.*` ; do
        $FSLDIR/bin/standard_space_roi ${g}_brain ${g}_cut -roiNONE -ssref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput $g
        $FSLDIR/bin/bet ${g}_cut ${g}_brain -f 0.4 "${args}"
     fi
-    imagelist="$imagelist $g ${g}_brain"
+    echo "$g ${g}_brain " >> imagelist.txt
 done
 stage_bet1
 chmod +x fslvbm1b
@@ -125,6 +125,8 @@ chmod +x fslvbm1b
 echo "Submitting to BET..."
 fslvbm1b_id=`fsl_sub -F -j $fslvbm1a_id -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
 echo Running bet: ID=$fslvbm1b_id
+
+imagelist=`cat imagelist.txt`
 
 echo "Done running BET, now running slicesdir:"
 /bin/rm -f fslvbm1c
