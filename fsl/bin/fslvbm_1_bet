@@ -108,7 +108,7 @@ cd struc
 /bin/rm -f imagelist.txt
 cat <<stage_bet1 > fslvbm1b
 #!/bin/sh
-echo $g
+echo $1
 if [ $bet = 0 ] ; then
    $FSLDIR/bin/bet $1 ${1}_brain -f 0.4 "${2}"
 else
@@ -122,7 +122,7 @@ chmod +x fslvbm1b
 
 echo "Submitting to BET..."
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
-  fslvbm1b_id=`fsl_sub -F -v -j $fslvbm1a_id -N fslvbm1b ./fslvbm1b $g "$args" | grep -oP "Submitted batch job\s+\K\w+"`
+  fslvbm1b_id=`fsl_sub -F -v -j $fslvbm1a_id -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
   echo $fslvbm1b_id
   fslvbm1b_id_arr+=($fslvbm1b_id)
 done
