@@ -120,7 +120,7 @@ echo "$g ${g}_brain " >> imagelist.txt
 stage_bet1
 chmod +x fslvbm1b
 
-declare -a fslvbm1b_id_arr
+/usr/share/bash-completion/completions/declare -a fslvbm1b_id_arr
 
 echo "Submitting to BET..."
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
