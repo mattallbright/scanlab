@@ -123,7 +123,7 @@ echo "Submitting to BET..."
 
 for g in `$FSLDIR/bin/imglob *_struc.*` ; do
   echo $g
-  fslvbm1b_id=`$FSLDIR/bin/fsl_sub -F -j $fslvbm1a_id -T 15 -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
+  fslvbm1b_id=`$FSLDIR/bin/fsl_sub -j $fslvbm1a_id -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
   wait
   fslvbm1b_id_arr+=("$fslvbm1b_id")
   echo "$g ${g}_brain " >> imagelist.txt
