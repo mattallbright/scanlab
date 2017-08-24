@@ -130,11 +130,9 @@ fslvbm1b1_id=${fslvbm1b_id_arr[0]}
 fslvbm1bN_id=${fslvbm1b_id_arr[-1]}
 echo Running bet: ID=$fslvbm1b1_id:$fslvbm1bN_id
 
-imagelist=`cat imagelist.txt`
-
 echo "Done running BET, now running slicesdir:"
 /bin/rm -f fslvbm1c
-echo "$FSLDIR/bin/slicesdir -o $imagelist" >> fslvbm1c
+echo "$FSLDIR/bin/slicesdir -o `cat imagelist.txt`" >> fslvbm1c
 chmod a+x fslvbm1c
 fslvbm1c_id=`$FSLDIR/bin/fsl_sub -F -v -j $fslvbm1b1_id:$fslvbm1bN_id -N fslvbm1c -t ./fslvbm1c | grep -oP "Submitted batch job\s+\K\w+"`
 echo Running slices: ID=$fslvbm1c_id
