@@ -88,7 +88,8 @@ args="${@}"
 echo [`date`] [`hostname`] [`uname -a`] [`pwd`] [$0 $@] >> .fslvbmlog
 
 bet=0
-if [[ $1 = -N ]] ; then
+echo $1
+if [[ $1 == "-N" ]] ; then
     bet=1
 fi
 shift
