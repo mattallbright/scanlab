@@ -88,7 +88,7 @@ args="${@}"
 echo [`date`] [`hostname`] [`uname -a`] [`pwd`] [$0 $@] >> .fslvbmlog
 
 bet=0
-if [ $1 = -N ] ; then
+if [[ $1 = -N ]] ; then
     bet=1
 fi
 shift
@@ -106,7 +106,7 @@ cd struc
 cat <<stage_bet1 > fslvbm1b
 #!/bin/bash
 echo \$g
-if [ \$bet = 0 ] ; then
+if [[ \$bet = 0 ]] ; then
    \$FSLDIR/bin/bet \$g \${g}_brain -f 0.4 \${args}
 else
    \$FSLDIR/bin/bet \$g \${g}_brain
