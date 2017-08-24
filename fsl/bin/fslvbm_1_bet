@@ -125,15 +125,22 @@ stage_bet1
   fslvbm1b_id=`$FSLDIR/bin/fsl_sub -F -N fslvbm1b ./fslvbm1b | grep -oP "Submitted batch job\s+\K\w+"`
   wait
   fslvbm1b_id_arr+=("$fslvbm1b_id")
+  if [[ "x$fslvbm1b_id_list" = "x" ]]; then
+    fslvbm1b_id_list=("$fslvbm1b_id")
+  else
+    fslvbm1b_id_list=("$fslvbm1b_id":"$fslvbm1b_id_list")
+  fi
   echo "$g ${g}_brain " >> imagelist
 done
 fslvbm1b1_id=${fslvbm1b_id_arr[0]}
 fslvbm1bN_id=${fslvbm1b_id_arr[-1]}
 echo Running bet: ID=$fslvbm1b1_id:$fslvbm1bN_id
 
+echo $fslvbm1b_id_list
+
 echo "Initializing slicesdir..."
 /bin/rm -f fslvbm1c
 echo "$FSLDIR/bin/slicesdir -o \`cat imagelist\`" >> fslvbm1c
 chmod a+x fslvbm1c
-fslvbm1c_id=`$FSLDIR/bin/fsl_sub -F -j singleton -N fslvbm1b -t ./fslvbm1c | grep -oP "Submitted batch job\s+\K\w+"`
+fslvbm1c_id=`$FSLDIR/bin/fsl_sub -F -j $fslvbm1b_id_list -N fslvbm1c -t ./fslvbm1c | grep -oP "Submitted batch job\s+\K\w+"`
 echo Running slices: ID=$fslvbm1c_id
