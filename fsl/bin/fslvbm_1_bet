@@ -108,15 +108,15 @@ cd struc
 /bin/rm -f imagelist.txt
 cat <<stage_bet1 > fslvbm1b
 #!/bin/sh
-echo $subj
+echo \$subj
 if [ $bet = 0 ] ; then
-   $FSLDIR/bin/bet $subj ${subj}_brain -f 0.4 "${args}"
+   $FSLDIR/bin/bet \$subj \${subj}_brain -f 0.4 ${args}
 else
-   $FSLDIR/bin/bet $subj ${subj}_brain
-   $FSLDIR/bin/standard_space_roi ${subj}_brain ${subj}_cut -roiNONE -ssref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput $subj
-   $FSLDIR/bin/bet ${subj}_cut ${subj}_brain -f 0.4 "${args}"
+   $FSLDIR/bin/bet \$subj \${subj}_brain
+   $FSLDIR/bin/standard_space_roi \${subj}_brain \${subj}_cut -roiNONE -ssref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain -altinput \$subj
+   $FSLDIR/bin/bet \${subj}_cut \${subj}_brain -f 0.4 ${args}
 fi
-echo "$subj ${subj}_brain " >> imagelist.txt
+echo "\$subj \${subj}_brain " >> imagelist.txt
 stage_bet1
 chmod +x fslvbm1b
 
