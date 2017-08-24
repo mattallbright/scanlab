@@ -320,11 +320,11 @@ while [[ $1 != -- ]] ; do
       shift;;
     -j)
       jid=$2
-      if [ $2 = "singleton" ] ; then
-        slurm_hold="--dependency=singleton"
-      else
-        slurm_hold="--dependency=afterok:$jid"
-      fi
+      # if [ $2 = "singleton" ] ; then
+      #   slurm_hold="--dependency=singleton"
+      # else
+      slurm_hold="--dependency=afterok:$jid"
+      # fi
       shift;;
     -t)
       taskfile=$2
