@@ -131,7 +131,7 @@ stage_bet1
   if [[ "x$fslvbm1b_id_list" = "x" ]]; then
     fslvbm1b_id_list=("$fslvbm1b_id")
   else
-    fslvbm1b_id_list=("$fslvbm1b_id":"$fslvbm1b_id_list")
+    fslvbm1b_id_list=("$fslvbm1b_id","$fslvbm1b_id_list")
   fi
   echo "$g ${g}_brain " >> imagelist
 done
