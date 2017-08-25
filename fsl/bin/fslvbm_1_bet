@@ -76,7 +76,7 @@ Usage() {
     echo "-b  : default BET brain extraction (which uses -f 0.4)"
     echo "-N  : increased robustness in the brain extraction when a lot of neck is present"
     echo ""
-    echo "e.g.,   fslvbm_1_bet -b  -f 0.6 -R"
+    echo "e.g.,   fslvbm_1_bet -b -f 0.6 -R"
     echo ""
     exit 1
 }
@@ -91,6 +91,7 @@ bet=0
 echo $@
 if [[ $@ == *"-N"* ]] ; then
     bet=1
+    args=`echo "$args" | sed "s/-N//"`
 fi
 shift
 
