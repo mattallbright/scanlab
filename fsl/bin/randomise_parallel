@@ -198,4 +198,4 @@ if [ ${REQUESTED_SLOTS} -ge 150 ] ; then
   DEFRAGMENT_TIME=40
 fi
 
-fsl_sub -j $GENERATE_ID -T ${DEFRAGMENT_TIME} -l ${DIRNAME}/${BASENAME}_logs/ -N ${BASENAME}.defragment ${DIRNAME}/${BASENAME}.defragment
+fsl_sub -F -j $GENERATE_ID -T ${DEFRAGMENT_TIME} -l ${DIRNAME}/${BASENAME}_logs/ -N ${BASENAME}.defragment ${DIRNAME}/${BASENAME}.defragment
