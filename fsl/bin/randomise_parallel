@@ -198,4 +198,6 @@ if [ ${REQUESTED_SLOTS} -ge 150 ] ; then
   DEFRAGMENT_TIME=40
 fi
 
-fsl_sub -F -j $GENERATE_ID -T ${DEFRAGMENT_TIME} -l ${DIRNAME}/${BASENAME}_logs/ -N ${BASENAME}.defragment ${DIRNAME}/${BASENAME}.defragment
+DEFRAG_ID=`fsl_sub -F -j $GENERATE_ID -T ${DEFRAGMENT_TIME} -l ${DIRNAME}/${BASENAME}_logs/ -N ${BASENAME}.defragment ${DIRNAME}/${BASENAME}.defragment | grep -oP "Submitted batch job\s+\K\w+"`
+
+echo "Check squeue for your jobs."
