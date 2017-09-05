@@ -1,0 +1,12 @@
+#!/bin/bash
+# symlink2all
+# Matt Allbright
+# symlink2all creates a symlink of a singular file to /usr/local/bin on all nodes in the cluster
+
+ssh root@hope ln -s "$1" "/usr/local/bin/$2"
+ssh root@empire ln -s "$1" "/usr/local/bin/$2"
+ssh root@jedi ln -s "$1" "/usr/local/bin/$2"
+ssh root@norman ln -s "$1" "/usr/local/bin/$2"
+ssh root@rufus ln -s "$1" "/usr/local/bin/$2"
+ssh root@wilbur ln -s "$1" "/usr/local/bin/$2"
+ssh root@hyperion ln -s "$1" "/usr/local/bin/$2"
