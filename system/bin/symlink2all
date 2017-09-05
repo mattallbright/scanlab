@@ -3,6 +3,15 @@
 # Matt Allbright
 # symlink2all creates a symlink of a singular file to /usr/local/bin on all nodes in the cluster
 
+name=$0
+
+function usage {
+    echo "usage: $name [source] [destination]"
+    echo "  source          Full path to file to be symlinked"
+    echo "  destination     Link to be created in /usr/local/bin"
+    exit 1
+}
+
 ssh root@hope ln -s "$1" "/usr/local/bin/$2"
 ssh root@empire ln -s "$1" "/usr/local/bin/$2"
 ssh root@jedi ln -s "$1" "/usr/local/bin/$2"
