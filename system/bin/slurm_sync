@@ -19,14 +19,3 @@ rsync -ar /etc/slurm-llnl/slurm.conf root@wilbur:/etc/slurm-llnl/
 rsync -ar /etc/slurm-llnl/slurm.conf root@rufus:/etc/slurm-llnl/
 
 /opt/cloud/staging/system/bin/slurm_reset
-
-echo "Would you like to display log rotation?"
-
-read -r -p "[y/N] " logrotate
-if [[ "$logrotate" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        echo "Beginning log rotation."
-        sleep 2
-        /opt/cloud/staging/system/bin/slurm_rotate
-else
-        echo "Goodnight."
-fi
