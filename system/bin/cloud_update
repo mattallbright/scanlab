@@ -45,7 +45,7 @@
 
   # Then clones git repo
   echo "Cloning git!"
-  ssh root@ayumi git clone "git://github.com/mattallbright/scanlab" /opt/cloud/download/
+  ssh root@ayumi git clone "git://github.com/zavaro/scanlab" /opt/cloud/download/
   wait
 
   # Checks for staging folder in /opt/cloud
