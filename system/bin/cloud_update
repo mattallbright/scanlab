@@ -40,12 +40,16 @@
     # Cleans folder for git clone (required by git)
     ssh root@ayumi rm -rf /opt/cloud/download
     wait
+    ssh root@ayumi mkdir -p /opt/cloud/download/fsl
+    wait
 
   fi
 
   # Then clones git repo
   echo "Cloning git!"
   ssh root@ayumi git clone "git://github.com/zavaro/scanlab" /opt/cloud/download/
+  wait
+  ssh root@ayumi git clone "git://github.com/zavaro/fsl_slurm" /opt/cloud/download/fsl/
   wait
 
   # Checks for staging folder in /opt/cloud
