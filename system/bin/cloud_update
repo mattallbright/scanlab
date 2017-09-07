@@ -35,52 +35,40 @@
   echo "Verifying directory exists..."
 
   # Checks for proper folder in /opt/cloud
-  if [[ -d /opt/cloud/download ]]; then
+  if [[ -d /opt/cloud/staging ]]; then
 
     # Cleans folder for git clone (required by git)
-    ssh root@ayumi rm -rf /opt/cloud/download
-    wait
-    ssh root@ayumi mkdir -p /opt/cloud/fsl
+    ssh root@ayumi rm -rf /opt/cloud/staging
+    ssh root@ayumi mkdir /opt/cloud/staging
     wait
 
+    if [[ -d /opt/cloud/scanlab ]]; then
+      ssh root@ayumi rm -rf /opt/cloud/scanlab
+      ssh root@ayumi mkdir -p /opt/cloud/scanlab
+      wait
+    fi
+    if [[ -d /opt/cloud/fsl ]]; then
+      ssh root@ayumi rm -rf /opt/cloud/fsl
+      ssh root@ayumi mkdir -p /opt/cloud/fsl
+      wait
+    fi
   fi
 
   # Then clones git repo
   echo "Cloning git!"
-  ssh root@ayumi git clone "git://github.com/zavaro/scanlab" /opt/cloud/download/
+  ssh root@ayumi git clone "git://github.com/zavaro/scanlab" /opt/cloud/scanlab/
   wait
   ssh root@ayumi git clone "git://github.com/zavaro/fsl_slurm" /opt/cloud/fsl/
   wait
 
-  ssh root@ayumi mv /opt/cloud/fsl /opt/cloud/download/fsl
-
-  # Checks for staging folder in /opt/cloud
-  if [[ ! -d /opt/cloud/staging ]]; then
-
-    # Makes folder for git clone to deploy to
-    echo -en '\n'
-    echo "Creating staging directory!"
-    ssh root@ayumi mkdir /opt/cloud/staging
-
-  else
-
-    echo "Cleaning staging directory!"
-    ssh root@ayumi rm -rf /opt/cloud/staging
-    ssh root@ayumi mkdir /opt/cloud/staging
-
-  fi
+  ssh root@ayumi mv /opt/cloud/fsl /opt/cloud/staging/fsl
+  ssh root@ayumi mv /opt/cloud/scanlab/* /opt/cloud/staging/
 
   echo -en '\n'
   echo "Resetting permissions..."
 
   # Set permissions for all files in /download/
-  ssh root@ayumi chmod -R 755 /opt/cloud/download/
-
-  #Copy download to staging, overwriting any files
-  echo -en '\n'
-  echo "Staging the download directory!"
-
-  ssh root@ayumi cp -a /opt/cloud/download/. /opt/cloud/staging/
+  ssh root@ayumi chmod -R 755 /opt/cloud/staging/
 
   # # Runs folder structure copy with relation to hostname
   # if [ -d /opt/cloud/staging/hostnames/$HOSTNAME ]; then
