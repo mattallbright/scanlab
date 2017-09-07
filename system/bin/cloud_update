@@ -63,6 +63,7 @@
 
   ssh root@ayumi mv /opt/cloud/fsl /opt/cloud/staging/fsl
   ssh root@ayumi mv /opt/cloud/scanlab/* /opt/cloud/staging/
+  ssh root@ayumi rm -rf /opt/cloud/scanlab
 
   echo -en '\n'
   echo "Resetting permissions..."
