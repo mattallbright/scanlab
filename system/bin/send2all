@@ -3,6 +3,8 @@
 # Matt Allbright
 # send2all sends all files in a folder (or singular file) to all nodes on the cluster
 
+name=$0
+
 function usage {
     echo "usage: $name [source]"
     echo "  source          Full path will be mirrored through rsync"
