@@ -3,19 +3,33 @@
 # Matt Allbright
 # symlink2all creates a symlink of a singular file to /usr/local/bin on all nodes in the cluster
 
-name=$0
+host=`hostname`
 
-function usage {
+if [ $# -eq 0 ]; then
     echo "usage: $name [source] [destination]"
     echo "  source          Full path to file to be symlinked"
     echo "  destination     Link to be created in /usr/local/bin"
     exit 1
-}
+fi
 
-ssh root@hope ln -s "$1" "/usr/local/bin/$2"
-ssh root@empire ln -s "$1" "/usr/local/bin/$2"
-ssh root@jedi ln -s "$1" "/usr/local/bin/$2"
-ssh root@norman ln -s "$1" "/usr/local/bin/$2"
-ssh root@rufus ln -s "$1" "/usr/local/bin/$2"
-ssh root@wilbur ln -s "$1" "/usr/local/bin/$2"
-ssh root@hyperion ln -s "$1" "/usr/local/bin/$2"
+if [ $host != "hope" ]; then
+  ssh root@hope ln -s "$1" "/usr/local/bin/$2"
+fi
+if [ $host != "empire" ]; then
+  ssh root@empire ln -s "$1" "/usr/local/bin/$2"
+fi
+if [ $host != "jedi" ]; then
+  ssh root@jedi ln -s "$1" "/usr/local/bin/$2"
+fi
+if [ $host != "norman" ]; then
+  ssh root@norman ln -s "$1" "/usr/local/bin/$2"
+fi
+if [ $host != "rufus" ]; then
+  ssh root@rufus ln -s "$1" "/usr/local/bin/$2"
+fi
+if [ $host != "wilbur" ]; then
+  ssh root@wilbur ln -s "$1" "/usr/local/bin/$2"
+fi
+if [ $host != "hyperion" ]; then
+  ssh root@hyperion ln -s "$1" "/usr/local/bin/$2"
+fi
