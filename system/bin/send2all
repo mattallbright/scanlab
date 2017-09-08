@@ -5,16 +5,32 @@
 
 name=$0
 
+host=`hostname`
+
 function usage {
     echo "usage: $name [source]"
     echo "  source          Full path will be mirrored through rsync"
     exit 1
 }
 
-rsync -ar "$1/" root@hope:"$1"
-rsync -ar "$1/" root@empire:"$1"
-rsync -ar "$1/" root@jedi:"$1"
-rsync -ar "$1/" root@norman:"$1"
-rsync -ar "$1/" root@rufus:"$1"
-rsync -ar "$1/" root@wilbur:"$1"
-rsync -ar "$1/" root@hyperion:"$1"
+if [ $host != "hope" ]; then
+  rsync -ar "$1/" root@hope:"$1"
+fi
+if [ $host != "empire" ]; then
+  rsync -ar "$1/" root@empire:"$1"
+fi
+if [ $host != "jedi" ]; then
+  rsync -ar "$1/" root@jedi:"$1"
+fi
+if [ $host != "norman" ]; then
+  rsync -ar "$1/" root@norman:"$1"
+fi
+if [ $host != "rufus" ]; then
+  rsync -ar "$1/" root@rufus:"$1"
+fi
+if [ $host != "wilbur" ]; then
+  rsync -ar "$1/" root@wilbur:"$1"
+fi
+if [ $host != "hyperion" ]; then
+  rsync -ar "$1/" root@hyperion:"$1"
+fi
