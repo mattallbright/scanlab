@@ -1,0 +1,34 @@
+#!/bin/bash
+# mirrormode
+# Matt Allbright
+# mirrormode runs a command or programing on all nodes in the cluster
+
+host=`hostname`
+
+if [ $# -lt 1 ]; then
+    echo "usage: $name command"
+    echo "  command          Command to be run on all nodes"
+    exit 1
+fi
+
+if [ $host != "hope" ]; then
+  ssh root@hope "$@"
+fi
+if [ $host != "empire" ]; then
+  ssh root@empire "$@"
+fi
+if [ $host != "jedi" ]; then
+  ssh root@jedi "$@"
+fi
+if [ $host != "norman" ]; then
+  ssh root@norman "$@"
+fi
+if [ $host != "rufus" ]; then
+  ssh root@rufus "$@"
+fi
+if [ $host != "wilbur" ]; then
+  ssh root@wilbur "$@"
+fi
+if [ $host != "hyperion" ]; then
+  ssh root@hyperion "$@"
+fi
