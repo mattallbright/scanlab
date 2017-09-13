@@ -14,23 +14,23 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ $host != "hope" ]; then
-  rsync -ar "$workingdir/$1" root@hope:"$workingdir/$1"
+  rsync -ar "$1" root@hope:"$1"
 fi
 if [ $host != "empire" ]; then
-  rsync -ar "$workingdir/$1" root@empire:"$workingdir/$1"
+  rsync -ar "$1" root@empire:"$1"
 fi
 if [ $host != "jedi" ]; then
-  rsync -ar "$workingdir/$1" root@jedi:"$workingdir/$1"
+  rsync -ar "$1" root@jedi:"$1"
 fi
 if [ $host != "norman" ]; then
-  rsync -ar "$workingdir/$1" root@norman:"$workingdir/$1"
+  rsync -ar "$1" root@norman:"$1"
 fi
 if [ $host != "rufus" ]; then
-  rsync -ar "$workingdir/$1" root@rufus:"$workingdir/$1"
+  rsync -ar "$1" root@rufus:"$1"
 fi
 if [ $host != "wilbur" ]; then
-  rsync -ar "$workingdir/$1" root@wilbur:"$workingdir/$1"
+  rsync -ar "$1" root@wilbur:"$1"
 fi
 if [ $host != "hyperion" ]; then
-  rsync -ar "$workingdir/$1" root@hyperion:"$workingdir/$1"
+  rsync -ar "$1" root@hyperion:"$1"
 fi
