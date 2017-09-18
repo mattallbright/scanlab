@@ -3,6 +3,8 @@
 # Matt Allbright
 # send2all sends all files in a folder (or singular file) to all nodes on the cluster
 
+dest=`dirname $1`
+
 host=`hostname`
 
 workingdir=`pwd`
@@ -14,23 +16,23 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ $host != "hope" ]; then
-  rsync -ar "$1" root@hope:"$1"
+  rsync -ar "$1" root@hope:"$dest"
 fi
 if [ $host != "empire" ]; then
-  rsync -ar "$1" root@empire:"$1"
+  rsync -ar "$1" root@empire:"$dest"
 fi
 if [ $host != "jedi" ]; then
-  rsync -ar "$1" root@jedi:"$1"
+  rsync -ar "$1" root@jedi:"$dest"
 fi
 if [ $host != "norman" ]; then
-  rsync -ar "$1" root@norman:"$1"
+  rsync -ar "$1" root@norman:"$dest"
 fi
 if [ $host != "rufus" ]; then
-  rsync -ar "$1" root@rufus:"$1"
+  rsync -ar "$1" root@rufus:"$dest"
 fi
 if [ $host != "wilbur" ]; then
-  rsync -ar "$1" root@wilbur:"$1"
+  rsync -ar "$1" root@wilbur:"$dest"
 fi
 if [ $host != "hyperion" ]; then
-  rsync -ar "$1" root@hyperion:"$1"
+  rsync -ar "$1" root@hyperion:"$dest"
 fi

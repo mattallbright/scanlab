@@ -79,6 +79,18 @@ getInfo() {
     echo "$study is not set up properly with this system."
     echo "Contact a system administrator."
     exit 1
+  elif [ $study = "Cogr" ]; then
+    longitudinalBool=0
+    studyPrefix="CR"
+    boldValues=("resting" "MSIT" "NBACK")
+    magPhaseBool=0
+    dtiBool=0
+  elif [ $study = "Cogr2" ]; then
+    longitudinalBool=0
+    studyPrefix="CRG_"
+    boldValues=("resting" "MSIT" "NBACK")
+    magPhaseBool=0
+    dtiBool=0
   else
     echo "Study not found: $study"
     exit 1
