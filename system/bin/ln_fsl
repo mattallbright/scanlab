@@ -9,10 +9,10 @@
 # the program will be overwritten with a newer version whenever the repository is
 # cloned.
 
-bin = echo `ls /opt/cloud/staging/fsl/bin/`
-binarr = ( $bin )
-lib = echo `ls /opt/cloud/staging/fsl/lib/`
-libarr = ( $lib )
+bin=`ls /opt/cloud/staging/fsl/bin/`
+binarr=( $bin )
+lib=`ls /opt/cloud/staging/fsl/lib/`
+libarr=( $lib )
 
 for i in "${binarr[@]}"; do
   rm -rf /usr/local/share/fsl/5.0/bin/$i
