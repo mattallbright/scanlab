@@ -11,24 +11,10 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-if [ $host != "hope" ]; then
-  ssh root@hope "$@"
-fi
-if [ $host != "empire" ]; then
-  ssh root@empire "$@"
-fi
-if [ $host != "jedi" ]; then
-  ssh root@jedi "$@"
-fi
-if [ $host != "norman" ]; then
-  ssh root@norman "$@"
-fi
-if [ $host != "rufus" ]; then
-  ssh root@rufus "$@"
-fi
-if [ $host != "wilbur" ]; then
-  ssh root@wilbur "$@"
-fi
-if [ $host != "hyperion" ]; then
-  ssh root@hyperion "$@"
-fi
+ssh root@hope "$@"
+ssh root@empire "$@"
+ssh root@jedi "$@"
+ssh root@norman "$@"
+ssh root@rufus "$@"
+ssh root@wilbur "$@"
+ssh root@hyperion "$@"
