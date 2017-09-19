@@ -15,13 +15,13 @@ lib=`ls /opt/cloud/staging/fsl/lib/`
 libarr=( $lib )
 
 for i in "${binarr[@]}"; do
-  rm -rf /usr/local/share/fsl/5.0/bin/$i
+  rm -rf /usr/share/fsl/5.0/bin/$i
   echo "Symlinking $i"
-  ln -s /opt/cloud/staging/fsl/bin/$i /usr/local/share/fsl/5.0/bin/$i
+  ln -s /opt/cloud/staging/fsl/bin/$i /usr/share/fsl/5.0/bin/$i
 done
 
 for j in "${libarr[@]}"; do
-  rm -rf /usr/local/share/fsl/5.0/bin/$j
+  rm -rf /usr/share/fsl/5.0/bin/$j
   echo "Symlinking $j"
-  ln -s /opt/cloud/staging/fsl/bin/$j /usr/local/share/fsl/5.0/bin/$j
+  ln -s /opt/cloud/staging/fsl/bin/$j /usr/share/fsl/5.0/bin/$j
 done
