@@ -1,0 +1,15 @@
+#!/bin/bash
+
+for subj in $(ls "$1"); do
+  if []
+  sbatch \
+  --get-user-env \
+  --partition=gpu.q \
+  --output=/data/var/jobs/%j.out \
+  --gres=gpu:1 \
+  --job-name=recon-all \
+  ${FREESURFER_HOME}\bin\recon-all \
+  -use-cuda \
+  ${subj}
+  sleep 1
+done
