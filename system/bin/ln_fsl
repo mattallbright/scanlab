@@ -2,12 +2,8 @@
 
 # ln_fsl
 # Authors: Matt Allbright
-# Designed to streamline the process of running git commands and deploying new
-# and updated scripts in the SCAN Lab.
-
-# These brackets are required for loading an entire program into memory. In this case
-# the program will be overwritten with a newer version whenever the repository is
-# cloned.
+# Designed to streamline the process of deploying new
+# and updated scripts in the SCAN Lab by creating symlinks.
 
 bin=`ls /opt/cloud/staging/fsl/bin/`
 binarr=( $bin )
