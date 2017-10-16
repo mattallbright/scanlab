@@ -10,6 +10,8 @@ for subj in $(ls "$1"); do
   --job-name=recon-all \
   ${FREESURFER_HOME}\bin\recon-all \
   -use-cuda \
+  -parallel \
+  -openmp 4 \
   ${subj}
   sleep 1
 done
