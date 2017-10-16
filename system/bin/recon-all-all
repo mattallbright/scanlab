@@ -1,11 +1,15 @@
 #!/bin/bash
 
+export OMP_NUM_THREADS=4
+
 for subj in $(ls "$1"); do
   if []
   sbatch \
   --get-user-env \
   --partition=gpu.q \
   --output=/data/var/jobs/%j.out \
+  --ntasks=1 \
+  --cpus-per-task=6 \
   --gres=gpu:1 \
   --job-name=recon-all \
   ${FREESURFER_HOME}\bin\recon-all \
