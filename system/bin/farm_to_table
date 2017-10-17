@@ -216,7 +216,11 @@ fi
 
 for partic in ${particNumArr[*]}; do
   particNum=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
-  particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+  if [ "$particNum" = x"$particNum" ]; then
+    echo "Not a valid id. Skipping.."
+  else
+    particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+  fi
 done
 
 IFS=$'\n'
