@@ -133,7 +133,7 @@ HermesFetch(){
       dataNotFound=1
     fi
   else
-    if [ bypassOverwrite -eq 0 ]; then
+    if [ $bypassOverwrite -eq 0 ]; then
       echo "The RAW directory already exists for this user. Would you like to copy"
       echo "anyway? Typically RAW_data can be overwritten without consequence."
       read rawResponse
