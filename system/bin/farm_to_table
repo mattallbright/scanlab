@@ -210,7 +210,7 @@ echo "Separate each with a space (e.g. 005 006 016 185). You can also type 'all'
 echo "to run through all subjects."
 read particNums # Pull the numbers as delimited variables
 particReadArr=($particNums) # Shove said numbers into an array
-if [ $particReadArr[0] = "all" ]; then
+if [ $particNums = "all" ]; then
   particNumArr=( $(ls /Hermes/"$study"_scans/ | grep -Eo '[0-9][0-9][0-9]') )
 else
   particNumArr=($particNums)
