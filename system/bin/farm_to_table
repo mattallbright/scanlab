@@ -211,12 +211,12 @@ echo "to run through all subjects."
 read particNums # Pull the numbers as delimited variables
 particNumArr=($particNums) # Shove said numbers into an array
 if [ $particNumArr[0] = "all" ]; then
-  particNumArr=("/Hermes/"$study"_scans/*")
+  particNumArr=( $(ls /Hermes/"$study"_scans/ | grep -Eo '[0-9][0-9][0-9]') )
 fi
 
 for partic in ${particNumArr[*]}; do
   particNum=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
-  if [ "$particNum" = x"$particNum" ]; then
+  if [ "$partic" = x"$partic" ]; then
     echo "Not a valid id. Skipping.."
   else
     particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
