@@ -209,9 +209,11 @@ echo "What are the number(s) of the participants you would like to process?"
 echo "Separate each with a space (e.g. 005 006 016 185). You can also type 'all'"
 echo "to run through all subjects."
 read particNums # Pull the numbers as delimited variables
-particNumArr=($particNums) # Shove said numbers into an array
-if [ $particNumArr[0] = "all" ]; then
+particReadArr=($particNums) # Shove said numbers into an array
+if [ $particReadArr[0] = "all" ]; then
   particNumArr=( $(ls /Hermes/"$study"_scans/ | grep -Eo '[0-9][0-9][0-9]') )
+else
+  particNumArr=($particNums)
 fi
 
 for partic in ${particNumArr[*]}; do
@@ -220,6 +222,7 @@ for partic in ${particNumArr[*]}; do
     echo "Not a valid id. Skipping.."
   else
     particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+    echo "Found $partic..."
   fi
 done
 
