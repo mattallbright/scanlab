@@ -206,9 +206,14 @@ getInfo $study
 particArr=()
 
 echo "What are the number(s) of the participants you would like to process?"
-echo "Separate each with a space (e.g. 005 006 016 185)."
+echo "Separate each with a space (e.g. 005 006 016 185). You can also type 'all'"
+echo "to run through all subjects."
 read particNums # Pull the numbers as delimited variables
 particNumArr=($particNums) # Shove said numbers into an array
+if [ $particNumArr[0] = "all" ]; then
+  particNumArr=("/Hermes/"$study"_scans/*")
+fi
+
 for partic in ${particNumArr[*]}; do
   particNum=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
   particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
@@ -307,6 +312,34 @@ for partic in ${particArr[*]}; do
           echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
           dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/PostTX "${anatomical}"
           anatNum=$((anatNum+1))
+        done
+      fi
+
+      # Baseline T2
+      if [ $baselineBool -eq 1 ]; then
+        anatBDirArr=($(find $baselineRawDir -maxdepth 1 -iname "T2?FLAIR*" -print | sort))
+        anatNumB=1
+        if [ ! -d $particDir/anatomicals/Baseline ]; then
+          mkdir -p $particDir/anatomicals/Baseline
+        fi
+        for anatomical in ${anatBDirArr[@]}; do
+          echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+          dcm2niix -f "$partic"_anatomical_$anatNumB -o $particDir/anatomicals/Baseline "${anatomical}"
+          anatNumB=$((anatNumB+1))
+        done
+      fi
+
+      # PostTX T2
+      if [ $postTXBool -eq 1 ]; then
+        anatBDirArr=($(find $postTXRawDir -maxdepth 1 -iname "T2?FLAIR*" -print | sort))
+        anatNumB=1
+        if [ ! -d $particDir/anatomicals/PostTX ]; then
+          mkdir -p $particDir/anatomicals/PostTX
+        fi
+        for anatomical in ${anatBDirArr[@]}; do
+          echo "Running dcm2nii for Anatomical $anatNum2 located in $anatomical"
+          dcm2niix -f "$partic"_anatomical_$anatNumB -o $particDir/anatomicals/PostTX "${anatomical}"
+          anatNumB=$((anatNumB+1))
         done
       fi
 
@@ -459,6 +492,7 @@ for partic in ${particArr[*]}; do
           particBool=0
         fi
       fi
+      #T1
       anatDirArr=($(find $particRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
       anatNum=1
       if [ ! -d $particDir/anatomicals ]; then
@@ -468,6 +502,18 @@ for partic in ${particArr[*]}; do
         echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
         dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals "${anatomical}"
         anatNum=$((anatNum+1))
+      done
+
+      #T2
+      anatBDirArr=($(find $particRawDir -maxdepth 1 -iname "T2?FLAIR*" -print | sort))
+      anatNumB=1
+      if [ ! -d $particDir/anatomicals ]; then
+        mkdir -p $particDir/anatomicals
+      fi
+      for anatomical in ${anatBDirArr[@]}; do
+        echo "Running dcm2nii for Anatomical $anatNumB located in $anatomical"
+        dcm2niix -f "$partic"_anatomical_$anatNumB -o $particDir/anatomicals "${anatomical}"
+        anatNumB=$((anatNumB+1))
       done
 
       if [ ${#boldValues[@]} -eq 0 ]; then
@@ -528,7 +574,7 @@ for partic in ${particArr[*]}; do
           dcm2niix -f "$partic"_A2P -o $particDir/dti "$dtiAPDir"
 
           # Running same system for DTI P -> A
-          dtiPADir=`find $particRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1`
+          dtiPADir=`find $particRawDir -maxdepth 1 -iname "*bzero*" -print | sort | tail -1`
           if [ $dtiAPDir = $dtiPADir ]; then
             echo "A -> P and P -> A mismatch for $partic, verify folders exist."
           else
