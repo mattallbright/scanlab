@@ -121,7 +121,7 @@ HermesFetch(){
     # Strip partic to just the numbers
     particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
     # Find folder where number pattern is present
-    if [ ! -z `find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` ]; then
+    if [ -n `find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` ]; then
       mkdir -p $particRawDir
       osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
       echo "Copying data from shared mount..."
@@ -141,7 +141,7 @@ HermesFetch(){
       # Strip partic to just the numbers
       particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
       # Find folder where number pattern is present
-      if [ ! -z `find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` ]; then
+      if [ -n `find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` ]; then
         osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
         echo "Copying data from shared mount..."
         cp -r "$osirixDir/." $particRawDir/
@@ -252,7 +252,7 @@ for partic in ${particArr[*]}; do
     if [ $longitudinalBool -eq 1 ]; then
       echo "Logitudinal study detected."
       # Check baseline directory existence
-      if [ ! -z `find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1` ]; then
+      if [ -n `find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1` ]; then
         echo "Baseline detected."
         baselineRawDir=`find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1`
         if [ $dirAlreadyExists -eq 1 ]; then
@@ -272,7 +272,7 @@ for partic in ${particArr[*]}; do
         baselineBool=0
       fi
       # Check post-treament directory existence
-      if [ ! -z `find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1` ]; then
+      if [ -n `find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1` ]; then
         echo "PostTX detected."
         postTXRawDir=`find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1`
         if [ $dirAlreadyExists -eq 1 ]; then
@@ -358,7 +358,7 @@ for partic in ${particArr[*]}; do
           # Checks postTX bool
           if [ $baselineBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
-            if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+            if [ -n `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
                 mkdir -p $particDir/bold/${bold_type}/Baseline
@@ -373,7 +373,7 @@ for partic in ${particArr[*]}; do
           # Checks postTX bool
           if [ $postTXBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
-            if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+            if [ -n `find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
                 mkdir -p $particDir/bold/${bold_type}/PostTX
@@ -430,7 +430,7 @@ for partic in ${particArr[*]}; do
         echo "Beginning DTI conversion..."
         # Baseline DTI
         if [ $baselineBool -eq 1 ]; then
-          if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1` ]; then
+          if [ -n `find $baselineRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1` ]; then
             dtiAPBaselineDir=`find $baselineRawDir -maxdepth 1 -iname "*dti*" -print | sort -r | tail -1`
             if [ ! -d $particDir/dti/Baseline ]; then
               mkdir -p $particDir/dti/Baseline
@@ -456,7 +456,7 @@ for partic in ${particArr[*]}; do
         fi
         # PostTX DTI A -> P
         if [ $postTXBool -eq 1 ]; then
-          if [ ! -z `find $baselineRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1` ]; then
+          if [ -n `find $baselineRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1` ]; then
             dtiAPPostTXDir=`find $postTXRawDir -maxdepth 1 -iname "*dti*" -print | sort -r | tail -1`
             if [ ! -d $particDir/dti/PostTX ]; then
               mkdir -p $particDir/dti/PostTX
@@ -527,7 +527,7 @@ for partic in ${particArr[*]}; do
         echo "Running BOLD for $partic"
         for bold_type in ${boldValues[*]}; do
           # If task directory exists run dcm2niix on it
-          if [ ! -z `find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
+          if [ -n `find $particRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1` ]; then
             # Makes directory if it doesn't exist
             if [ ! -d $particDir/bold/${bold_type} ]; then
               mkdir -p $particDir/bold/${bold_type}
@@ -541,7 +541,7 @@ for partic in ${particArr[*]}; do
       fi
 
       if [ $magPhaseBool -eq 1 ]; then
-        if [ ! -z `find $particRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1` ]; then
+        if [ -n `find $particRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1` ]; then
           # Running for Mag (note the sort -r)
           echo "Beginning Magnitude-Phase fieldmap conversion..."
 
@@ -567,7 +567,7 @@ for partic in ${particArr[*]}; do
         echo "Magnitude or Phase fieldmaps are not taken for $study"
       fi
       if [ $dtiBool -eq 1 ]; then
-        if [ ! -z `find $particRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1` ]; then
+        if [ -n `find $particRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1` ]; then
           # Running for DTI A -> P (note the sort -r)
           echo "Beginning DTI conversion..."
 
