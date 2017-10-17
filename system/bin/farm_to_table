@@ -133,9 +133,11 @@ HermesFetch(){
       dataNotFound=1
     fi
   else
-    echo "The RAW directory already exists for this user. Would you like to copy"
-    echo "anyway? Typically RAW_data can be overwritten without consequence."
-    read rawResponse
+    if [ bypassOverwrite -eq 0 ]; then
+      echo "The RAW directory already exists for this user. Would you like to copy"
+      echo "anyway? Typically RAW_data can be overwritten without consequence."
+      read rawResponse
+    fi
     if [[ "$rawResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
       # Fetch data from RAW for $partic
       echo "Locating data for $partic..."
@@ -152,12 +154,25 @@ HermesFetch(){
         echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
         dataNotFound=1
       fi
+      if [ $overwriteTriggerCount -eq 0 ]; then
+        overwriteTriggerCount=$((overwriteTriggerCount + 1))
+        echo "It appears that there are a number of overwritable RAW directories which you have chosen."
+        echo "Would you like to overwrite all future RAW directories and bypass the prompt?"
+        read overwriteResponse
+        if [[ "$rawResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+          bypassOverwrite=1
+        fi
+      fi
+      overwriteTriggerCount=$((overwriteTriggerCount + 1))
     else
       echo "Data will not be modified. Continuing with structure..."
       dataNotFound=0
     fi
   fi
 }
+
+overwriteTriggerCount=0
+bypassOverwrite=0
 
 # Start program
 
@@ -259,11 +274,23 @@ for partic in ${particArr[*]}; do
         echo "Baseline detected."
         baselineRawDir=`find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1`
         if [ $dirAlreadyExists -eq 1 ]; then
-          echo "The indiv_analysis directory already exists."
-          echo "Would you like to copy and possibly overwrite your Baseline indiv_analysis images?"
-          read overwriteBaseline
+          if [ bypassIndivOverwrite -eq 0 ]; then
+            echo "The indiv_analysis directory already exists."
+            echo "Would you like to copy and possibly overwrite your Baseline indiv_analysis images?"
+            read overwriteBaseline
+          fi
           if [[ "$overwriteBaseline" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
             baselineBool=1
+            if [ $overwriteIndivCount -eq 0 ]; then
+              overwriteIndivCount=$((overwriteIndivCount + 1))
+              echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
+              echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
+              read overwriteIndivResponse
+              if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+                bypassIndivOverwrite=1
+              fi
+            fi
+            overwriteIndivCount=$((overwriteIndivCount + 1))
           else
             baselineBool=0
           fi
@@ -280,11 +307,23 @@ for partic in ${particArr[*]}; do
         echo "PostTX detected."
         postTXRawDir=`find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1`
         if [ $dirAlreadyExists -eq 1 ]; then
-          echo "The indiv_analysis directory already exists."
-          echo "Would you like to copy and possibly overwrite your PostTX indiv_analysis images?"
-          read overwritePostTX
+          if [ bypassIndivOverwrite -eq 0 ]; then
+            echo "The indiv_analysis directory already exists."
+            echo "Would you like to copy and possibly overwrite your PostTX indiv_analysis images?"
+            read overwritePostTX
+          fi
           if [[ "$overwritePostTX" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
             postTXBool=1
+            if [ $overwriteIndivCount -eq 0 ]; then
+              overwriteIndivCount=$((overwriteIndivCount + 1))
+              echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
+              echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
+              read overwriteIndivResponse
+              if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+                bypassIndivOverwrite=1
+              fi
+            fi
+            overwriteIndivCount=$((overwriteIndivCount + 1))
           else
             postTXBool=0
           fi
@@ -496,11 +535,23 @@ for partic in ${particArr[*]}; do
     else
       echo "Non-logitudinal study detected."
       if [ $dirAlreadyExists -eq 1 ]; then
-        echo "The indiv_analysis directory already exists."
-        echo "Would you like to copy and possibly overwrite your indiv_analysis images?"
-        read overwritePartic
+        if [ bypassIndivOverwrite -eq 0 ]; then
+          echo "The indiv_analysis directory already exists."
+          echo "Would you like to copy and possibly overwrite your indiv_analysis images?"
+          read overwritePartic
+        fi
         if [[ "$overwritePartic" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
           echo "Continuing with copy..."
+          if [ $overwriteLongCount -eq 0 ]; then
+            overwriteLongCount=$((overwriteLongCount + 1))
+            echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
+            echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
+            read overwriteIndivResponse
+            if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+              bypassIndivOverwrite=1
+            fi
+          fi
+          overwriteIndivCount=$((overwriteIndivCount + 1))
         else
           particBool=0
         fi
