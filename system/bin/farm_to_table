@@ -223,8 +223,6 @@ for partic in ${particNumArr[*]}; do
   fi
 done
 
-IFS=$'\n'
-
 # Get data from Hermes for the participant(s)
 for partic in ${particArr[*]}; do
   echo "Starting download for $partic"
