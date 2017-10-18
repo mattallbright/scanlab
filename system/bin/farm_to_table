@@ -173,6 +173,7 @@ HermesFetch(){
 
 overwriteTriggerCount=0
 overwriteIndivCount=0
+overwriteLongCount=0
 bypassOverwrite=0
 bypassIndivOverwrite=0
 
@@ -546,7 +547,7 @@ for partic in ${particArr[*]}; do
         fi
         if [[ "$overwritePartic" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
           echo "Continuing with copy..."
-          if [ $overwriteLongCount == 0 ]; then
+          if [ $overwriteLongCount = 0 ]; then
             overwriteLongCount=$((overwriteLongCount + 1))
             echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
             echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
