@@ -172,6 +172,7 @@ HermesFetch(){
 }
 
 overwriteTriggerCount=0
+overwriteIndivCount=0
 bypassOverwrite=0
 bypassIndivOverwrite=0
 
