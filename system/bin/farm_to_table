@@ -491,7 +491,7 @@ for partic in ${particArr[*]}; do
 
             # Running same system for DTI P -> A
             dtiPABaselineDir=`find $baselineRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1`
-            if [ $dtiAPBaselineDir = $dtiPABaselineDir ]; then
+            if [ "$dtiAPBaselineDir" = "$dtiPABaselineDir" ]; then
               echo "A -> P and P -> A mismatch for $partic Baseline, verify folders exist."
             else
               echo "Running dcm2nii for DTI P -> A"
@@ -518,7 +518,7 @@ for partic in ${particArr[*]}; do
 
             # Running same system for DTI P -> A
             dtiPAPostTXDir=`find $postTXRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1`
-            if [ $dtiAPPostTXDir = $dtiPAPostTXDir ]; then
+            if [ "$dtiAPPostTXDir" = "$dtiPAPostTXDir" ]; then
               echo "A -> P and P -> A mismatch for $partic PostTX, verify folders exist."
             else
               echo "Running dcm2nii for DTI P -> A"
@@ -622,7 +622,7 @@ for partic in ${particArr[*]}; do
           dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps "$magDir"
 
           magCheckString=`find $particRawDir -maxdepth 1 -iname "*field*" -print | sort | tail -1`
-          if [ $magDir = $magCheckString ]; then
+          if [ "$magDir" = "$magCheckString" ]; then
             echo "Only one fieldmap was found. Verify files."
           else
             # Running same system for Phase
@@ -651,7 +651,7 @@ for partic in ${particArr[*]}; do
 
           # Running same system for DTI P -> A
           dtiPADir=`find $particRawDir -maxdepth 1 -iname "*bzero*" -print | sort | tail -1`
-          if [ $dtiAPDir = $dtiPADir ]; then
+          if [ "$dtiAPDir" == "$dtiPADir" ]; then
             echo "A -> P and P -> A mismatch for $partic, verify folders exist."
           else
             echo "Running dcm2nii for DTI P -> A"
