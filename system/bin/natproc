@@ -22,6 +22,6 @@ for partic in ${particArr[*]}; do
   export PATHINPUTenv
   PARTIDINPUTenv = "$partic"
   export PARTIDINPUTenv
-  matlab -nodisplay -nodesktop -nosplash -r "addpath(genpath('/opt/cloud/staging/matlab/')); Reslice_T2(); clear; quit;"
+  matlab -nodisplay -nodesktop -nosplash -r "addpath(genpath('/opt/cloud/staging/matlab/')); Reslice_T2; clear; quit;"
   wait
 done
