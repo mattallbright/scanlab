@@ -1,0 +1,23 @@
+#!/bin/bash
+# Natalie for MATLAB
+
+if [ $# -lt 2 ]; then
+    echo "usage: $name [study] [subj1] [subj2] ... [subjn]"
+    echo "  study           Name of the study"
+    echo "  subj1 .. subjn  Name of the subject(s) or 'all'"
+    exit 1
+fi
+
+particArr=()
+
+if [ "$2" == "all" ]; then
+  particArr=( $(ls /data/"$study"/indiv_analysis/ | grep -E '[0-9][0-9][0-9]') )
+else
+  particArr=( "${@:2}" )
+fi
+
+for partic in ${particArr[*]}; do
+  echo "Running for $partic"
+  matlab -nodesktop -nosplash -r "addpath(genpath('/opt/cloud/matlab/')); garrfunc('/data/$1/indiv_analysis/$partic','$partic'); clear; quit;"
+  wait
+done
