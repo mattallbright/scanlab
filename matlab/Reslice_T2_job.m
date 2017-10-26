@@ -9,306 +9,306 @@ matlabbatch{3}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'categorical';
 %%
 matlabbatch{4}.spm.spatial.realign.estwrite.data = {
                                                     {
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,1'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,2'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,3'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,4'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,5'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,6'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,7'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,8'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,9'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,10'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,11'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,12'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,13'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,14'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,15'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,16'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,17'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,18'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,19'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,20'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,21'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,22'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,23'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,24'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,25'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,26'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,27'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,28'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,29'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,30'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,31'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,32'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,33'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,34'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,35'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,36'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,37'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,38'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,39'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,40'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,41'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,42'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,43'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,44'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,45'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,46'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,47'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,48'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,49'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,50'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,51'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,52'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,53'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,54'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,55'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,56'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,57'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,58'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,59'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,60'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,61'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,62'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,63'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,64'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,65'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,66'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,67'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,68'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,69'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,70'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,71'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,72'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,73'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,74'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,75'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,76'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,77'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,78'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,79'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,80'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,81'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,82'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,83'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,84'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,85'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,86'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,87'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,88'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,89'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,90'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,91'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,92'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,93'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,94'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,95'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,96'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,97'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,98'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,99'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,100'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,101'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,102'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,103'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,104'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,105'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,106'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,107'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,108'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,109'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,110'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,111'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,112'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,113'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,114'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,115'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,116'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,117'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,118'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,119'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,120'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,121'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,122'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,123'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,124'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,125'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,126'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,127'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,128'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,129'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,130'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,131'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,132'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,133'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,134'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,135'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,136'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,137'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,138'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,139'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,140'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,141'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,142'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,143'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,144'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,145'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,146'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,147'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,148'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,149'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,150'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,151'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,152'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,153'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,154'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,155'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,156'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,157'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,158'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,159'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,160'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,161'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,162'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,163'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,164'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,165'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,166'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,167'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,168'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,169'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,170'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,171'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,172'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,173'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,174'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,175'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,176'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,177'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,178'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,179'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,180'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,181'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,182'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,183'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,184'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,185'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,186'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,187'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,188'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,189'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,190'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,191'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,192'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,193'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,194'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,195'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,196'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,197'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,198'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,199'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,200'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,201'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,202'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,203'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,204'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,205'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,206'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,207'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,208'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,209'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,210'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,211'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,212'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,213'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,214'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,215'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,216'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,217'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,218'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,219'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,220'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,221'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,222'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,223'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,224'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,225'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,226'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,227'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,228'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,229'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,230'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,231'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,232'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,233'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,234'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,235'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,236'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,237'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,238'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,239'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,240'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,241'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,242'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,243'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,244'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,245'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,246'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,247'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,248'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,249'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,250'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,251'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,252'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,253'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,254'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,255'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,256'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,257'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,258'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,259'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,260'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,261'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,262'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,263'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,264'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,265'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,266'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,267'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,268'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,269'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,270'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,271'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,272'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,273'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,274'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,275'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,276'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,277'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,278'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,279'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,280'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,281'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,282'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,283'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,284'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,285'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,286'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,287'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,288'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,289'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,290'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,291'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,292'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,293'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,294'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,295'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,296'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,297'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,298'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,299'
-                                                    PATHINPUT + '/bold/resting/' + PARTIDINPUT + '_resting.nii,300'
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,1')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,2')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,3')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,4')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,5')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,6')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,7')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,8')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,9')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,10')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,11')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,12')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,13')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,14')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,15')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,16')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,17')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,18')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,19')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,20')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,21')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,22')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,23')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,24')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,25')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,26')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,27')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,28')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,29')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,30')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,31')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,32')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,33')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,34')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,35')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,36')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,37')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,38')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,39')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,40')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,41')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,42')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,43')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,44')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,45')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,46')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,47')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,48')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,49')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,50')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,51')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,52')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,53')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,54')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,55')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,56')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,57')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,58')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,59')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,60')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,61')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,62')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,63')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,64')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,65')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,66')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,67')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,68')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,69')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,70')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,71')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,72')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,73')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,74')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,75')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,76')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,77')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,78')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,79')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,80')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,81')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,82')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,83')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,84')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,85')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,86')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,87')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,88')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,89')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,90')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,91')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,92')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,93')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,94')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,95')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,96')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,97')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,98')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,99')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,100')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,101')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,102')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,103')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,104')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,105')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,106')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,107')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,108')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,109')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,110')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,111')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,112')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,113')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,114')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,115')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,116')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,117')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,118')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,119')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,120')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,121')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,122')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,123')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,124')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,125')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,126')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,127')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,128')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,129')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,130')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,131')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,132')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,133')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,134')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,135')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,136')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,137')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,138')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,139')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,140')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,141')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,142')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,143')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,144')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,145')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,146')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,147')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,148')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,149')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,150')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,151')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,152')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,153')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,154')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,155')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,156')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,157')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,158')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,159')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,160')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,161')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,162')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,163')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,164')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,165')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,166')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,167')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,168')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,169')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,170')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,171')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,172')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,173')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,174')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,175')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,176')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,177')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,178')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,179')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,180')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,181')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,182')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,183')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,184')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,185')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,186')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,187')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,188')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,189')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,190')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,191')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,192')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,193')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,194')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,195')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,196')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,197')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,198')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,199')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,200')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,201')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,202')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,203')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,204')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,205')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,206')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,207')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,208')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,209')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,210')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,211')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,212')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,213')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,214')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,215')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,216')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,217')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,218')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,219')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,220')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,221')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,222')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,223')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,224')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,225')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,226')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,227')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,228')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,229')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,230')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,231')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,232')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,233')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,234')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,235')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,236')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,237')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,238')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,239')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,240')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,241')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,242')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,243')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,244')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,245')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,246')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,247')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,248')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,249')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,250')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,251')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,252')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,253')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,254')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,255')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,256')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,257')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,258')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,259')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,260')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,261')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,262')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,263')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,264')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,265')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,266')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,267')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,268')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,269')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,270')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,271')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,272')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,273')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,274')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,275')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,276')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,277')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,278')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,279')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,280')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,281')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,282')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,283')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,284')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,285')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,286')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,287')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,288')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,289')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,290')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,291')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,292')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,293')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,294')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,295')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,296')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,297')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,298')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,299')
+                                                    strcat(PATHINPUT,'/bold/resting/',PARTIDINPUT,'_resting.nii,300')
                                                     }
                                                     }';
 %%
@@ -332,14 +332,14 @@ matlabbatch{5}.spm.temporal.st.so = [1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 
 matlabbatch{5}.spm.temporal.st.refslice = 16;
 matlabbatch{5}.spm.temporal.st.prefix = 'a';
 matlabbatch{6}.spm.spatial.coreg.estimate.ref(1) = cfg_dep('Realign: Estimate & Reslice: Mean Image', substruct('.','val', '{}',{4}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','rmean'));
-matlabbatch{6}.spm.spatial.coreg.estimate.source = {PATHINPUT + '/anatomicals/' + PARTIDINPUT + '_anatomical_4.nii,1'};
+matlabbatch{6}.spm.spatial.coreg.estimate.source = {strcat(PATHINPUT,'/anatomicals/',PARTIDINPUT,'_anatomical_4.nii,1')};
 matlabbatch{6}.spm.spatial.coreg.estimate.other = {''};
 matlabbatch{6}.spm.spatial.coreg.estimate.eoptions.cost_fun = 'nmi';
 matlabbatch{6}.spm.spatial.coreg.estimate.eoptions.sep = [4 2];
 matlabbatch{6}.spm.spatial.coreg.estimate.eoptions.tol = [0.02 0.02 0.02 0.001 0.001 0.001 0.01 0.01 0.01 0.001 0.001 0.001];
 matlabbatch{6}.spm.spatial.coreg.estimate.eoptions.fwhm = [7 7];
 matlabbatch{7}.spm.spatial.coreg.estwrite.ref(1) = cfg_dep('Coregister: Estimate: Coregistered Images', substruct('.','val', '{}',{6}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','cfiles'));
-matlabbatch{7}.spm.spatial.coreg.estwrite.source = {PATHINPUT + '/anatomicals/PARTIDINPUT_t2_2.nii,1'};
+matlabbatch{7}.spm.spatial.coreg.estwrite.source = {strcat(PATHINPUT,'/anatomicals/PARTIDINPUT_t2_2.nii,1')};
 matlabbatch{7}.spm.spatial.coreg.estwrite.other = {''};
 matlabbatch{7}.spm.spatial.coreg.estwrite.eoptions.cost_fun = 'nmi';
 matlabbatch{7}.spm.spatial.coreg.estwrite.eoptions.sep = [4 2];
