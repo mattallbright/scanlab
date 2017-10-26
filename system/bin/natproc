@@ -18,6 +18,6 @@ fi
 
 for partic in ${particArr[*]}; do
   echo "Running for $partic"
-  matlab -nodesktop -nosplash -r "addpath(genpath('/opt/cloud/staging/matlab/')); garrfunc('/data/$1/indiv_analysis/$partic','$partic'); clear; quit;"
+  matlab -nodesktop -nosplash -r "addpath(genpath('/opt/cloud/staging/matlab/')); Reslice_T2('/data/$1/indiv_analysis/$partic','$partic'); clear; quit;"
   wait
 done
