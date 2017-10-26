@@ -1,7 +1,7 @@
-function Reslice_T2(fullpath,partID)
+function Reslice_T2()
 
-    PATHINPUT = fullpath;
-    PARTIDINPUT = partID;
+    % PATHINPUT = fullpath;
+    % PARTIDINPUT = partID;
 
     nrun = 1; % enter the number of runs here
     jobfile = {'/opt/cloud/staging/matlab/Reslice_T2_job.m'};
