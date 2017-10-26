@@ -650,7 +650,13 @@ for partic in ${particArr[*]}; do
           dcm2niix -f "$partic"_A2P -o $particDir/dti "$dtiAPDir"
 
           # Running same system for DTI P -> A
-          dtiPADir=`find $particRawDir -maxdepth 1 -iname "*bzero*" -print | sort | tail -1`
+          dtiPADir=`find $particRawDir -maxdepth 1 -iname "*P-?A*" -print | sort | tail -1`
+          if [ "$dtiPADir" == "x$dtiPADir" ]; then
+            echo "P->A file not found, searching P__A"
+            dtiPADir=`find $particRawDir -maxdepth 1 -iname "*P_?A*" -print | sort | tail -1`
+            if [ "$dtiPADir" == "x$dtiPADir" ]; then
+              echo "P__A file not found, searching bzero identifier"
+              dtiPADir=`find $particRawDir -maxdepth 1 -iname "*bzero*" -print | sort | tail -1`
           if [ "$dtiAPDir" == "$dtiPADir" ]; then
             echo "A -> P and P -> A mismatch for $partic, verify folders exist."
           else
