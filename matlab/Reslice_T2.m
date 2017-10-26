@@ -1,14 +1,13 @@
-function garrfunc(fullpath, partID)
+function garrfunc()
 
-    global PATHINPUT = fullpath;
-    global PARTIDINPUT = partID;
+    % PATHINPUT = fullpath;
+    % PARTIDINPUT = partID;
 
-    nrun = X; % enter the number of runs here
-    jobfile = {'/opt/cloud/staging/matlab'};
-    jobs = repmat(jobfile, 1, nrun);
-    inputs = cell(0, nrun);
+    % nrun = X; % enter the number of runs here
+    % jobfile = {'/opt/cloud/staging/matlab/Reslice_T2_job.m'};
+    % jobs = repmat(jobfile, 1, nrun);
+    % inputs = cell(0, nrun);
 
-    spm('defaults', 'FMRI');
-    spm_jobman('run', jobs, inputs{:});
-
+    % spm('defaults', 'FMRI');
+    % spm_jobman('run', jobs, inputs{:});
 end
