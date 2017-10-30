@@ -718,7 +718,7 @@ for partic in ${particArr[*]}; do
       echo "Finished transfer and conversion for $partic"
       echo "-----------------------------------------------"
     fi
- fi
+#  fi
 done
 
 echo "Finished all participants."
