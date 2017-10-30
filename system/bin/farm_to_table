@@ -390,7 +390,7 @@ for partic in ${particArr[*]}; do
 
       # Baseline T2
       if [ $baselineBool -eq 1 ]; then
-        anatBDirArr=($(find $baselineRawDir -maxdepth 2 -iname "T2?FLAIR*" -print | sort))
+        anatBDirArr=($(find $baselineRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
         anatNumB=1
         if [ ! -d $particDir/anatomicals/Baseline ]; then
           mkdir -p $particDir/anatomicals/Baseline
@@ -404,7 +404,7 @@ for partic in ${particArr[*]}; do
 
       # PostTX T2
       if [ $postTXBool -eq 1 ]; then
-        anatBDirArr=($(find $postTXRawDir -maxdepth 2 -iname "T2?FLAIR*" -print | sort))
+        anatBDirArr=($(find $postTXRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
         anatNumB=1
         if [ ! -d $particDir/anatomicals/PostTX ]; then
           mkdir -p $particDir/anatomicals/PostTX
@@ -615,7 +615,7 @@ for partic in ${particArr[*]}; do
       #T2
 
       echo "Running dcm2nii for T2 Anatomicals"
-      anatBDirArr=($(find $particRawDir -maxdepth 2 -iname "T2?FLAIR*" -print | sort))
+      anatBDirArr=($(find $particRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
       anatNumB=1
       if [ ! -d $particDir/anatomicals ]; then
         mkdir -p $particDir/anatomicals
