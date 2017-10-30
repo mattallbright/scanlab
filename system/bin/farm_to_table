@@ -277,7 +277,7 @@ for partic in ${particArr[*]}; do
       echo "Logitudinal study detected."
       # Check baseline directory existence
       baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | tail -1`
-      if [ $baseCheckString != "x$baseCheckString" ]; then
+      if [ "$baseCheckString" != "x$baseCheckString" ]; then
         echo "Baseline detected."
         baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | tail -1`
         echo "BaselineRawDir is $baselineRawDir"
@@ -311,7 +311,7 @@ for partic in ${particArr[*]}; do
       fi
       # Check post-treament directory existence
       postCheckString=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | tail -1`
-      if [ $postCheckString != "x$postCheckString" ]; then
+      if [ "$postCheckString" != "x$postCheckString" ]; then
         echo "PostTX detected."
         postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | tail -1`
         echo "PostTXRawDir is $postTXRawDir"
