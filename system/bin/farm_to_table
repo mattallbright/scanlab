@@ -252,6 +252,7 @@ IFS=$'\n'
 for partic in ${particArr[*]}; do
   echo "Starting download for $partic"
   particRawDir="$studyDir/RAW_data/$partic"
+  echo "ParticRawDir is $particRawDir"
   HermesFetch $partic
 
   if [ $dataNotFound -eq 1 ]; then
@@ -261,6 +262,7 @@ for partic in ${particArr[*]}; do
   else
     # Create directory structure
     particDir=$studyDir/indiv_analysis/$partic
+    echo "ParticDir is $particDir"
     if [ ! -d $particDir ]; then
       echo "Creating directory for $partic"
       dirAlreadyExists=0
@@ -278,6 +280,7 @@ for partic in ${particArr[*]}; do
       if [ $baseCheckString != "x$baseCheckString" ]; then
         echo "Baseline detected."
         baselineRawDir=`find $particRawDir -maxdepth 1 -iname "*_BV" -print | sort | tail -1`
+        echo "BaselineRawDir is $baselineRawDir"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
             echo "The indiv_analysis directory already exists."
@@ -311,6 +314,7 @@ for partic in ${particArr[*]}; do
       if [ $postCheckString != "x$postCheckString" ]; then
         echo "PostTX detected."
         postTXRawDir=`find $particRawDir -maxdepth 1 -iname "*_PTX" -print | sort | tail -1`
+        echo "PostTXRawDir is $postTXRawDir"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
             echo "The indiv_analysis directory already exists."
@@ -404,10 +408,12 @@ for partic in ${particArr[*]}; do
         # Run bold sorting
         for bold_type in ${boldValues[*]}; do
           # Checks postTX bool
+          echo "Running $bold_type"
           if [ $baselineBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
             baseCheckString2=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
             if [ "$baseCheckString2" != "x$baseCheckString2" ]; then
+              echo "Check passed..."
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
                 mkdir -p $particDir/bold/${bold_type}/Baseline
