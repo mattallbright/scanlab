@@ -407,7 +407,7 @@ for partic in ${particArr[*]}; do
           if [ $baselineBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
             baseCheckString2=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [ $baseCheckString2 != "x$baseCheckString2" ]; then
+            if [ "$baseCheckString2" != "x$baseCheckString2" ]; then
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
                 mkdir -p $particDir/bold/${bold_type}/Baseline
@@ -423,7 +423,7 @@ for partic in ${particArr[*]}; do
           if [ $postTXBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
             postCheckString2=`find $baselineRawDir -maxdepth 1 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [ $postCheckString2 != "x$postCheckString2" ]; then
+            if [ "$postCheckString2" != "x$postCheckString2" ]; then
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
                 mkdir -p $particDir/bold/${bold_type}/PostTX
@@ -490,17 +490,25 @@ for partic in ${particArr[*]}; do
             dcm2niix -f "$partic"_A2P -o $particDir/dti/Baseline "$dtiAPBaselineDir"
 
             # Running same system for DTI P -> A
-            dtiPABaselineDir=`find $baselineRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1`
-            if [ "$dtiAPBaselineDir" = "$dtiPABaselineDir" ]; then
-              echo "A -> P and P -> A mismatch for $partic Baseline, verify folders exist."
+            dtiPABaselineDir=`find $baselineRawDir -maxdepth 1 -iname "*P-?A*" -print | sort | tail -1`
+            if [ "$dtiPABaselineDir" == "x$dtiPABaselineDir" ]; then
+              echo "P->A file not found, searching P__A"
+              dtiPABaselineDir=`find $postTXRawDir -maxdepth 1 -iname "*P_?A*" -print | sort | tail -1`
+              if [ "$dtiPABaselineDir" == "x$dtiPABaselineDir" ]; then
+                echo "P__A file not found, searching bzero identifier"
+                dtiPABaselineDir=`find $baselineRawDir -maxdepth 1 -iname "*bzero*" -print | sort | tail -1`
+              fi
+            fi
+            if [ "$dtiAPBaselineDir" == "$dtiPABaselineDir" ]; then
+              echo "A -> P and P -> A mismatch for $partic, verify folders exist."
             else
               echo "Running dcm2nii for DTI P -> A"
               dcm2niix -f "$partic"_P2A -o $particDir/dti/Baseline "$dtiPABaselineDir"
             fi
-            bvalBaseline=`find $particDir/dti/Baseline -maxdepth 1 -iname "*bval*" -print | sort | tail -1`
-            bvecBaseline=`find $particDir/dti/Baseline -maxdepth 1 -iname "*bvec*" -print | sort | tail -1`
-            mv $bvalBaseline $particDir/dti/Baseline/bvals
-            mv $bvecBaseline $particDir/dti/Baseline/bvecs
+            bval=`find $particDir/dti/Baseline -maxdepth 1 -iname "*bval*" -print | sort | tail -1`
+            bvec=`find $particDir/dti/Baseline -maxdepth 1 -iname "*bvec*" -print | sort | tail -1`
+            mv $bval $particDir/dti/Baseline/bvals
+            mv $bvec $particDir/dti/Baseline/bvecs
           else
             echo "No DTI images found for $partic Baseline"
           fi
@@ -517,17 +525,25 @@ for partic in ${particArr[*]}; do
             dcm2niix -f "$partic"_A2P -o $particDir/dti/PostTX "$dtiAPPostTXDir"
 
             # Running same system for DTI P -> A
-            dtiPAPostTXDir=`find $postTXRawDir -maxdepth 1 -iname "*dti*" -print | sort | tail -1`
-            if [ "$dtiAPPostTXDir" = "$dtiPAPostTXDir" ]; then
-              echo "A -> P and P -> A mismatch for $partic PostTX, verify folders exist."
+            dtiPAPostTXDir=`find $postTXRawDir -maxdepth 1 -iname "*P-?A*" -print | sort | tail -1`
+            if [ "$dtiPAPostTXDir" == "x$dtiPAPostTXDir" ]; then
+              echo "P->A file not found, searching P__A"
+              dtiPAPostTXDir=`find $postTXRawDir -maxdepth 1 -iname "*P_?A*" -print | sort | tail -1`
+              if [ "$dtiPAPostTXDir" == "x$dtiPAPostTXDir" ]; then
+                echo "P__A file not found, searching bzero identifier"
+                dtiPAPostTXDir=`find $postTXRawDir -maxdepth 1 -iname "*bzero*" -print | sort | tail -1`
+              fi
+            fi
+            if [ "$dtiAPPostTXDir" == "$dtiPAPostTXDir" ]; then
+              echo "A -> P and P -> A mismatch for $partic, verify folders exist."
             else
               echo "Running dcm2nii for DTI P -> A"
               dcm2niix -f "$partic"_P2A -o $particDir/dti/PostTX "$dtiPAPostTXDir"
             fi
-            bvalPostTX=`find $particDir/dti/PostTX -maxdepth 1 -iname "*bval*" -print | sort | tail -1`
-            bvecPostTX=`find $particDir/dti/PostTX -maxdepth 1 -iname "*bvec*" -print | sort | tail -1`
-            mv $bvalPostTX $particDir/dti/PostTX/bvals
-            mv $bvecPostTX $particDir/dti/PostTX/bvecs
+            bval=`find $particDir/dti/PostTX -maxdepth 1 -iname "*bval*" -print | sort | tail -1`
+            bvec=`find $particDir/dti/PostTX -maxdepth 1 -iname "*bvec*" -print | sort | tail -1`
+            mv $bval $particDir/dti/PostTX/bvals
+            mv $bvec $particDir/dti/PostTX/bvecs
           else
             echo "No DTI images found for $partic PostTX"
           fi
