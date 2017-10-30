@@ -286,6 +286,9 @@ for partic in ${particArr[*]}; do
             echo "The indiv_analysis directory already exists."
             echo "Would you like to copy and possibly overwrite your Baseline indiv_analysis images?"
             read overwriteBaseline
+          elif [ $bypassIndivOverwrite -eq 1 ]; then
+            baselineBool=1
+          fi
           fi
           if [[ "$overwriteBaseline" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
             baselineBool=1
@@ -299,8 +302,6 @@ for partic in ${particArr[*]}; do
               fi
             fi
             overwriteIndivCount=$((overwriteIndivCount + 1))
-          else
-            baselineBool=0
           fi
         else
           baselineBool=1
@@ -320,6 +321,8 @@ for partic in ${particArr[*]}; do
             echo "The indiv_analysis directory already exists."
             echo "Would you like to copy and possibly overwrite your PostTX indiv_analysis images?"
             read overwritePostTX
+          elif [ $bypassIndivOverwrite -eq 1 ]; then
+            postTXBool=1
           fi
           if [[ "$overwritePostTX" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
             postTXBool=1
@@ -333,8 +336,6 @@ for partic in ${particArr[*]}; do
               fi
             fi
             overwriteIndivCount=$((overwriteIndivCount + 1))
-          else
-            postTXBool=0
           fi
         else
           postTXBool=1
