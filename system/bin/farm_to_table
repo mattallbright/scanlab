@@ -344,6 +344,22 @@ for partic in ${particArr[*]}; do
         postTXBool=0
       fi
 
+      if [ $baselineBool -eq 1 ]; then
+        echo "Running for Baseline."
+      elif [ $baselineBool -eq 0 ]; then
+        echo "Not running for Baseline"
+      else
+        echo "Non-logitudinal detected"
+      fi
+
+      if [ $postTXBool -eq 1 ]; then
+        echo "Running for PostTX."
+      elif [ $postTXBool -eq 0 ]; then
+        echo "Not running for PostTX"
+      else
+        echo "Non-logitudinal detected"
+      fi
+
       # Baseline Anatomical
       if [ $baselineBool -eq 1 ]; then
         anatDirArr=($(find $baselineRawDir -maxdepth 1 -iname "T1_MPRAGE_1MM*" -print | sort))
