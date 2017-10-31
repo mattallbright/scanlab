@@ -121,10 +121,10 @@ HermesFetch(){
     # Strip partic to just the numbers
     particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
     # Find folder where number pattern is present
-    rawCheckString=`find /Hermes/"$study"_scans -maxdepth 2 -iname "*$particNumber*" -print | sort | tail -1`
+    rawCheckString=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1`
     if [[ ! -z "${rawCheckString// }" ]]; then
       mkdir -p $particRawDir
-      osirixDir=`find /Hermes/"$study"_scans -maxdepth 2 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
+      osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
       echo "Copying data from shared mount..."
       cp -r "$osirixDir/." $particRawDir/
       dataNotFound=0
@@ -144,9 +144,9 @@ HermesFetch(){
       # Strip partic to just the numbers
       particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
       # Find folder where number pattern is present
-      rawCheckString2=`find /Hermes/"$study"_scans -maxdepth 2 -iname "*$particNumber*" -print | sort | tail -1`
+      rawCheckString2=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1`
       if [[ ! -z "${rawCheckString2// }" ]]; then
-        osirixDir=`find /Hermes/"$study"_scans -maxdepth 2 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
+        osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
         echo "Copying data from shared mount..."
         cp -r "$osirixDir/." $particRawDir/
         dataNotFound=0
