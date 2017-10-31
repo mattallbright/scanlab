@@ -320,7 +320,7 @@ for partic in ${particArr[*]}; do
       postCheckString=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
       if [[ ! -z "${postCheckString// }" ]]; then
         echo "PostTX detected."
-        postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | gead -1`
+        postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
         echo "PostTXRawDir is $postTXRawDir"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
