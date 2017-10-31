@@ -121,10 +121,10 @@ HermesFetch(){
     # Strip partic to just the numbers
     particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
     # Find folder where number pattern is present
-    rawCheckString=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1`
+    rawCheckString=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
     if [[ ! -z "${rawCheckString// }" ]]; then
       mkdir -p $particRawDir
-      osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
+      osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
       echo "Copying data from shared mount..."
       cp -r "$osirixDir/." $particRawDir/
       dataNotFound=0
@@ -144,9 +144,9 @@ HermesFetch(){
       # Strip partic to just the numbers
       particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
       # Find folder where number pattern is present
-      rawCheckString2=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1`
+      rawCheckString2=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
       if [[ ! -z "${rawCheckString2// }" ]]; then
-        osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | tail -1` #| sed 's/.*\///'
+        osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
         echo "Copying data from shared mount..."
         cp -r "$osirixDir/." $particRawDir/
         dataNotFound=0
@@ -276,10 +276,17 @@ for partic in ${particArr[*]}; do
     if [ $longitudinalBool -eq 1 ]; then
       echo "Logitudinal study detected."
       # Check baseline directory existence
-      baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | tail -1`
+      baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
+      if [[ ! -z "${baseCheckString// }" ]]; then
+        echo "*_BV not found"
+        baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
+      fi
       if [[ ! -z "${baseCheckString// }" ]]; then
         echo "Baseline detected."
-        baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | tail -1`
+        baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
+        if [[ ! -z "${baselineRawDir// }" ]]; then
+          baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
+        fi
         echo "BaselineRawDir is $baselineRawDir"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
@@ -310,10 +317,10 @@ for partic in ${particArr[*]}; do
         baselineBool=0
       fi
       # Check post-treament directory existence
-      postCheckString=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | tail -1`
+      postCheckString=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
       if [[ ! -z "${postCheckString// }" ]]; then
         echo "PostTX detected."
-        postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | tail -1`
+        postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | gead -1`
         echo "PostTXRawDir is $postTXRawDir"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
