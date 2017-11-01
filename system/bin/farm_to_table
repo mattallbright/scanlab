@@ -538,8 +538,16 @@ for partic in ${particArr[*]}; do
             fi
             bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
             bvec=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-            mv $bval $particDir/dti/Baseline/bvals
-            mv $bvec $particDir/dti/Baseline/bvecs
+            if [[ "${bval}" = *"bval"* ]]; then
+              mv $bval $particDir/dti/Baseline/bvals
+            else
+              echo "###### bval not found ######"
+            fi
+            if [[ "${bvec}" = *"bvec"* ]]; then
+              mv $bvec $particDir/dti/Baseline/bvecs
+            else
+              echo "###### bvec not found ######"
+            fi
           else
             echo "###### No DTI images found for $partic Baseline ######"
           fi
@@ -573,8 +581,16 @@ for partic in ${particArr[*]}; do
             fi
             bval=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
             bvec=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-            mv $bval $particDir/dti/PostTX/bvals
-            mv $bvec $particDir/dti/PostTX/bvecs
+            if [[ "${bval}" = *"bval"* ]]; then
+              mv $bval $particDir/dti/PostTX/bvals
+            else
+              echo "###### bval not found ######"
+            fi
+            if [[ "${bvec}" = *"bvec"* ]]; then
+              mv $bvec $particDir/dti/PostTX/bvecs
+            else
+              echo "###### bvec not found ######"
+            fi
           else
             echo "###### No DTI images found for $partic PostTX ######"
           fi
@@ -714,8 +730,16 @@ for partic in ${particArr[*]}; do
           fi
           bval=`find $particDir/dti -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
           bvec=`find $particDir/dti -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-          mv $bval $particDir/dti/bvals
-          mv $bvec $particDir/dti/bvecs
+          if [[ "${bval}" = *"bval"* ]]; then
+            mv $bval $particDir/dti/bvals
+          else
+            echo "###### bval not found ######"
+          fi
+          if [[ "${bvec}" = *"bvec"* ]]; then
+            mv $bvec $particDir/dti/bvecs
+          else
+            echo "###### bvec not found ######"
+          fi
         else
           echo "No DTI images found for $partic"
         fi
