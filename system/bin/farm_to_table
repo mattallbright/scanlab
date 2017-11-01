@@ -122,7 +122,7 @@ HermesFetch(){
     particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
     # Find folder where number pattern is present
     rawCheckString=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
-    if [[ ! -z "${rawCheckString// }" ]]; then
+    if [[ "${rawCheckString}" = *"$particNumber"* ]]; then
       mkdir -p $particRawDir
       osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
       echo "Copying data from shared mount..."
@@ -145,7 +145,7 @@ HermesFetch(){
       particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
       # Find folder where number pattern is present
       rawCheckString2=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
-      if [[ ! -z "${rawCheckString2// }" ]]; then
+      if [[ "${rawCheckString2}" = *"$particNumber"* ]]; then
         osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
         echo "Copying data from shared mount..."
         cp -r "$osirixDir/." $particRawDir/
@@ -277,15 +277,15 @@ for partic in ${particArr[*]}; do
       echo "Logitudinal study detected."
       # Check baseline directory existence
       baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
-      if [[ ! -z "$baseCheckString" ]]; then
+      if [[ "${baseCheckString}" = *"$partic"* ]]; then
         echo "*_BV not found."
         baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
       fi
       echo "baseCheckString is $baseCheckString"
-      if [[ ! -z "$baseCheckString" ]]; then
+      if [[ "${baseCheckString}" = *"$partic"* ]]; then
         echo "Baseline detected."
         baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
-        if [[ ! -z "${baselineRawDir// }" ]]; then
+        if [[ "$baselineRawDir" = *"$partic"* ]]; then
           baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
         fi
         echo "BaselineRawDir is $baselineRawDir"
@@ -319,7 +319,8 @@ for partic in ${particArr[*]}; do
       fi
       # Check post-treament directory existence
       postCheckString=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
-      if [[ ! -z "${postCheckString// }" ]]; then
+      echo "postCheckString is $postCheckString"
+      if [[ "${postCheckString}" = *"$partic"* ]]; then
         echo "PostTX detected."
         postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
         echo "PostTXRawDir is $postTXRawDir"
@@ -436,7 +437,7 @@ for partic in ${particArr[*]}; do
           if [ $baselineBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
             baseCheckString2=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [[ ! -z "${baseCheckString2// }" ]]; then
+            if [[ "${baseCheckString2}" = *"$partic"* ]]; then
               echo "Check passed..."
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
@@ -453,7 +454,7 @@ for partic in ${particArr[*]}; do
           if [ $postTXBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
             postCheckString2=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [[ ! -z "${postCheckString2// }" ]]; then
+            if [[ "${postCheckString2}" = *"$partic"* ]]; then
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
                 mkdir -p $particDir/bold/${bold_type}/PostTX
@@ -511,7 +512,7 @@ for partic in ${particArr[*]}; do
         # Baseline DTI
         if [ $baselineBool -eq 1 ]; then
           baseCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
-          if [[ ! -z "${baseCheckString3// }" ]]; then
+          if [[ "${baseCheckString3}" = *"$partic"* ]]; then
             dtiAPBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
             if [ ! -d $particDir/dti/Baseline ]; then
               mkdir -p $particDir/dti/Baseline
@@ -546,7 +547,7 @@ for partic in ${particArr[*]}; do
         # PostTX DTI A -> P
         if [ $postTXBool -eq 1 ]; then
           postCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
-          if [[ ! -z "${postCheckString3// }" ]]; then
+          if [[ "${postCheckString3}" = *"$partic"* ]]; then
             dtiAPPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
             if [ ! -d $particDir/dti/PostTX ]; then
               mkdir -p $particDir/dti/PostTX
@@ -641,7 +642,7 @@ for partic in ${particArr[*]}; do
         for bold_type in ${boldValues[*]}; do
           # If task directory exists run dcm2niix on it
           boldCheckString=`find $particRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-          if [[ ! -z "${boldCheckString// }" ]]; then
+          if [[ "${boldCheckString}" = *"${bold_type}"* ]]; then
             # Makes directory if it doesn't exist
             if [ ! -d $particDir/bold/${bold_type} ]; then
               mkdir -p $particDir/bold/${bold_type}
@@ -656,7 +657,7 @@ for partic in ${particArr[*]}; do
 
       if [ $magPhaseBool -eq 1 ]; then
         fieldCheckString=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-        if [[ ! -z "${fieldCheckString// }" ]]; then
+        if [[ "${fieldCheckString}" = *"field"* ]]; then
           # Running for Mag (note the sort -r)
           echo "Beginning Magnitude-Phase fieldmap conversion..."
 
@@ -684,7 +685,7 @@ for partic in ${particArr[*]}; do
       fi
       if [ $dtiBool -eq 1 ]; then
         dtiCheckString=`find $particRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
-        if [[ ! -z "${dtiCheckString// }" ]]; then
+        if [[ "${dtiCheckString}" = *"dti"* ]]; then
           # Running for DTI A -> P (note the sort -r)
           echo "Beginning DTI conversion..."
 
