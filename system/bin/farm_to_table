@@ -285,7 +285,7 @@ for partic in ${particArr[*]}; do
       if [[ "$baseCheckString" = *"$partic"* ]]; then
         echo "Baseline detected."
         baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
-        if [[ "$baselineRawDir" = *"$partic"* ]]; then
+        if [[ ! "$baselineRawDir" =~ "$partic" ]]; then
           baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
         fi
         echo "BaselineRawDir is $baselineRawDir"
