@@ -281,6 +281,7 @@ for partic in ${particArr[*]}; do
         echo "*_BV not found"
         baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
       fi
+      echo "baseCheckString is $baseCheckString"
       if [[ ! -z "${baseCheckString// }" ]]; then
         echo "Baseline detected."
         baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
