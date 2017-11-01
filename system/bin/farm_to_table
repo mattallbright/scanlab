@@ -314,7 +314,7 @@ for partic in ${particArr[*]}; do
           baselineBool=1
         fi
       else
-        echo "Baseline not detected."
+        echo "######Baseline not detected.######"
         baselineBool=0
       fi
       # Check post-treament directory existence
@@ -349,14 +349,14 @@ for partic in ${particArr[*]}; do
           postTXBool=1
         fi
       else
-        echo "PostTX not detected."
+        echo "###### PostTX not detected. ######"
         postTXBool=0
       fi
 
       if [ $baselineBool -eq 1 ]; then
         echo "Running for Baseline."
       elif [ $baselineBool -eq 0 ]; then
-        echo "Not running for Baseline"
+        echo "###### Not running for Baseline ######"
       else
         echo "Non-logitudinal detected"
       fi
@@ -364,7 +364,7 @@ for partic in ${particArr[*]}; do
       if [ $postTXBool -eq 1 ]; then
         echo "Running for PostTX."
       elif [ $postTXBool -eq 0 ]; then
-        echo "Not running for PostTX"
+        echo "###### Not running for PostTX ######"
       else
         echo "Non-logitudinal detected"
       fi
@@ -531,7 +531,7 @@ for partic in ${particArr[*]}; do
               fi
             fi
             if [ "$dtiAPBaselineDir" == "$dtiPABaselineDir" ]; then
-              echo "A -> P and P -> A mismatch for $partic, verify folders exist."
+              echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
             else
               echo "Running dcm2nii for DTI P -> A"
               dcm2niix -f "$partic"_P2A -o $particDir/dti/Baseline "$dtiPABaselineDir"
@@ -541,7 +541,7 @@ for partic in ${particArr[*]}; do
             mv $bval $particDir/dti/Baseline/bvals
             mv $bvec $particDir/dti/Baseline/bvecs
           else
-            echo "No DTI images found for $partic Baseline"
+            echo "###### No DTI images found for $partic Baseline ######"
           fi
         fi
         # PostTX DTI A -> P
@@ -566,7 +566,7 @@ for partic in ${particArr[*]}; do
               fi
             fi
             if [ "$dtiAPPostTXDir" == "$dtiPAPostTXDir" ]; then
-              echo "A -> P and P -> A mismatch for $partic, verify folders exist."
+              echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
             else
               echo "Running dcm2nii for DTI P -> A"
               dcm2niix -f "$partic"_P2A -o $particDir/dti/PostTX "$dtiPAPostTXDir"
@@ -576,7 +576,7 @@ for partic in ${particArr[*]}; do
             mv $bval $particDir/dti/PostTX/bvals
             mv $bvec $particDir/dti/PostTX/bvecs
           else
-            echo "No DTI images found for $partic PostTX"
+            echo "###### No DTI images found for $partic PostTX ######"
           fi
         fi
       else
@@ -707,7 +707,7 @@ for partic in ${particArr[*]}; do
             fi
           fi
           if [ "$dtiAPDir" == "$dtiPADir" ]; then
-            echo "A -> P and P -> A mismatch for $partic, verify folders exist."
+            echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
           else
             echo "Running dcm2nii for DTI P -> A"
             dcm2niix -f "$partic"_P2A -o $particDir/dti "$dtiPADir"
