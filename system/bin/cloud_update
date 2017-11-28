@@ -27,7 +27,7 @@
     echo "If you do not want to install git, please crash this process (Ctrl-C)."
     wait 5
 
-    ssh root@ayumi apt-get -y install git
+    ssh root@ayumivm apt-get -y install git
 
   fi
 
@@ -38,38 +38,38 @@
   if [[ -d /opt/cloud/staging ]]; then
 
     # Cleans folder for git clone (required by git)
-    ssh root@ayumi rm -rf /opt/cloud/staging
-    ssh root@ayumi mkdir /opt/cloud/staging
+    ssh root@ayumivm rm -rf /opt/cloud/staging
+    ssh root@ayumivm mkdir /opt/cloud/staging
     wait
 
     if [[ -d /opt/cloud/scanlab ]]; then
-      ssh root@ayumi rm -rf /opt/cloud/scanlab
-      ssh root@ayumi mkdir -p /opt/cloud/scanlab
+      ssh root@ayumivm rm -rf /opt/cloud/scanlab
+      ssh root@ayumivm mkdir -p /opt/cloud/scanlab
       wait
     fi
     if [[ -d /opt/cloud/fsl ]]; then
-      ssh root@ayumi rm -rf /opt/cloud/fsl
-      ssh root@ayumi mkdir -p /opt/cloud/fsl
+      ssh root@ayumivm rm -rf /opt/cloud/fsl
+      ssh root@ayumivm mkdir -p /opt/cloud/fsl
       wait
     fi
   fi
 
   # Then clones git repo
   echo "Cloning git!"
-  ssh root@ayumi git clone "git://github.com/zavaro/scanlab" /opt/cloud/scanlab/
+  ssh root@ayumivm git clone "git://github.com/zavaro/scanlab" /opt/cloud/scanlab/
   wait
-  ssh root@ayumi git clone "git://github.com/zavaro/fsl_slurm" /opt/cloud/fsl/
+  ssh root@ayumivm git clone "git://github.com/zavaro/fsl_slurm" /opt/cloud/fsl/
   wait
 
-  ssh root@ayumi mv /opt/cloud/fsl /opt/cloud/staging/fsl
-  ssh root@ayumi mv /opt/cloud/scanlab/* /opt/cloud/staging/
-  ssh root@ayumi rm -rf /opt/cloud/scanlab
+  ssh root@ayumivm mv /opt/cloud/fsl /opt/cloud/staging/fsl
+  ssh root@ayumivm mv /opt/cloud/scanlab/* /opt/cloud/staging/
+  ssh root@ayumivm rm -rf /opt/cloud/scanlab
 
   echo -en '\n'
   echo "Resetting permissions..."
 
   # Set permissions for all files in /download/
-  ssh root@ayumi chmod -R 755 /opt/cloud/staging/
+  ssh root@ayumivm chmod -R 755 /opt/cloud/staging/
 
   # # Runs folder structure copy with relation to hostname
   # if [ -d /opt/cloud/staging/hostnames/$HOSTNAME ]; then
