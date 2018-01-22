@@ -13,8 +13,8 @@ ssh root@hope /etc/init.d/slurmctld restart
 wait
 ssh root@hope /etc/init.d/slurmd restart
 wait
-ssh root@hope /etc/init.d/slurmdbd restart
-wait
+#ssh root@hope /etc/init.d/slurmdbd restart
+#wait
 echo "Restarting empire"
 ssh root@empire /etc/init.d/munge restart
 wait
