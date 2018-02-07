@@ -7,15 +7,15 @@
 
 echo -en '\n'
 echo "Grabbing newest Slurm configuration files."
-ssh root@$HOSTNAME rm -rf /etc/slurm-llnl/slurm.conf
-ssh root@$HOSTNAME cp /opt/cloud/staging/etc/slurm/slurm.conf /etc/slurm-llnl/
+#ssh root@$HOSTNAME rm -rf /etc/slurm-llnl/slurm.conf
+#ssh root@$HOSTNAME cp /opt/cloud/staging/etc/slurm/slurm.conf /etc/slurm-llnl/
 
 echo "Synching slurm.conf files."
-rsync -ar /etc/slurm-llnl/slurm.conf root@empire:/etc/slurm-llnl/
-rsync -ar /etc/slurm-llnl/slurm.conf root@jedi:/etc/slurm-llnl/
-rsync -ar /etc/slurm-llnl/slurm.conf root@hyperion:/etc/slurm-llnl/
-rsync -ar /etc/slurm-llnl/slurm.conf root@norman:/etc/slurm-llnl/
-rsync -ar /etc/slurm-llnl/slurm.conf root@wilbur:/etc/slurm-llnl/
-rsync -ar /etc/slurm-llnl/slurm.conf root@rufus:/etc/slurm-llnl/
+#rsync -ar /etc/slurm-llnl/slurm.conf root@empire:/etc/slurm-llnl/
+#rsync -ar /etc/slurm-llnl/slurm.conf root@jedi:/etc/slurm-llnl/
+#rsync -ar /etc/slurm-llnl/slurm.conf root@hyperion:/etc/slurm-llnl/
+#rsync -ar /etc/slurm-llnl/slurm.conf root@norman:/etc/slurm-llnl/
+#rsync -ar /etc/slurm-llnl/slurm.conf root@wilbur:/etc/slurm-llnl/
+#rsync -ar /etc/slurm-llnl/slurm.conf root@rufus:/etc/slurm-llnl/
 
-/opt/cloud/staging/system/bin/slurm_reset
+#/opt/cloud/staging/system/bin/slurm_reset
