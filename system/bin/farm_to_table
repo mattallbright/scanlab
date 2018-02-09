@@ -657,7 +657,6 @@ for partic in ${particArr[*]}; do
         echo "Running BOLD for $partic"
         for bold_type in ${boldValues[*]}; do
           # If task directory exists run dcm2niix on it
-          echo "baselineRawDir is $baselineRawDir, bold_type is $bold_type"
           boldCheckString=`find $particRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
           if [[ "${boldCheckString,,}" = *"${bold_type,,}"* ]]; then
             # Makes directory if it doesn't exist
