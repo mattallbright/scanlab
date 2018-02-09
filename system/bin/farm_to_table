@@ -22,7 +22,7 @@ getInfo() {
   elif [ $study = "BLHC" ]; then
     longitudinalBool=0
     studyPrefix="BLHC"
-    boldValues=("resting" "MSIT" "NBACK")
+    boldValues=("resting" "msit" "nback")
     magPhaseBool=0
     dtiBool=0
     echo "$study is not set up properly with this system."
@@ -31,13 +31,13 @@ getInfo() {
   elif [ $study = "BL2" ]; then
     longitudinalBool=1
     studyPrefix="BL2_"
-    boldValues=("resting" "MSIT" "NBACK")
+    boldValues=("resting" "msit" "nback")
     magPhaseBool=0
     dtiBool=1
   elif [ $study = "blt" ]; then
     longitudinalBool=1
     studyPrefix="BL"
-    boldValues=("resting" "MSIT" "NBACK")
+    boldValues=("resting" "msit" "nback")
     magPhaseBool=0
     dtiBool=0
     echo "$study is not set up properly with this system."
@@ -46,13 +46,13 @@ getInfo() {
   elif [ $study = "BLPTSD" ]; then
     longitudinalBool=1
     studyPrefix="BLPTSD_"
-    boldValues=("resting" "anticipation" "BMAT_fear" "BMAT_happy" "dot_probe" "fear_conditioning")
+    boldValues=("resting" "anticipation" "bmat_fear" "bmat_happy" "dot_probe" "fear_conditioning")
     magPhaseBool=0
     dtiBool=1
   elif [ $study = "EWM" ]; then
     longitudinalBool=0
     studyPrefix="EWM_"
-    boldValues=("resting" "Faces" "IAPS")
+    boldValues=("resting" "faces" "iaps")
     magPhaseBool=0
     dtiBool=0
   elif [ $study = "EIT" ]; then
@@ -64,7 +64,7 @@ getInfo() {
   elif [ $study = "emot" ]; then
     longitudinalBool=0
     studyPrefix="emot"
-    boldValues=("anger" "EmotDist" "faceint" "fear" "food" "happy" "memsupp" "sceneint" "trust" "resting")
+    boldValues=("anger" "emotdist" "faceint" "fear" "food" "happy" "memsupp" "sceneint" "trust" "resting")
     magPhaseBool=0
     dtiBool=0
     echo "$study is not set up properly with this system."
@@ -73,7 +73,7 @@ getInfo() {
   elif [ $study = "ICBT" ]; then
     longitudinalBool=1
     studyPrefix="ICBT"
-    boldValues=("EIT")
+    boldValues=("eit")
     magPhaseBool=0
     dtiBool=0
     echo "$study is not set up properly with this system."
@@ -82,13 +82,13 @@ getInfo() {
   elif [ $study = "Cogr" ]; then
     longitudinalBool=0
     studyPrefix="CR"
-    boldValues=("resting" "MSIT" "NBACK")
+    boldValues=("resting" "msit" "nback")
     magPhaseBool=0
     dtiBool=0
   elif [ $study = "Cogr2" ]; then
     longitudinalBool=0
     studyPrefix="CRG_"
-    boldValues=("resting" "MSIT" "NBACK")
+    boldValues=("resting" "msit" "nback")
     magPhaseBool=0
     dtiBool=0
   else
@@ -437,7 +437,7 @@ for partic in ${particArr[*]}; do
           if [ $baselineBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
             baseCheckString2=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [[ "${baseCheckString2}" = *"$partic"* ]]; then
+            if [[ "${baseCheckString2}" = *"${partic}"* ]]; then
               echo "Check passed..."
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
@@ -454,7 +454,7 @@ for partic in ${particArr[*]}; do
           if [ $postTXBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
             postCheckString2=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [[ "${postCheckString2}" = *"$partic"* ]]; then
+            if [[ "${postCheckString2}" = *"${partic}"* ]]; then
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
                 mkdir -p $particDir/bold/${bold_type}/PostTX
@@ -512,7 +512,7 @@ for partic in ${particArr[*]}; do
         # Baseline DTI
         if [ $baselineBool -eq 1 ]; then
           baseCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
-          if [[ "${baseCheckString3}" = *"$partic"* ]]; then
+          if [[ "${baseCheckString3}" = *"${partic}"* ]]; then
             dtiAPBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
             if [ ! -d $particDir/dti/Baseline ]; then
               mkdir -p $particDir/dti/Baseline
@@ -657,8 +657,9 @@ for partic in ${particArr[*]}; do
         echo "Running BOLD for $partic"
         for bold_type in ${boldValues[*]}; do
           # If task directory exists run dcm2niix on it
+          echo "baselineRawDir is $baselineRawDir, bold_type is $bold_type"
           boldCheckString=`find $particRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-          if [[ "${boldCheckString}" = *"${bold_type}"* ]]; then
+          if [[ "${boldCheckString,,}" = *"${bold_type,,}"* ]]; then
             # Makes directory if it doesn't exist
             if [ ! -d $particDir/bold/${bold_type} ]; then
               mkdir -p $particDir/bold/${bold_type}
@@ -701,7 +702,7 @@ for partic in ${particArr[*]}; do
       fi
       if [ $dtiBool -eq 1 ]; then
         dtiCheckString=`find $particRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
-        if [[ "${dtiCheckString}" = *"dti"* ]]; then
+        if [[ "${dtiCheckString,,}" = *"dti"* ]]; then
           # Running for DTI A -> P (note the sort -r)
           echo "Beginning DTI conversion..."
 
