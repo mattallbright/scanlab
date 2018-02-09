@@ -444,8 +444,8 @@ for partic in ${particArr[*]}; do
                 mkdir -p $particDir/bold/${bold_type}/Baseline
               fi
               # Takes latest directory with bold
-              boldDir=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-              dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type}/Baseline "$boldDir"
+              baseboldDir=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+              dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type}/Baseline "$baseboldDir"
             else
               echo "No data for $bold_type in baseline $partic directory."
             fi
@@ -459,8 +459,8 @@ for partic in ${particArr[*]}; do
               if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
                 mkdir -p $particDir/bold/${bold_type}/PostTX
               fi
-              boldDir=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-              dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type}/PostTX "$boldDir"
+              postboldDir=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+              dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type}/PostTX "$postboldDir"
             else
               echo "No data for $bold_type in post-treatment $partic directory."
             fi
