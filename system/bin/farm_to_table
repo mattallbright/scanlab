@@ -147,6 +147,7 @@ HermesFetch(){
       rawCheckString2=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
       if [[ "${rawCheckString2}" = *"$particNumber"* ]]; then
         osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
+        echo "Found $particNumber at $osirixDir"
         echo "Copying data from shared mount..."
         cp -r "$osirixDir/." $particRawDir/
         dataNotFound=0
@@ -248,11 +249,14 @@ done
 
 IFS=$'\n'
 
+red='\033[0;31m'
+noColor='\e[0m'
+
 # Get data from Hermes for the participant(s)
 for partic in ${particArr[*]}; do
   echo "Starting download for $partic"
   particRawDir="$studyDir/RAW_data/$partic"
-  echo "ParticRawDir is $particRawDir"
+  echo -e "${red}ParticRawDir is $particRawDir${noColor}"
   HermesFetch $partic
 
   if [ $dataNotFound -eq 1 ]; then
@@ -288,7 +292,7 @@ for partic in ${particArr[*]}; do
         if [[ ! "$baselineRawDir" =~ "$partic" ]]; then
           baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
         fi
-        echo "BaselineRawDir is $baselineRawDir"
+        echo -e "${red}BaselineRawDir is $baselineRawDir${noColor}"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
             echo "The indiv_analysis directory already exists."
@@ -323,7 +327,7 @@ for partic in ${particArr[*]}; do
       if [[ "${postCheckString}" = *"$partic"* ]]; then
         echo "PostTX detected."
         postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
-        echo "PostTXRawDir is $postTXRawDir"
+        echo -e "${red}PostTXRawDir is $postTXRawDir${noColor}"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
             echo "The indiv_analysis directory already exists."
@@ -445,6 +449,7 @@ for partic in ${particArr[*]}; do
               fi
               # Takes latest directory with bold
               baseboldDir=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+              echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
               dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type}/Baseline "$baseboldDir"
             else
               echo "No data for $bold_type in baseline $partic directory."
@@ -453,13 +458,14 @@ for partic in ${particArr[*]}; do
           # Checks postTX bool
           if [ $postTXBool -eq 1 ]; then
             # If task directory exists run dcm2niix on it
-            postCheckString2=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+            postCheckString2=`find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
             if [[ "${postCheckString2}" = *"${partic}"* ]]; then
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
                 mkdir -p $particDir/bold/${bold_type}/PostTX
               fi
-              postboldDir=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+              postboldDir=`find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+              echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
               dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type}/PostTX "$postboldDir"
             else
               echo "No data for $bold_type in post-treatment $partic directory."
@@ -554,7 +560,7 @@ for partic in ${particArr[*]}; do
         fi
         # PostTX DTI A -> P
         if [ $postTXBool -eq 1 ]; then
-          postCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
+          postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
           if [[ "${postCheckString3}" = *"$partic"* ]]; then
             dtiAPPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
             if [ ! -d $particDir/dti/PostTX ]; then
