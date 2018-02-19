@@ -532,6 +532,7 @@ for partic in ${particArr[*]}; do
             echo "Running dcm2nii for Anatomical $anatNum2 located in $anatomical"
             dcm2niix -b y -ba y -f sub-"$partic"_ses-PostTX_run-0$anatNum"_FLAIR" -o $particDir/ses-PostTX/anat "${anatomical}"
             anatNumB=$((anatNumB+1))
+          done
         fi
       fi
 
