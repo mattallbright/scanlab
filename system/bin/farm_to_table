@@ -273,10 +273,16 @@ noColor='\e[0m'
 
 # Get data from Hermes for the participant(s)
 for partic in ${particArr[*]}; do
-  echo "Starting download for $partic"
-  particRawDir="$studyDir/RAW_data/$partic"
-  echo -e "${red}ParticRawDir is $particRawDir${noColor}"
-  HermesFetch $partic
+	echo "Starting download for $partic"
+	if [ $legacyBool = "True" ]; then
+	  particRawDir="$studyDir/RAW_data/$partic"
+	else
+	  particRawDir="$studyDir/RAW_data/$study_$partic"
+	fi
+	echo -e "${red}ParticRawDir is $particRawDir${noColor}"
+	HermesFetch $partic
+	  
+
 
   if [ $dataNotFound -eq 1 ]; then
     echo "-----------------------------------------------"
