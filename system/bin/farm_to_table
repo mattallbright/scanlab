@@ -277,7 +277,7 @@ for partic in ${particArr[*]}; do
 	if [ "$legacyBool" = "True" ]; then
 	  particRawDir="$studyDir/RAW_data/$partic"
 	else
-	  particRawDir="$studyDir/RAW_data/$study_$partic"
+	  particRawDir="$studyDir/RAW_data/$studyPrefix$partic"
 	fi
 	echo -e "${red}ParticRawDir is $particRawDir${noColor}"
 	HermesFetch $partic
