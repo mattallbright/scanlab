@@ -820,7 +820,6 @@ for partic in ${particArr[*]}; do
             else
                 echo "P__A file not found, searching bzero identifier"
                 dtiPAPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1))
-              fi
             fi
             if [ ! -n "$dtiPAPostTXDir" ]; then
               echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
