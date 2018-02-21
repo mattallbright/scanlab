@@ -7,43 +7,43 @@
 echo "Restarting all daemons."
 
 echo "Restarting hope"
-ssh root@hope /etc/init.d/munge restart
+ssh root@hope /usr/sbin/munge restart
 wait
-ssh root@hope /etc/init.d/slurmctld restart
+ssh root@hope /usr/sbin/slurmctld restart
 wait
-ssh root@hope /etc/init.d/slurmd restart
+ssh root@hope /usr/sbin/slurmd restart
 wait
-#ssh root@hope /etc/init.d/slurmdbd restart
+#ssh root@hope /usr/sbin/slurmdbd restart
 #wait
 echo "Restarting empire"
-ssh root@empire /etc/init.d/munge restart
+ssh root@empire /usr/sbin/munge restart
 wait
-ssh root@empire /etc/init.d/slurmctld restart
+ssh root@empire /usr/sbin/slurmctld restart
 wait
-ssh root@empire /etc/init.d/slurmd restart
+ssh root@empire /usr/sbin/slurmd restart
 wait
 echo "Restarting jedi"
-ssh root@jedi /etc/init.d/munge restart
+ssh root@jedi /usr/sbin/munge restart
 wait
-ssh root@jedi /etc/init.d/slurmd restart
+ssh root@jedi /usr/sbin/slurmd restart
 wait
 echo "Restarting hyperion"
-ssh root@hyperion /etc/init.d/munge restart
+ssh root@hyperion /usr/sbin/munge restart
 wait
-ssh root@hyperion /etc/init.d/slurmd restart
+ssh root@hyperion /usr/sbin/slurmd restart
 wait
 echo "Restarting norman"
-ssh root@norman /etc/init.d/munge restart
+ssh root@norman /usr/sbin/munge restart
 wait
-ssh root@norman /etc/init.d/slurmd restart
+ssh root@norman /usr/sbin/slurmd restart
 wait
 echo "Restarting wilbur"
-ssh root@wilbur /etc/init.d/munge restart
+ssh root@wilbur /usr/sbin/munge restart
 wait
-ssh root@wilbur /etc/init.d/slurmd restart
+ssh root@wilbur /usr/sbin/slurmd restart
 wait
 echo "Restarting rufus"
-ssh root@rufus /etc/init.d/munge restart
+ssh root@rufus /usr/sbin/munge restart
 wait
-ssh root@rufus /etc/init.d/slurmd restart
+ssh root@rufus /usr/sbin/slurmd restart
 wait
