@@ -706,50 +706,65 @@ for partic in ${particArr[*]}; do
         echo "Beginning DTI conversion..."
         # Baseline DTI
         if [ $baselineBool -eq 1 ]; then
-          baseCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
+          baseCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
           if [[ "${baseCheckString3}" = *"${partic}"* ]]; then
-            dtiAPBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
+            dtiAPBaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1))
+            dtiAPBaselineNum=1
             if [ "$legacyBool" = "True" ]; then
               if [ ! -d $particDir/dti/Baseline ]; then
                 mkdir -p $particDir/dti/Baseline
               fi
               echo "Running dcm2nii for DTI A -> P"
-              dcm2niix -f "$partic"_A2P -o $particDir/dti/Baseline "$dtiAPBaselineDir"
+              for dtiAPBaselineFile in ${dtiAPBaselineDir}; do
+                dcm2niix -f "$partic"_A2P_run-0$dtiAPBaselineNum -o $particDir/dti/Baseline "$dtiAPBaselineFile"
+                dtiAPBaselineNum=$((dtiAPBaselineNum+1))
+              done
             else
               if [ ! -d $particDir/ses-01/dwi ]; then
                 mkdir -p $particDir/ses-01/dwi
               fi
               echo "Running dcm2nii for DTI A -> P"
-              dcm2niix -b y -ba y -f sub-"$partic"_ses-01_dwi -o $particDir/ses-01/dwi "$dtiAPBaselineDir" # Follow up with Adam
+              for dtiAPBaselineFile in ${dtiAPBaselineDir}; do
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-01_run-0"$dtiAPBaselineNum"_dwi -o $particDir/ses-01/dwi "$dtiAPBaselineFile" # Follow up with Adam
+                dtiAPBaselineNum=$((dtiAPBaselineNum+1))
+              done
             fi
 
             # Running same system for DTI P -> A
-            dtiPABaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*P-?A*" -print | sort | tail -1`
-            if [ "$dtiPABaselineDir" == "x$dtiPABaselineDir" ]; then
-              echo "P->A file not found, searching P__A"
-              dtiPABaselineDir=`find $postTXRawDir -maxdepth 2 -iname "*P_?A*" -print | sort | tail -1`
-              if [ "$dtiPABaselineDir" == "x$dtiPABaselineDir" ]; then
-                echo "P__A file not found, searching bzero identifier"
-                dtiPABaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*bzero*" -print | sort | tail -1`
-              fi
-            fi
-            if [ "$dtiAPBaselineDir" == "$dtiPABaselineDir" ]; then
-              echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
+            if [ -n $(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1) ]; then
+              dtiAPBaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1))
             else
-              if [ "$legacyBool" = "True" ]; then
-                echo "Running dcm2nii for DTI P -> A"
-                dcm2niix -f "$partic"_P2A -o $particDir/dti/Baseline "$dtiPABaselineDir"
-              else
-                if [ ! -d $particDir/ses-01/fmap ]; then
-                  mkdir -p $particDir/ses-01/fmap
-                fi
-                echo "Running dcm2nii for DTI A -> P"
-				# Talked with Natalie and the P -> A files are non-diffusion. So, in agreement with my forum discussion with Chris Gorgolewski (https://neurostars.org/t/getting-data-into-bids-format/1367), these will get placed into the fmap folder, label as PtoA_epi.
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-01_acq-PtoA_epi -o $particDir/ses-01/fmap "$dtiPABaselineDir" # Follow up with Adam
+              echo "P->A file not found, searching bzero identifier"
+              if [ -n $(find $baselineRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1) ]; then
+                dtiPABaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1))
+                echo "Utilizing Bzero for P->A"
               fi
             fi
-            bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-            bvec=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+            dtiPABaselineNum=1
+            if [ "$legacyBool" = "True" ]; then
+              echo "Running dcm2nii for DTI P -> A"
+              for dtiPABaselineFile in ${dtiPABaselineDir}; do
+                dcm2niix -f "$partic"_P2A_run-0$dtiPABaselineNum -o $particDir/dti/Baseline "$dtiPABaselineFile"
+                dtiPABaselineNum=$((dtiPABaselineNum+1))
+              done
+            else
+              if [ ! -d $particDir/ses-01/fmap ]; then
+                mkdir -p $particDir/ses-01/fmap
+                mkdir -p $particDir/ses-02/dwi
+              fi
+              echo "Running dcm2nii for DTI A -> P"
+              for dtiPABaselineFile in ${dtiPABaselineDir}; do
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-01_acq-PtoA_run-0"$dtiPABaselineNum"_epi -o $particDir/ses-01/dwi "$dtiPABaselineFile"
+                dtiPABaselineNum=$((dtiPABaselineNum+1))
+              done
+            fi
+            if [ "$legacyBool" = "True" ]; then
+              bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+              bvec=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+            else
+              bval=`find $particDir/ses-01/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+              bvec=`find $particDir/ses-01/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+            fi
             if [[ "${bval}" = *"bval"* ]]; then
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/Baseline/bvals
@@ -774,34 +789,39 @@ for partic in ${particArr[*]}; do
         fi
         # PostTX DTI A -> P
         if [ $postTXBool -eq 1 ]; then
-          postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
+          postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
           if [[ "${postCheckString3}" = *"$partic"* ]]; then
-            dtiAPPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
+            dtiAPPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1))
+            dtiAPPostTXNum=1
             if [ "$legacyBool" = "True" ]; then
               if [ ! -d $particDir/dti/PostTX ]; then
                 mkdir -p $particDir/dti/PostTX
               fi
               echo "Running dcm2nii for DTI A -> P"
-              dcm2niix -f "$partic"_A2P -o $particDir/dti/PostTX "$dtiAPPostTXDir"
+              for dtiPAPostTXFile in ${dtiPAPostTXDir}; do
+                dcm2niix -f "$partic"_A2P_run-0$dtiPAPostTXNum -o $particDir/dti/PostTX "$dtiAPPostTXFile"
+                dtiPAPostTXNum=$((dtiPAPostTXNum+1))
+              done
             else
               if [ ! -d $particDir/ses-02/dwi ]; then
                 mkdir -p $particDir/ses-02/dwi
+                mkdir -p $particDir/ses-02/fmap
               fi
               echo "Running dcm2nii for DTI A -> P"
-              dcm2niix -b y -ba y -f sub-"$partic"_ses-02_dwi -o $particDir/ses-02/dwi "$dtiAPBaselineDir" # Follow up with Adam
+              for dtiPAPostTXFile in ${dtiPAPostTXDir}; do
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-02_run-0"$dtiPAPostTXNum"_dwi -o $particDir/ses-02/dwi "$dtiAPBaselineDir" # Follow up with Adam
+                dtiPAPostTXNum=$((dtiPAPostTXNum+1))
+              done
             fi
 
             # Running same system for DTI P -> A
-            dtiPAPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*P-?A*" -print | sort | tail -1`
-            if [ "$dtiPAPostTXDir" == "x$dtiPAPostTXDir" ]; then
-              echo "P->A file not found, searching P__A"
-              dtiPAPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*P_?A*" -print | sort | tail -1`
-              if [ "$dtiPAPostTXDir" == "x$dtiPAPostTXDir" ]; then
+            if [ -n $(find $postTXRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1) ]; then
+              dtiPAPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1))
+            else
                 echo "P__A file not found, searching bzero identifier"
-                dtiPAPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*bzero*" -print | sort | tail -1`
-              fi
+                dtiPAPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1))
             fi
-            if [ "$dtiAPPostTXDir" == "$dtiPAPostTXDir" ]; then
+            if [ ! -n "$dtiPAPostTXDir" ]; then
               echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
             else
               if [ "$legacyBool" = "True" ]; then
@@ -815,8 +835,12 @@ for partic in ${particArr[*]}; do
                 dcm2niix -b y -ba y -f sub-"$partic"_ses-02_acq-PtoA_epi -o $particDir/ses-02/fmap "$dtiPABaselineDir" # Follow up with Adam
               fi
             fi
-            bval=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-            bvec=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+            if [ "$legacyBool" = "True" ]; then
+              bval=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+              bvec=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+            else
+              bval=`find $particDir/ses-02/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+              bvec=`find $particDir/ses-02/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
             if [[ "${bval}" = *"bval"* ]]; then
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/PostTX/bvals

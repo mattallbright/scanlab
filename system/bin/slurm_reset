@@ -6,44 +6,44 @@
 
 echo "Restarting all daemons."
 
+echo "Restarting hyperion"
+ssh scanlab@hyperion -t "/etc/init.d/munge restart; bash --login"
+wait
+ssh scanlab@hyperion -t "systemctl restart slurmctld.service; bash --login"
+wait
+ssh scanlab@hope -t "systemctl restart slurmdbd.service; bash --login"
+wait
+ssh scanlab@hyperion -t "systemctl restart slurmd.service; bash --login"
+wait
 echo "Restarting hope"
-ssh root@hope /etc/init.d/munge restart
+ssh scanlab@hope -t "/etc/init.d/munge restart; bash --login"
 wait
-ssh root@hope /etc/init.d/slurmctld restart
+ssh scanlab@hope -t "/usr/sbin/slurmd restart; bash --login"
 wait
-ssh root@hope /etc/init.d/slurmd restart
-wait
-#ssh root@hope /etc/init.d/slurmdbd restart
-#wait
 echo "Restarting empire"
-ssh root@empire /etc/init.d/munge restart
+ssh scanlab@empire -t "/etc/init.d/munge restart; bash --login"
 wait
-ssh root@empire /etc/init.d/slurmctld restart
+ssh scanlab@empire -t "/usr/sbin/slurmctld restart; bash --login"
 wait
-ssh root@empire /etc/init.d/slurmd restart
+ssh scanlab@empire -t "systemctl restart slurmd.service; bash --login"
 wait
 echo "Restarting jedi"
-ssh root@jedi /etc/init.d/munge restart
+ssh scanlab@jedi -t "/etc/init.d/munge restart; bash --login"
 wait
-ssh root@jedi /etc/init.d/slurmd restart
-wait
-echo "Restarting hyperion"
-ssh root@hyperion /etc/init.d/munge restart
-wait
-ssh root@hyperion /etc/init.d/slurmd restart
+ssh scanlab@jedi -t "systemctl restart slurmd.service; bash --login"
 wait
 echo "Restarting norman"
-ssh root@norman /etc/init.d/munge restart
+ssh scanlab@norman -t "/etc/init.d/munge restart; bash --login"
 wait
-ssh root@norman /etc/init.d/slurmd restart
+ssh scanlab@norman -t "systemctl restart slurmd.service; bash --login"
 wait
 echo "Restarting wilbur"
-ssh root@wilbur /etc/init.d/munge restart
+ssh scanlab@wilbur -t "/etc/init.d/munge restart; bash --login"
 wait
-ssh root@wilbur /etc/init.d/slurmd restart
+ssh scanlab@wilbur -t "systemctl restart slurmd.service; bash --login"
 wait
 echo "Restarting rufus"
-ssh root@rufus /etc/init.d/munge restart
+ssh scanlab@rufus -t "/etc/init.d/munge restart; bash --login"
 wait
-ssh root@rufus /etc/init.d/slurmd restart
+ssh scanlab@rufus -t "systemctl restart slurmd.service; bash --login"
 wait
