@@ -788,7 +788,7 @@ for partic in ${particArr[*]}; do
                 mkdir -p $particDir/ses-02/dwi
               fi
               echo "Running dcm2nii for DTI A -> P"
-              dcm2niix -b y -ba y -f sub-"$partic"_ses-02_acq-AtoP_dwi -o $particDir/ses-02/dwi "$dtiAPBaselineDir" # Follow up with Adam
+              dcm2niix -b y -ba y -f sub-"$partic"_ses-02_dwi -o $particDir/ses-02/dwi "$dtiAPBaselineDir" # Follow up with Adam
             fi
 
             # Running same system for DTI P -> A
