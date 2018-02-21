@@ -570,17 +570,25 @@ for partic in ${particArr[*]}; do
                   mkdir -p $particDir/bold/${bold_type}/Baseline
                 fi
                 # Takes latest directory with bold
-                baseboldDir=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+                baseboldDirRun=($(find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
+                baseBoldNum=1
                 echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
-                dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type}/Baseline "$baseboldDir"
+                for bold_run in ${baseboldDirRun}; do
+                  dcm2niix -f "$partic"_${bold_type}_run-0$baseBoldNum -o $particDir/bold/${bold_type}/Baseline "$baseboldDirRun"
+                  baseBoldNum=$((baseBoldNum+1))
+                done
               else
                 if [ ! -d $particDir/ses-01/func ]; then
                   mkdir -p $particDir/ses-01/func
                 fi
                 # Takes latest directory with bold
-                baseboldDir=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+                baseboldDirRun=($(find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
                 echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-01_task-${bold_type}_bold -o $particDir/ses-01/func "$baseboldDir"
+                baseBoldNum=1
+                for bold_run in ${baseboldDirRun}; do
+                  dcm2niix -b y -ba y -f sub-"$partic"_ses-01_task-${bold_type}_run-0$baseBoldNum"_bold" -o $particDir/ses-01/func "$baseboldDirRun"
+                  baseBoldNum=$((baseBoldNum+1))
+                done
               fi
             else
               echo "No data for $bold_type in baseline $partic directory."
@@ -596,17 +604,25 @@ for partic in ${particArr[*]}; do
                 if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
                   mkdir -p $particDir/bold/${bold_type}/PostTX
                 fi
-                postboldDir=`find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+                postboldDir=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
+                postBoldNum=1
                 echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
-                dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type}/PostTX "$postboldDir"
+                for bold_runB in ${postboldDirRun}; do
+                  dcm2niix -f "$partic"_${bold_type}_run-0$postBoldNum -o $particDir/bold/${bold_type}/PostTX "$postboldDirRun"
+                  postBoldNum=$((postBoldNum+1))
+                done
               else
                 if [ ! -d $particDir/ses-02/func ]; then
                   mkdir -p $particDir/ses-02/func
                 fi
                 # Takes latest directory with bold
-                postboldDir=`find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+                postboldDir=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
+                postBoldNum=1
                 echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-02_task-${bold_type}_bold -o $particDir/ses-02/func "$postboldDir"
+                for bold_runB in ${postboldDirRun}; do
+                  dcm2niix -b y -ba y -f sub-"$partic"_ses-02_task-${bold_type}_run-0$postBoldNum"_bold" -o $particDir/ses-02/func "$postboldDir"
+                  postBoldNum=$((postBoldNum+1))
+                done
               fi
             else
               echo "No data for $bold_type in post-treatment $partic directory."
