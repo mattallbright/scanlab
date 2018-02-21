@@ -7,43 +7,43 @@
 echo "Restarting all daemons."
 
 echo "Restarting hope"
-ssh root@hope /usr/sbin/munge restart
+ssh scanlab@hope /etc/init.d/munge restart
 wait
-ssh root@hope /usr/sbin/slurmctld restart
+ssh scanlab@hope /usr/sbin/slurmctld restart
 wait
-ssh root@hope /usr/sbin/slurmd restart
+ssh scanlab@hope systemctl restart slurmd.service
 wait
-#ssh root@hope /usr/sbin/slurmdbd restart
+#ssh scanlab@hope /usr/sbin/slurmdbd restart
 #wait
 echo "Restarting empire"
-ssh root@empire /usr/sbin/munge restart
+ssh scanlab@empire /etc/init.d/munge restart
 wait
-ssh root@empire /usr/sbin/slurmctld restart
+ssh scanlab@empire /usr/sbin/slurmctld restart
 wait
-ssh root@empire /usr/sbin/slurmd restart
+ssh scanlab@empire systemctl restart slurmd.service
 wait
 echo "Restarting jedi"
-ssh root@jedi /usr/sbin/munge restart
+ssh scanlab@jedi /etc/init.d/munge restart
 wait
-ssh root@jedi /usr/sbin/slurmd restart
+ssh scanlab@jedi systemctl restart slurmd.service
 wait
 echo "Restarting hyperion"
-ssh root@hyperion /usr/sbin/munge restart
+ssh scanlab@hyperion /etc/init.d/munge restart
 wait
-ssh root@hyperion /usr/sbin/slurmd restart
+ssh scanlab@hyperion systemctl restart slurmd.service
 wait
 echo "Restarting norman"
-ssh root@norman /usr/sbin/munge restart
+ssh scanlab@norman /etc/init.d/munge restart
 wait
-ssh root@norman /usr/sbin/slurmd restart
+ssh scanlab@norman systemctl restart slurmd.service
 wait
 echo "Restarting wilbur"
-ssh root@wilbur /usr/sbin/munge restart
+ssh scanlab@wilbur /etc/init.d/munge restart
 wait
-ssh root@wilbur /usr/sbin/slurmd restart
+ssh scanlab@wilbur systemctl restart slurmd.service
 wait
 echo "Restarting rufus"
-ssh root@rufus /usr/sbin/munge restart
+ssh scanlab@rufus /etc/init.d/munge restart
 wait
-ssh root@rufus /usr/sbin/slurmd restart
+ssh scanlab@rufus systemctl restart slurmd.service
 wait
