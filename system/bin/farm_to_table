@@ -188,10 +188,10 @@ done
 
 # Start program
 
-if [ $legacyBool = "True"]; then
+if [ "$legacyBool" = "True" ]; then
   echo "LEGACY MODE ACTIVE"
 else
-  $legacyBool="False"
+  legacyBool="False"
 fi
 
 echo "Welcome to Farm to Table."
@@ -256,7 +256,7 @@ for partic in ${particNumArr[*]}; do
   if [ "$partic" = x"$partic" ]; then
     echo "Not a valid id. Skipping.."
   else
-	if [ $legacyBool = "True" ]; then
+	if [ "$legacyBool" = "True" ]; then
       particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
 		echo "Found $partic..."
 	else
@@ -274,14 +274,14 @@ noColor='\e[0m'
 # Get data from Hermes for the participant(s)
 for partic in ${particArr[*]}; do
 	echo "Starting download for $partic"
-	if [ $legacyBool = "True" ]; then
+	if [ "$legacyBool" = "True" ]; then
 	  particRawDir="$studyDir/RAW_data/$partic"
 	else
 	  particRawDir="$studyDir/RAW_data/$study_$partic"
 	fi
 	echo -e "${red}ParticRawDir is $particRawDir${noColor}"
 	HermesFetch $partic
-	  
+
 
 
   if [ $dataNotFound -eq 1 ]; then
@@ -290,7 +290,7 @@ for partic in ${particArr[*]}; do
     echo "-----------------------------------------------"
   else
     # Create directory structure
-    if [ $legacyBool = "True" ]; then
+    if [ "$legacyBool" = "True" ]; then
       particDir=$studyDir/indiv_analysis/$partic
     else
       particNum2=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
@@ -422,7 +422,7 @@ for partic in ${particArr[*]}; do
       if [ $baselineBool -eq 1 ]; then
         anatDirArr=($(find $baselineRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
         anatNum=1
-        if [ $legacyBool = "True" ]; then
+        if [ "$legacyBool" = "True" ]; then
           if [ ! -d $particDir/anatomicals/Baseline ]; then
             mkdir -p $particDir/anatomicals/Baseline
           fi
@@ -448,7 +448,7 @@ for partic in ${particArr[*]}; do
       if [ $postTXBool -eq 1 ]; then
         anatDirArr=($(find $postTXRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
         anatNum=1
-        if [ $legacyBool = "True" ]; then
+        if [ "$legacyBool" = "True" ]; then
           if [ ! -d $particDir/anatomicals/PostTX ]; then
             mkdir -p $particDir/anatomicals/PostTX
           fi
@@ -473,7 +473,7 @@ for partic in ${particArr[*]}; do
       if [ $baselineBool -eq 1 ]; then
         anatBDirArr=($(find $baselineRawDir -maxdepth 2 -iname "*FLAIR?axial*" -print | sort))
         anatNumB=1
-        if [ $legacyBool = "True" ]; then
+        if [ "$legacyBool" = "True" ]; then
           if [ ! -d $particDir/anatomicals/Baseline ]; then
             mkdir -p $particDir/anatomicals/Baseline
           fi
@@ -489,7 +489,7 @@ for partic in ${particArr[*]}; do
           for anatomical in ${anatBDirArr[@]}; do
             echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
 			#Matt: Your version originally had anatNum, so the FLAIRs were getting numbered based on the T1s.
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-01_run-0$anatNumB"_FLAIR" -o $particDir/ses-01/anat "${anatomical}" 
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-01_run-0$anatNumB"_FLAIR" -o $particDir/ses-01/anat "${anatomical}"
             anatNumB=$((anatNumB+1))
           done
         fi
@@ -503,7 +503,7 @@ for partic in ${particArr[*]}; do
       #   if [ $anatB2DirArr = $anatBDirArr ]; then
       #     echo "Flair Axial is already run..."
       #   else
-      #     if [ $legacyBool = "True" ]; then
+      #     if [ "$legacyBool" = "True" ]; then
       #       if [ ! -d $particDir/anatomicals/Baseline ]; then
       #         mkdir -p $particDir/anatomicals/Baseline
       #       fi
@@ -528,7 +528,7 @@ for partic in ${particArr[*]}; do
       if [ $postTXBool -eq 1 ]; then
         anatBDirArr=($(find $postTXRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
         anatNumB=1
-        if [ $legacyBool = "True" ]; then
+        if [ "$legacyBool" = "True" ]; then
           if [ ! -d $particDir/anatomicals/PostTX ]; then
             mkdir -p $particDir/anatomicals/PostTX
           fi
@@ -564,7 +564,7 @@ for partic in ${particArr[*]}; do
             baseCheckString2=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
             if [[ "${baseCheckString2}" = *"${partic}"* ]]; then
               echo "Check passed..."
-              if [ $legacyBool = "True" ]; then
+              if [ "$legacyBool" = "True" ]; then
                 # Makes directory if it doesn't exist
                 if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
                   mkdir -p $particDir/bold/${bold_type}/Baseline
@@ -591,7 +591,7 @@ for partic in ${particArr[*]}; do
             # If task directory exists run dcm2niix on it
             postCheckString2=`find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
             if [[ "${postCheckString2}" = *"${partic}"* ]]; then
-              if [ $legacyBool = "True" ]; then
+              if [ "$legacyBool" = "True" ]; then
               # Makes directory if it doesn't exist
                 if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
                   mkdir -p $particDir/bold/${bold_type}/PostTX
@@ -622,7 +622,7 @@ for partic in ${particArr[*]}; do
         # Baseline
         if [ $baselineBool -eq 1 ]; then
           magBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*field*" -print | sort -r | tail -1`
-          if [ $legacyBool = "True" ]; then
+          if [ "$legacyBool" = "True" ]; then
             if [ ! -d $particDir/fieldmaps/Baseline ]; then
               mkdir -p $particDir/fieldmaps/Baseline
             fi
@@ -639,7 +639,7 @@ for partic in ${particArr[*]}; do
         # PostTX
         if [ $postTXBool -eq 1 ]; then
           magPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*field*" -print | sort -r | tail -1`
-          if [ $legacyBool = "True" ]; then
+          if [ "$legacyBool" = "True" ]; then
             if [ ! -d $particDir/fieldmaps/PostTX ]; then
               mkdir -p $particDir/fieldmaps/PostTX
             fi
@@ -658,7 +658,7 @@ for partic in ${particArr[*]}; do
         # Baseline
         if [ $baselineBool -eq 1 ]; then
           phaseBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-          if [ $legacyBool = "True" ]; then
+          if [ "$legacyBool" = "True" ]; then
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/Baseline "$phaseBaselineDir"
           else
@@ -672,7 +672,7 @@ for partic in ${particArr[*]}; do
         # PostTX
         if [ $postTXBool -eq 1 ]; then
           phasePostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-          if [ $legacyBool = "True" ]; then
+          if [ "$legacyBool" = "True" ]; then
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/PostTX "$phasePostTXDir"
           else
@@ -693,7 +693,7 @@ for partic in ${particArr[*]}; do
           baseCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
           if [[ "${baseCheckString3}" = *"${partic}"* ]]; then
             dtiAPBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
-            if [ $legacyBool = "True" ]; then
+            if [ "$legacyBool" = "True" ]; then
               if [ ! -d $particDir/dti/Baseline ]; then
                 mkdir -p $particDir/dti/Baseline
               fi
@@ -720,7 +720,7 @@ for partic in ${particArr[*]}; do
             if [ "$dtiAPBaselineDir" == "$dtiPABaselineDir" ]; then
               echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
             else
-              if [ $legacyBool = "True" ]; then
+              if [ "$legacyBool" = "True" ]; then
                 echo "Running dcm2nii for DTI P -> A"
                 dcm2niix -f "$partic"_P2A -o $particDir/dti/Baseline "$dtiPABaselineDir"
               else
@@ -729,13 +729,13 @@ for partic in ${particArr[*]}; do
                 fi
                 echo "Running dcm2nii for DTI A -> P"
 				# Talked with Natalie and the P -> A files are non-diffusion. So, in agreement with my forum discussion with Chris Gorgolewski (https://neurostars.org/t/getting-data-into-bids-format/1367), these will get placed into the fmap folder, label as PtoA_epi.
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-01_acq-PtoA_epi -o $particDir/ses-01/fmap "$dtiPABaselineDir" # Follow up with Adam 
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-01_acq-PtoA_epi -o $particDir/ses-01/fmap "$dtiPABaselineDir" # Follow up with Adam
               fi
             fi
             bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
             bvec=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
             if [[ "${bval}" = *"bval"* ]]; then
-              if [ $legacyBool = "True" ]; then
+              if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/Baseline/bvals
               else
                 mv $bval $particDir/ses-01/dwi/bvals
@@ -744,7 +744,7 @@ for partic in ${particArr[*]}; do
               echo "###### bval not found ######"
             fi
             if [[ "${bvec}" = *"bvec"* ]]; then
-              if [ $legacyBool = "True" ]; then
+              if [ "$legacyBool" = "True" ]; then
                 mv $bvec $particDir/dti/Baseline/bvecs
               else
                 mv $bvec $particDir/ses-01/dwi/bvecs
@@ -761,7 +761,7 @@ for partic in ${particArr[*]}; do
           postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*dti*" -print | sort | tail -1`
           if [[ "${postCheckString3}" = *"$partic"* ]]; then
             dtiAPPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
-            if [ $legacyBool = "True" ]; then
+            if [ "$legacyBool" = "True" ]; then
               if [ ! -d $particDir/dti/PostTX ]; then
                 mkdir -p $particDir/dti/PostTX
               fi
@@ -788,7 +788,7 @@ for partic in ${particArr[*]}; do
             if [ "$dtiAPPostTXDir" == "$dtiPAPostTXDir" ]; then
               echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
             else
-              if [ $legacyBool = "True" ]; then
+              if [ "$legacyBool" = "True" ]; then
                 echo "Running dcm2nii for DTI P -> A"
                 dcm2niix -f "$partic"_P2A -o $particDir/dti/PostTX "$dtiPAPostTXDir"
               else
@@ -802,7 +802,7 @@ for partic in ${particArr[*]}; do
             bval=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
             bvec=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
             if [[ "${bval}" = *"bval"* ]]; then
-              if [ $legacyBool = "True" ]; then
+              if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/PostTX/bvals
               else
                 mv $bval $particDir/ses-02/dwi/bvals
@@ -811,7 +811,7 @@ for partic in ${particArr[*]}; do
               echo "###### bval not found ######"
             fi
             if [[ "${bvec}" = *"bvec"* ]]; then
-              if [ $legacyBool = "True" ]; then
+              if [ "$legacyBool" = "True" ]; then
                 mv $bvec $particDir/dti/PostTX/bvecs
               else
                 mv $bval $particDir/ses-02/dwi/bvecs
@@ -858,7 +858,7 @@ for partic in ${particArr[*]}; do
       echo "Running dcm2nii for T1 Anatomicals"
       anatDirArr=($(find $particRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
       anatNum=1
-      if [ $legacyBool = "True" ]; then
+      if [ "$legacyBool" = "True" ]; then
         if [ ! -d $particDir/anatomicals ]; then
           mkdir -p $particDir/anatomicals
         fi
@@ -883,7 +883,7 @@ for partic in ${particArr[*]}; do
       echo "Running dcm2nii for T2 Anatomicals"
       anatBDirArr=($(find $particRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
       anatNumB=1
-      if [ $legacyBool = "True" ]; then
+      if [ "$legacyBool" = "True" ]; then
         if [ ! -d $particDir/anatomicals ]; then
           mkdir -p $particDir/anatomicals
         fi
@@ -912,7 +912,7 @@ for partic in ${particArr[*]}; do
           boldCheckString=`find $particRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
           if [[ "${boldCheckString,,}" = *"${bold_type,,}"* ]]; then
             boldDir=`find $particRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [ $legacyBool = "True" ]; then
+            if [ "$legacyBool" = "True" ]; then
               # Makes directory if it doesn't exist
               if [ ! -d $particDir/bold/${bold_type} ]; then
                 mkdir -p $particDir/bold/${bold_type}
@@ -937,7 +937,7 @@ for partic in ${particArr[*]}; do
           echo "Beginning Magnitude-Phase fieldmap conversion..."
 
           magDir=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort -r | tail -1`
-          if [ $legacyBool = "True" ]; then
+          if [ "$legacyBool" = "True" ]; then
             if [ ! -d $particDir/fieldmaps ]; then
               mkdir -p $particDir/fieldmaps
             fi
@@ -957,7 +957,7 @@ for partic in ${particArr[*]}; do
           else
             # Running same system for Phase
             phaseDir=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-            if [ $legacyBool = "True" ]; then
+            if [ "$legacyBool" = "True" ]; then
               echo "Running dcm2nii for Phase fieldmaps"
               dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps "$phaseDir"
             else
@@ -978,7 +978,7 @@ for partic in ${particArr[*]}; do
           echo "Beginning DTI conversion..."
 
           dtiAPDir=`find $particRawDir -maxdepth 2 -iname "*dti*" -print | sort -r | tail -1`
-          if [ $legacyBool = "True" ]; then
+          if [ "$legacyBool" = "True" ]; then
             if [ ! -d $particDir/dti ]; then
               mkdir -p $particDir/dti
             fi
@@ -1005,7 +1005,7 @@ for partic in ${particArr[*]}; do
           if [ "$dtiAPDir" == "$dtiPADir" ]; then
             echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
           else
-            if [ $legacyBool = "True" ]; then
+            if [ "$legacyBool" = "True" ]; then
               echo "Running dcm2nii for DTI P -> A"
               dcm2niix -f "$partic"_P2A -o $particDir/dti "$dtiPADir"
             else
@@ -1016,7 +1016,7 @@ for partic in ${particArr[*]}; do
           bval=`find $particDir/dti -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
           bvec=`find $particDir/dti -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
           if [[ "${bval}" = *"bval"* ]]; then
-            if [ $legacyBool = "True" ]; then
+            if [ "$legacyBool" = "True" ]; then
               mv $bval $particDir/dti/bvals
             else
               mv $bval $particDir/dwi/bvals
@@ -1025,7 +1025,7 @@ for partic in ${particArr[*]}; do
             echo "###### bval not found ######"
           fi
           if [[ "${bvec}" = *"bvec"* ]]; then
-            if [ $legacyBool = "True" ]; then
+            if [ "$legacyBool" = "True" ]; then
               mv $bvec $particDir/dti/bvecs
             else
               mv $bval $particDir/dwi/bvals
