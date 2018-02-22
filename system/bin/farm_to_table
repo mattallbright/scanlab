@@ -798,9 +798,9 @@ for partic in ${particArr[*]}; do
                 mkdir -p $particDir/dti/PostTX
               fi
               echo "Running dcm2nii for DTI A -> P"
-              for dtiPAPostTXFile in ${dtiPAPostTXDir}; do
+              for dtiAPPostTXFile in ${dtiAPPostTXDir}; do
                 dcm2niix -f "$partic"_A2P_run-0$dtiPAPostTXNum -o $particDir/dti/PostTX "$dtiAPPostTXFile"
-                dtiPAPostTXNum=$((dtiPAPostTXNum+1))
+                dtiAPPostTXNum=$((dtiAPPostTXNum+1))
               done
             else
               if [ ! -d $particDir/ses-Post/dwi ]; then
@@ -808,9 +808,9 @@ for partic in ${particArr[*]}; do
                 mkdir -p $particDir/ses-Post/fmap
               fi
               echo "Running dcm2nii for DTI A -> P"
-              for dtiPAPostTXFile in ${dtiPAPostTXDir}; do
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_acq-AtoP_run-0"$dtiPAPostTXNum"_dwi -o $particDir/ses-Post/dwi "$dtiAPBaselineDir" # Follow up with Adam
-                dtiPAPostTXNum=$((dtiPAPostTXNum+1))
+              for dtiAPPostTXFile in ${dtiAPPostTXDir}; do
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0"$dtiAPPostTXNum"_dwi -o $particDir/ses-Post/dwi "$dtiAPBaselineDir" # Follow up with Adam
+                dtiAPPostTXNum=$((dtiAPPostTXNum+1))
               done
             fi
 
@@ -832,7 +832,7 @@ for partic in ${particArr[*]}; do
                   mkdir -p $particDir/ses-Post/fmap
                 fi
 				# Same as with Baseline. For BIDS format, these P -> A files will go in the fmap folder as acq-PtoA_epi
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_acq-PtoA_epi -o $particDir/ses-Post/fmap "$dtiPABaselineDir" # Follow up with Adam
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_epi -o $particDir/ses-Post/fmap "$dtiPABaselineDir" # Follow up with Adam
               fi
             fi
             if [ "$legacyBool" = "True" ]; then
