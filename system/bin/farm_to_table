@@ -841,6 +841,7 @@ for partic in ${particArr[*]}; do
             else
               bval=`find $particDir/ses-02/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
               bvec=`find $particDir/ses-02/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+            fi
             if [[ "${bval}" = *"bval"* ]]; then
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/PostTX/bvals
