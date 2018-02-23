@@ -774,6 +774,7 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/Baseline/bvals
               else
+				cp $bval "$particDir/ses-Pre/sub-$partic_ses-Pre_dwi.bval"
                 mv $bval $particDir/ses-Pre/dwi/bvals
               fi
             else
@@ -783,6 +784,7 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bvec $particDir/dti/Baseline/bvecs
               else
+				cp $bvec "$particDir/ses-Pre/sub-$partic_ses-Pre_dwi.bvec"
                 mv $bvec $particDir/ses-Pre/dwi/bvecs
               fi
             else
@@ -853,6 +855,7 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/PostTX/bvals
               else
+				cp $bval "$particDir/ses-Post/sub-$partic_ses-Post_dwi.bval"
                 mv $bval $particDir/ses-Post/dwi/bvals
               fi
             else
@@ -862,7 +865,8 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bvec $particDir/dti/PostTX/bvecs
               else
-                mv $bval $particDir/ses-Post/dwi/bvecs
+			  	cp $bvec "$particDir/ses-Post/sub-$partic_ses-Post_dwi.bvec"
+                mv $bvec $particDir/ses-Post/dwi/bvecs
               fi
             else
               echo "###### bvec not found ######"
