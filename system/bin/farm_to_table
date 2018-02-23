@@ -294,7 +294,7 @@ for partic in ${particArr[*]}; do
       particDir=$studyDir/indiv_analysis/$partic
     else
       particNum2=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
-      particDir=$studyDir/indiv_analysis/sub-$particNum2
+      particDir=$studyDir/BIDS_indiv_analysis/sub-$particNum2
     fi
     echo "ParticDir is $particDir"
     if [ ! -d $particDir ]; then
