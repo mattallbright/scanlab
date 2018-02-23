@@ -838,7 +838,7 @@ for partic in ${particArr[*]}; do
                   mkdir -p $particDir/ses-Post/fmap
                 fi
 				# Same as with Baseline. For BIDS format, these P -> A files will go in the fmap folder as acq-PtoA_epi
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_epi -o $particDir/ses-Post/fmap "$dtiPAPostDir" # Follow up with Adam
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_epi -o $particDir/ses-Post/fmap "$dtiPAPostTXDir" # Follow up with Adam
 				sed '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Post_task-resting_bold.nii", "func/sub-$partic_ses-Post_task-msit_bold.nii","func/sub-$partic_ses-Post_task-nback_bold.nii","dwi/sub-$partic_ses-Post_dwi.nii"],' $particDir/ses-Post/fmap/*epi.json
               fi
             fi
