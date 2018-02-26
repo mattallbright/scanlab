@@ -599,7 +599,7 @@ for partic in ${particArr[*]}; do
                 baseBoldNum=1
                 for bold_run in ${baseboldDirRun}; do
                   dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_task-${boldType}_run-0$baseBoldNum"_bold" -o $particDir/ses-Pre/func "$baseboldDirRun"
-				  sed -i '/COL/ a "TaskName": "'$taskName'",' *${boldType}_run-0${baseBoldNum}*.json
+				  sed -i '/COL/ a "TaskName": "'$taskName'",' $particDIR/ses-Pre/func/*${boldType}_run-0${baseBoldNum}*.json
                   baseBoldNum=$((baseBoldNum+1))
                 done
               fi
@@ -646,7 +646,7 @@ for partic in ${particArr[*]}; do
                 echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
                 for bold_runB in ${postboldDirRun}; do
                   dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_task-${boldType}_run-0$postBoldNum"_bold" -o $particDir/ses-Post/func "$postboldDir"
-				  sed -i '/COL/ a "TaskName": "'$taskName'",' *${boldType}_run-0${baseBoldNum}*.json
+				  sed -i '/COL/ a "TaskName": "'$taskName'",' $particDIR/ses-Post/func/*${boldType}_run-0${postBoldNum}*.json
                   postBoldNum=$((postBoldNum+1))
                 done
               fi
