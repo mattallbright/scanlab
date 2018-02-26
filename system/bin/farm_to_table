@@ -761,7 +761,7 @@ for partic in ${particArr[*]}; do
                 dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiPABaselineNum"_epi -o $particDir/ses-Pre/fmap "$dtiPABaselineFile"
                 dtiPABaselineNum=$((dtiPABaselineNum+1))
               done
-			  sed -i '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Pre_task-resting_bold.nii", "func/sub-$partic_ses-Pre_task-msit_bold.nii","func/sub-$partic_ses-Pre_task-nback_bold.nii","dwi/sub-$partic_ses-Pre_dwi.nii"],' $particDir/ses-Pre/fmap/*epi.json
+			  sed -i '/COL/ a "IntendedFor": ["func/sub-$partic_ses-Pre_task-resting_bold.nii", "func/sub-$partic_ses-Pre_task-msit_bold.nii","func/sub-$partic_ses-Pre_task-nback_bold.nii","dwi/sub-$partic_ses-Pre_dwi.nii"],' $particDir/ses-Pre/fmap/*epi.json
             fi
             if [ "$legacyBool" = "True" ]; then
               bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
@@ -774,8 +774,7 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/Baseline/bvals
               else
-				cp $bval $particDir/ses-Pre/dwi/sub-${partic}_ses-Pre_run-01_dwi.bval
-                mv $bval $particDir/ses-Pre/dwi/bvals
+                cp $bval $particDir/ses-Pre/dwi/bvals
               fi
             else
               echo "###### bval not found ######"
@@ -784,8 +783,7 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bvec $particDir/dti/Baseline/bvecs
               else
-				cp $bvec $particDir/ses-Pre/dwi/sub-${partic}_ses-Pre_run-01_dwi.bvec
-                mv $bvec $particDir/ses-Pre/dwi/bvecs
+                cp $bvec $particDir/ses-Pre/dwi/bvecs
               fi
             else
               echo "###### bvec not found ######"
@@ -841,7 +839,7 @@ for partic in ${particArr[*]}; do
                 fi
 				# Same as with Baseline. For BIDS format, these P -> A files will go in the fmap folder as acq-PtoA_epi
                 dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_epi -o $particDir/ses-Post/fmap "$dtiPAPostTXDir" # Follow up with Adam
-				sed -i '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Post_task-resting_bold.nii", "func/sub-$partic_ses-Post_task-msit_bold.nii","func/sub-$partic_ses-Post_task-nback_bold.nii","dwi/sub-$partic_ses-Post_dwi.nii"],' $particDir/ses-Post/fmap/*epi.json
+				sed -i '/COL/ a "IntendedFor": ["func/sub-$partic_ses-Post_task-resting_bold.nii", "func/sub-$partic_ses-Post_task-msit_bold.nii","func/sub-$partic_ses-Post_task-nback_bold.nii","dwi/sub-$partic_ses-Post_dwi.nii"],' $particDir/ses-Post/fmap/*epi.json
               fi
             fi
             if [ "$legacyBool" = "True" ]; then
@@ -855,8 +853,7 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/PostTX/bvals
               else
-				cp $bval $particDir/ses-Post/dwi/sub-${partic}_ses-Post_run-01_dwi.bval
-                mv $bval $particDir/ses-Post/dwi/bvals
+                cp $bval $particDir/ses-Post/dwi/bvals
               fi
             else
               echo "###### bval not found ######"
@@ -865,8 +862,7 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bvec $particDir/dti/PostTX/bvecs
               else
-			  	cp $bvec $particDir/ses-Post/dwi/sub-${partic}_ses-Post_run-01_dwi.bvec
-                mv $bvec $particDir/ses-Post/dwi/bvecs
+                cp $bvec $particDir/ses-Post/dwi/bvecs
               fi
             else
               echo "###### bvec not found ######"
