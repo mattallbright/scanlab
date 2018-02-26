@@ -294,7 +294,7 @@ for partic in ${particArr[*]}; do
       particDir=$studyDir/indiv_analysis/$partic
     else
       particNum2=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
-      particDir=$studyDir/indiv_analysis/sub-$particNum2
+      particDir=$studyDir/BIDS_indiv_analysis/sub-$particNum2
     fi
     echo "ParticDir is $particDir"
     if [ ! -d $particDir ]; then
@@ -432,13 +432,13 @@ for partic in ${particArr[*]}; do
             anatNum=$((anatNum+1))
           done
         else
-          if [ ! -d $particDir/ses-01/anat ]; then
-            mkdir -p $particDir/ses-01/anat
+          if [ ! -d $particDir/ses-Pre/anat ]; then
+            mkdir -p $particDir/ses-Pre/anat
           fi
           for anatomical in ${anatDirArr[@]}; do
             echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
 			# Matt: Original had the Baseline T1s getting numbered as run-1 while PostTX was run-01. Changed for parity..
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-01_run-0$anatNum"_T1w" -o $particDir/ses-01/anat "${anatomical}"
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNum"_T1w" -o $particDir/ses-Pre/anat "${anatomical}"
             anatNum=$((anatNum+1))
           done
         fi
@@ -458,12 +458,12 @@ for partic in ${particArr[*]}; do
             anatNum=$((anatNum+1))
           done
         else
-          if [ ! -d $particDir/ses-02/anat ]; then
-            mkdir -p $particDir/ses-02/anat
+          if [ ! -d $particDir/ses-Post/anat ]; then
+            mkdir -p $particDir/ses-Post/anat
           fi
           for anatomical in ${anatDirArr[@]}; do
             echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-02_run-0$anatNum"_T1w" -o $particDir/ses-02/anat "${anatomical}"
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0$anatNum"_T1w" -o $particDir/ses-Post/anat "${anatomical}"
             anatNum=$((anatNum+1))
           done
         fi
@@ -483,13 +483,13 @@ for partic in ${particArr[*]}; do
             anatNumB=$((anatNumB+1))
           done
         else
-          if [ ! -d $particDir/ses-01/anat ]; then
-            mkdir -p $particDir/ses-01/anat
+          if [ ! -d $particDir/ses-Pre/anat ]; then
+            mkdir -p $particDir/ses-Pre/anat
           fi
           for anatomical in ${anatBDirArr[@]}; do
             echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
 			#Matt: Your version originally had anatNum, so the FLAIRs were getting numbered based on the T1s.
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-01_run-0$anatNumB"_FLAIR" -o $particDir/ses-01/anat "${anatomical}"
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNumB"_FLAIR" -o $particDir/ses-Pre/anat "${anatomical}"
             anatNumB=$((anatNumB+1))
           done
         fi
@@ -513,12 +513,12 @@ for partic in ${particArr[*]}; do
       #         anatNumB=$((anatNumB+1))
       #       done
       #     else
-      #       if [ ! -d $particDir/ses-01/anat ]; then
-      #         mkdir -p $particDir/ses-01/anat
+      #       if [ ! -d $particDir/ses-Pre/anat ]; then
+      #         mkdir -p $particDir/ses-Pre/anat
       #       fi
       #       for anatomical in ${anatBDirArr[@]}; do
       #         echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-      #         dcm2niix -b y -ba y -f sub-"$partic"_ses-01_run-0$anatNumB"_FLAIR" -o $particDir/ses-01/anat "${anatomical}"
+      #         dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNumB"_FLAIR" -o $particDir/ses-Pre/anat "${anatomical}"
       #         anatNumB=$((anatNumB+1))
       #       done
       #     fi
@@ -538,13 +538,13 @@ for partic in ${particArr[*]}; do
             anatNumB=$((anatNumB+1))
           done
         else
-          if [ ! -d $particDir/ses-02/anat ]; then
-            mkdir -p $particDir/ses-02/anat
+          if [ ! -d $particDir/ses-Post/anat ]; then
+            mkdir -p $particDir/ses-Post/anat
           fi
           for anatomical in ${anatBDirArr[@]}; do
             echo "Running dcm2nii for Anatomical $anatNum2 located in $anatomical"
 			#Matt: Your version originally had anatNum, so the FLAIRs were getting numbered based on the T1s.
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-02_run-0$anatNumB"_FLAIR" -o $particDir/ses-02/anat "${anatomical}"
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0$anatNumB"_FLAIR" -o $particDir/ses-Post/anat "${anatomical}"
             anatNumB=$((anatNumB+1))
           done
         fi
@@ -578,15 +578,15 @@ for partic in ${particArr[*]}; do
                   baseBoldNum=$((baseBoldNum+1))
                 done
               else
-                if [ ! -d $particDir/ses-01/func ]; then
-                  mkdir -p $particDir/ses-01/func
+                if [ ! -d $particDir/ses-Pre/func ]; then
+                  mkdir -p $particDir/ses-Pre/func
                 fi
                 # Takes latest directory with bold
                 baseboldDirRun=($(find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
                 echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
                 baseBoldNum=1
                 for bold_run in ${baseboldDirRun}; do
-                  dcm2niix -b y -ba y -f sub-"$partic"_ses-01_task-${bold_type}_run-0$baseBoldNum"_bold" -o $particDir/ses-01/func "$baseboldDirRun"
+                  dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_task-${bold_type}_run-0$baseBoldNum"_bold" -o $particDir/ses-Pre/func "$baseboldDirRun"
                   baseBoldNum=$((baseBoldNum+1))
                 done
               fi
@@ -612,15 +612,15 @@ for partic in ${particArr[*]}; do
                   postBoldNum=$((postBoldNum+1))
                 done
               else
-                if [ ! -d $particDir/ses-02/func ]; then
-                  mkdir -p $particDir/ses-02/func
+                if [ ! -d $particDir/ses-Post/func ]; then
+                  mkdir -p $particDir/ses-Post/func
                 fi
                 # Takes latest directory with bold
                 postboldDir=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
                 postBoldNum=1
                 echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
                 for bold_runB in ${postboldDirRun}; do
-                  dcm2niix -b y -ba y -f sub-"$partic"_ses-02_task-${bold_type}_run-0$postBoldNum"_bold" -o $particDir/ses-02/func "$postboldDir"
+                  dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_task-${bold_type}_run-0$postBoldNum"_bold" -o $particDir/ses-Post/func "$postboldDir"
                   postBoldNum=$((postBoldNum+1))
                 done
               fi
@@ -645,11 +645,12 @@ for partic in ${particArr[*]}; do
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/Baseline "$magBaselineDir"
           else
-            if [ ! -d $particDir/ses-01/fmap ]; then
-              mkdir -p $particDir/ses-01/fmap
+            if [ ! -d $particDir/ses-Pre/fmap ]; then
+              mkdir -p $particDir/ses-Pre/fmap
             fi
             echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-01_magnitude1 -o $particDir/ses-01/fmap "$magBaselineDir"
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_magnitude1 -o $particDir/ses-Pre/fmap "$magBaselineDir"
+			sed -i '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Pre_task-resting_bold.nii", "func/sub-$partic_ses-Pre_task-msit_bold.nii","func/sub-$partic_ses-Pre_task-nback_bold.nii","dwi/sub-$partic_ses-Pre_dwi.nii"],' $particDir/ses-Pre/fmap/*magnitude1.json
           fi
         fi
         # PostTX
@@ -662,11 +663,12 @@ for partic in ${particArr[*]}; do
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/PostTX "$magPostTXDir"
           else
-            if [ ! -d $particDir/ses-02/fmap ]; then
-              mkdir -p $particDir/ses-02/fmap
+            if [ ! -d $particDir/ses-Post/fmap ]; then
+              mkdir -p $particDir/ses-Post/fmap
             fi
             echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-02_magnitude1 -o $particDir/ses-02/fmap "$magPostTXDir"
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_magnitude1 -o $particDir/ses-Post/fmap "$magPostTXDir"
+			sed -i '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Post_task-resting_bold.nii", "func/sub-$partic_ses-Post_task-msit_bold.nii","func/sub-$partic_ses-Post_task-nback_bold.nii","dwi/sub-$partic_ses-Post_dwi.nii"],' $particDir/ses-Post/fmap/*magnitude1.json
           fi
         fi
 
@@ -678,11 +680,12 @@ for partic in ${particArr[*]}; do
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/Baseline "$phaseBaselineDir"
           else
-            if [ ! -d $particDir/ses-01/fmap ]; then
-              mkdir -p $particDir/ses-01/fmap
+            if [ ! -d $particDir/ses-Pre/fmap ]; then
+              mkdir -p $particDir/ses-Pre/fmap
             fi
             echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-01_phasediff -o $particDir/ses-01/fmap "$phaseBaselineDir"
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_phasediff -o $particDir/ses-Pre/fmap "$phaseBaselineDir"
+			sed -i '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Pre_task-resting_bold.nii", "func/sub-$partic_ses-Pre_task-msit_bold.nii","func/sub-$partic_ses-Pre_task-nback_bold.nii","dwi/sub-$partic_ses-Pre_dwi.nii"],' $particDir/ses-Pre/fmap/*phasediff.json
           fi
         fi
         # PostTX
@@ -692,11 +695,12 @@ for partic in ${particArr[*]}; do
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/PostTX "$phasePostTXDir"
           else
-            if [ ! -d $particDir/ses-02/fmap ]; then
-              mkdir -p $particDir/ses-02/fmap
+            if [ ! -d $particDir/ses-Post/fmap ]; then
+              mkdir -p $particDir/ses-Post/fmap
             fi
             echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-02_phasediff -o $particDir/ses-02/fmap "$phasePostTXDir"
+            dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_phasediff -o $particDir/ses-Post/fmap "$phasePostTXDir"
+			sed -i '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Post_task-resting_bold.nii", "func/sub-$partic_ses-Post_task-msit_bold.nii","func/sub-$partic_ses-Post_task-nback_bold.nii","dwi/sub-$partic_ses-Post_dwi.nii"],' $particDir/ses-Post/fmap/*phasediff.json
           fi
         fi
       else
@@ -720,19 +724,19 @@ for partic in ${particArr[*]}; do
                 dtiAPBaselineNum=$((dtiAPBaselineNum+1))
               done
             else
-              if [ ! -d $particDir/ses-01/dwi ]; then
-                mkdir -p $particDir/ses-01/dwi
+              if [ ! -d $particDir/ses-Pre/dwi ]; then
+                mkdir -p $particDir/ses-Pre/dwi
               fi
               echo "Running dcm2nii for DTI A -> P"
               for dtiAPBaselineFile in ${dtiAPBaselineDir}; do
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-01_run-0"$dtiAPBaselineNum"_dwi -o $particDir/ses-01/dwi "$dtiAPBaselineFile" # Follow up with Adam
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiAPBaselineNum"_dwi -o $particDir/ses-Pre/dwi "$dtiAPBaselineFile" # Follow up with Adam
                 dtiAPBaselineNum=$((dtiAPBaselineNum+1))
               done
             fi
 
             # Running same system for DTI P -> A
             if [ -n $(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1) ]; then
-              dtiAPBaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1))
+              dtiPABaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1))
             else
               echo "P->A file not found, searching bzero identifier"
               if [ -n $(find $baselineRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1) ]; then
@@ -748,28 +752,30 @@ for partic in ${particArr[*]}; do
                 dtiPABaselineNum=$((dtiPABaselineNum+1))
               done
             else
-              if [ ! -d $particDir/ses-01/fmap ]; then
-                mkdir -p $particDir/ses-01/fmap
-                mkdir -p $particDir/ses-02/dwi
+              if [ ! -d $particDir/ses-Pre/fmap ]; then
+                mkdir -p $particDir/ses-Pre/fmap
+                mkdir -p $particDir/ses-Post/dwi
               fi
-              echo "Running dcm2nii for DTI A -> P"
+              echo "Running dcm2nii for DTI P -> A"
               for dtiPABaselineFile in ${dtiPABaselineDir}; do
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-01_acq-PtoA_run-0"$dtiPABaselineNum"_epi -o $particDir/ses-01/dwi "$dtiPABaselineFile"
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiPABaselineNum"_epi -o $particDir/ses-Pre/fmap "$dtiPABaselineFile"
                 dtiPABaselineNum=$((dtiPABaselineNum+1))
               done
+			  sed -i '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Pre_task-resting_bold.nii", "func/sub-$partic_ses-Pre_task-msit_bold.nii","func/sub-$partic_ses-Pre_task-nback_bold.nii","dwi/sub-$partic_ses-Pre_dwi.nii"],' $particDir/ses-Pre/fmap/*epi.json
             fi
             if [ "$legacyBool" = "True" ]; then
               bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
               bvec=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
             else
-              bval=`find $particDir/ses-01/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-              bvec=`find $particDir/ses-01/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+              bval=`find $particDir/ses-Pre/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+              bvec=`find $particDir/ses-Pre/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
             fi
             if [[ "${bval}" = *"bval"* ]]; then
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/Baseline/bvals
               else
-                mv $bval $particDir/ses-01/dwi/bvals
+				cp $bval $particDir/ses-Pre/dwi/sub-${partic}_ses-Pre_run-01_dwi.bval
+                mv $bval $particDir/ses-Pre/dwi/bvals
               fi
             else
               echo "###### bval not found ######"
@@ -778,7 +784,8 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bvec $particDir/dti/Baseline/bvecs
               else
-                mv $bvec $particDir/ses-01/dwi/bvecs
+				cp $bvec $particDir/ses-Pre/dwi/sub-${partic}_ses-Pre_run-01_dwi.bvec
+                mv $bvec $particDir/ses-Pre/dwi/bvecs
               fi
             else
               echo "###### bvec not found ######"
@@ -787,6 +794,7 @@ for partic in ${particArr[*]}; do
             echo "###### No DTI images found for $partic Baseline ######"
           fi
         fi
+		
         # PostTX DTI A -> P
         if [ $postTXBool -eq 1 ]; then
           postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
@@ -798,14 +806,14 @@ for partic in ${particArr[*]}; do
                 mkdir -p $particDir/dti/PostTX
               fi
               echo "Running dcm2nii for DTI A -> P"
-              for dtiPAPostTXFile in ${dtiPAPostTXDir}; do
+              for dtiAPPostTXFile in ${dtiAPPostTXDir}; do
                 dcm2niix -f "$partic"_A2P_run-0$dtiPAPostTXNum -o $particDir/dti/PostTX "$dtiAPPostTXFile"
-                dtiPAPostTXNum=$((dtiPAPostTXNum+1))
+                dtiAPPostTXNum=$((dtiAPPostTXNum+1))
               done
             else
-              if [ ! -d $particDir/ses-02/dwi ]; then
-                mkdir -p $particDir/ses-02/dwi
-                mkdir -p $particDir/ses-02/fmap
+              if [ ! -d $particDir/ses-Post/dwi ]; then
+                mkdir -p $particDir/ses-Post/dwi
+                mkdir -p $particDir/ses-Post/fmap
               fi
               echo "Running dcm2nii for DTI A -> P"
               for dtiPAPostTXFile in ${dtiPAPostTXDir}; do
@@ -828,24 +836,27 @@ for partic in ${particArr[*]}; do
                 echo "Running dcm2nii for DTI P -> A"
                 dcm2niix -f "$partic"_P2A -o $particDir/dti/PostTX "$dtiPAPostTXDir"
               else
-                if [ ! -d $particDir/ses-02/fmap ]; then
-                  mkdir -p $particDir/ses-02/fmap
+                if [ ! -d $particDir/ses-Post/fmap ]; then
+                  mkdir -p $particDir/ses-Post/fmap
                 fi
 				# Same as with Baseline. For BIDS format, these P -> A files will go in the fmap folder as acq-PtoA_epi
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-02_acq-PtoA_epi -o $particDir/ses-02/fmap "$dtiPABaselineDir" # Follow up with Adam
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_epi -o $particDir/ses-Post/fmap "$dtiPAPostTXDir" # Follow up with Adam
+				sed -i '/COL/ a "IndendedFor": ["func/sub-$partic_ses-Post_task-resting_bold.nii", "func/sub-$partic_ses-Post_task-msit_bold.nii","func/sub-$partic_ses-Post_task-nback_bold.nii","dwi/sub-$partic_ses-Post_dwi.nii"],' $particDir/ses-Post/fmap/*epi.json
               fi
             fi
             if [ "$legacyBool" = "True" ]; then
               bval=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
               bvec=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
             else
-              bval=`find $particDir/ses-02/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-              bvec=`find $particDir/ses-02/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+              bval=`find $particDir/ses-Post/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+              bvec=`find $particDir/ses-Post/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+            fi
             if [[ "${bval}" = *"bval"* ]]; then
               if [ "$legacyBool" = "True" ]; then
                 mv $bval $particDir/dti/PostTX/bvals
               else
-                mv $bval $particDir/ses-02/dwi/bvals
+				cp $bval $particDir/ses-Post/dwi/sub-${partic}_ses-Post_run-01_dwi.bval
+                mv $bval $particDir/ses-Post/dwi/bvals
               fi
             else
               echo "###### bval not found ######"
@@ -854,7 +865,8 @@ for partic in ${particArr[*]}; do
               if [ "$legacyBool" = "True" ]; then
                 mv $bvec $particDir/dti/PostTX/bvecs
               else
-                mv $bval $particDir/ses-02/dwi/bvecs
+			  	cp $bvec $particDir/ses-Post/dwi/sub-${partic}_ses-Post_run-01_dwi.bvec
+                mv $bvec $particDir/ses-Post/dwi/bvecs
               fi
             else
               echo "###### bvec not found ######"
