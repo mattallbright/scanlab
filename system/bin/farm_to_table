@@ -814,9 +814,9 @@ for partic in ${particArr[*]}; do
                 mkdir -p $particDir/ses-Post/fmap
               fi
               echo "Running dcm2nii for DTI A -> P"
-              for dtiAPPostTXFile in ${dtiAPPostTXDir}; do
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0"$dtiAPPostTXNum"_dwi -o $particDir/ses-Post/dwi "$dtiAPBaselineDir" # Follow up with Adam
-                dtiAPPostTXNum=$((dtiAPPostTXNum+1))
+              for dtiPAPostTXFile in ${dtiPAPostTXDir}; do
+                dcm2niix -b y -ba y -f sub-"$partic"_ses-02_run-0"$dtiPAPostTXNum"_dwi -o $particDir/ses-02/dwi "$dtiAPBaselineDir" # Follow up with Adam
+                dtiPAPostTXNum=$((dtiPAPostTXNum+1))
               done
             fi
 
