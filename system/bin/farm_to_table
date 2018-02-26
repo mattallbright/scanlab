@@ -645,7 +645,7 @@ for partic in ${particArr[*]}; do
                 postBoldNum=1
                 echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
                 for bold_runB in ${postboldDirRun}; do
-                  dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_task-${boldType}_run-0$postBoldNum"_bold" -o $particDir/ses-Post/func "$postboldDir"
+                  dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_task-${boldType}_run-0$postBoldNum"_bold" -o $particDir/ses-Post/func "$postboldDirRun"
 				  sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Post/func/*${boldType}_run-0${postBoldNum}*.json
                   postBoldNum=$((postBoldNum+1))
                 done
