@@ -641,7 +641,7 @@ for partic in ${particArr[*]}; do
 				fi
 
                 # Takes latest directory with bold
-                postboldDir=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
+                postboldDirRun=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
                 postBoldNum=1
                 echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
                 for bold_runB in ${postboldDirRun}; do
