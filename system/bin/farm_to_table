@@ -588,9 +588,27 @@ for partic in ${particArr[*]}; do
 				elif [ "$bold_type" = "nback" ]; then
 					boldType="nback"
 					taskName="n-back"
-				else
+				elif [ "$bold_type" = "msit" ]; then
 					boldType="msit"
 					taskName="msit"
+				elif [ "$bold_type" = "anticipation" ]; then
+					boldType="anticipation"
+					taskName="anticipation"
+				elif [ "$bold_type" = "bmat_fear" ]; then
+					boldType="bmatfear"
+					taskName="bmat-fear"
+				elif [ "$bold_type" = "bmat_happy" ]; then
+					boldType="bmathappy"
+					taskName="bmat-happy"
+				elif [ "$bold_type" = "dot_probe" ]; then
+					boldType="dotprobe"
+					taskName="dot probe"
+				elif [ "$bold_type" = "fear_conditioning" ]; then
+					boldType="fearcond"
+					taskName="fear conditioning"
+				else
+					boldType="'$bold_type'"
+					taskName="'$bold_type'"
 				fi
 
                 # Takes latest directory with bold
@@ -635,9 +653,27 @@ for partic in ${particArr[*]}; do
 				elif [ "$bold_type" = "nback" ]; then
 					boldType="nback"
 					taskName="n-back"
-				else
+				elif [ "$bold_type" = "msit" ]; then
 					boldType="msit"
 					taskName="msit"
+				elif [ "$bold_type" = "anticipation" ]; then
+					boldType="anticipation"
+					taskName="anticipation"
+				elif [ "$bold_type" = "bmat_fear" ]; then
+					boldType="bmatfear"
+					taskName="bmat-fear"
+				elif [ "$bold_type" = "bmat_happy" ]; then
+					boldType="bmathappy"
+					taskName="bmat-happy"
+				elif [ "$bold_type" = "dot_probe" ]; then
+					boldType="dotprobe"
+					taskName="dot probe"
+				elif [ "$bold_type" = "fear_conditioning" ]; then
+					boldType="fearcond"
+					taskName="fear conditioning"
+				else
+					boldType="'$bold_type'"
+					taskName="'$bold_type'"
 				fi
 
                 # Takes latest directory with bold
