@@ -47,7 +47,7 @@ getInfo() {
     longitudinalBool=1
     studyPrefix="BLPTSD_"
     boldValues=("resting" "anticipation" "bmat_fear" "bmat_happy" "dot_probe" "fear_conditioning")
-    magPhaseBool=0
+    magPhaseBool=1
     dtiBool=1
   elif [ $study = "EWM" ]; then
     longitudinalBool=0
