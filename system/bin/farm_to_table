@@ -32,7 +32,7 @@ getInfo() {
     longitudinalBool=1
     studyPrefix="BL2_"
     boldValues=("resting" "msit" "nback")
-    magPhaseBool=0
+    magPhaseBool=1
     dtiBool=1
   elif [ $study = "blt" ]; then
     longitudinalBool=1
@@ -256,13 +256,13 @@ for partic in ${particNumArr[*]}; do
   if [ "$partic" = x"$partic" ]; then
     echo "Not a valid id. Skipping.."
   else
-	if [ "$legacyBool" = "True" ]; then
-      particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
-		echo "Found $partic..."
-	else
-		particArr+=("$particNum") # Clean up the numbers array by adding a prefix (eg 102 stays 102)
-		echo "Found $partic..."
-	fi
+  	if [ "$legacyBool" = "True" ]; then
+        particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+  		echo "Found $partic..."
+  	else
+  		particArr+=("$particNum") # Clean up the numbers array by adding a prefix (eg 102 stays 102)
+  		echo "Found $partic..."
+  	fi
   fi
 done
 
@@ -581,7 +581,7 @@ for partic in ${particArr[*]}; do
                 if [ ! -d $particDir/ses-Pre/func ]; then
                   mkdir -p $particDir/ses-Pre/func
                 fi
-				
+
 				if [ "$bold_type" = "resting" ]; then
 					boldType="rest"
 					taskName="rest"
@@ -592,7 +592,7 @@ for partic in ${particArr[*]}; do
 					boldType="msit"
 					taskName="msit"
 				fi
-				
+
                 # Takes latest directory with bold
                 baseboldDirRun=($(find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
                 echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
@@ -628,7 +628,7 @@ for partic in ${particArr[*]}; do
                 if [ ! -d $particDir/ses-Post/func ]; then
                   mkdir -p $particDir/ses-Post/func
                 fi
-				
+
 				if [ "$bold_type" = "resting" ]; then
 					boldType="rest"
 					taskName="rest"
@@ -818,7 +818,7 @@ for partic in ${particArr[*]}; do
             echo "###### No DTI images found for $partic Baseline ######"
           fi
         fi
-		
+
         # PostTX DTI A -> P
         if [ $postTXBool -eq 1 ]; then
           postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
