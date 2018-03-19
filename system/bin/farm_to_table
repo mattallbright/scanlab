@@ -1063,11 +1063,12 @@ for partic in ${particArr[*]}; do
 					taskName="'$bold_type'"
 				fi
               
-			  for bold_run in ${boldDir[@]}; do
-				echo "Running dcm2niix for ${bold_type} located in ${bold_run}"
-				dcm2niix -b y -ba y -f sub-"$partic"_task-${boldType}_run-0$boldNum"_bold" -o $particDir/func "$bold_run"
-				sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Post/func/*${boldType}_run-0${boldNum}*.json
-				boldNum=$((boldNum+1))
+				for bold_run in ${boldDir[@]}; do
+					echo "Running dcm2niix for ${bold_type} located in ${bold_run}"
+					dcm2niix -b y -ba y -f sub-"$partic"_task-${boldType}_run-0$boldNum"_bold" -o $particDir/func "$bold_run"
+					sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Post/func/*${boldType}_run-0${boldNum}*.json
+					boldNum=$((boldNum+1))
+				done
             fi
           else
             echo "No data for $bold_type in $partic directory."
