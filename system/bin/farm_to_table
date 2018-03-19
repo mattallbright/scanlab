@@ -1066,7 +1066,7 @@ for partic in ${particArr[*]}; do
 				for bold_run in ${boldDir[@]}; do
 					echo "Running dcm2niix for ${bold_type} located in ${bold_run}"
 					dcm2niix -b y -ba y -f sub-"$partic"_task-${boldType}_run-0$boldNum"_bold" -o $particDir/func "$bold_run"
-					sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Post/func/*${boldType}_run-0${boldNum}*.json
+					sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/func/*${boldType}_run-0${boldNum}*.json
 					boldNum=$((boldNum+1))
 				done
             fi
@@ -1095,7 +1095,7 @@ for partic in ${particArr[*]}; do
             fi
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -b y -ba y -f sub-"$partic"_magnitude1 -o $particDir/fmap "$magDir"
-			sed -i '/COL/ a "IntendedFor": ["'func/sub-$partic_task-rest_run-01_bold.nii'", "'func/sub-$partic_task-msit_run-01_bold.nii'","'func/sub-$partic_task-nback_run-01_bold.nii'"],' $particDir/ses-Pre/fmap/*magnitude1*.json
+			sed -i '/COL/ a "IntendedFor": ["'func/sub-$partic_task-rest_run-01_bold.nii'", "'func/sub-$partic_task-msit_run-01_bold.nii'","'func/sub-$partic_task-nback_run-01_bold.nii'"],' $particDir/fmap/*magnitude1*.json
           fi
 
           magCheckString=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
@@ -1110,7 +1110,7 @@ for partic in ${particArr[*]}; do
             else
               echo "Running dcm2nii for Phase fieldmaps"
               dcm2niix -b y -ba y -f sub-"$partic"_phasediff -o $particDir/fmap "$phaseDir"
-			  sed -i '/COL/ a "IntendedFor": ["'func/sub-$partic_task-rest_run-01_bold.nii'", "'func/sub-$partic_task-msit_run-01_bold.nii'","'func/sub-$partic_task-nback_run-01_bold.nii'"],' $particDir/ses-Pre/fmap/*phasediff*.json
+			  sed -i '/COL/ a "IntendedFor": ["'func/sub-$partic_task-rest_run-01_bold.nii'", "'func/sub-$partic_task-msit_run-01_bold.nii'","'func/sub-$partic_task-nback_run-01_bold.nii'"],' $particDir/fmap/*phasediff*.json
             fi
           fi
         else
