@@ -1095,7 +1095,19 @@ for partic in ${particArr[*]}; do
             fi
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -b y -ba y -f sub-"$partic"_magnitude1 -o $particDir/fmap "$magDir"
-			sed -i '/COL/ a "IntendedFor": ["'func/sub-$partic_task-rest_run-01_bold.nii'", "'func/sub-$partic_task-msit_run-01_bold.nii'","'func/sub-$partic_task-nback_run-01_bold.nii'"],' $particDir/fmap/*magnitude1*.json
+			sed -i '/COL/ a "IntendedFor": ["'func/sub-"$partic"_task-rest_run-01_bold.nii'", "'func/sub-"$partic"_task-msit_run-01_bold.nii'","'func/sub-"$partic"_task-nback_run-01_bold.nii'"],' $particDir/fmap/*magnitude1*.json
+			
+			# Get echo times for PhaseDiff files
+			echo1=$(cat $particDir/fmap/sub-"$partic"_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
+			echo2=$(cat $particDir/fmap/sub-"$partic"_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
+			
+			# Rename Echo 1 files
+			mv $particDir/fmap/sub-"$partic"_magnitude1_e1.nii $particDir/fmap/sub-"$partic"_magnitude1.nii
+			mv $particDir/fmap/sub-"$partic"_magnitude1_e1.json $particDir/fmap/sub-"$partic"_magnitude1.json
+			
+			# Rename Echo 2 files
+			mv $particDir/fmap/sub-"$partic"_magnitude1_e2.nii $particDir/fmap/sub-"$partic"_magnitude2.nii
+			mv $particDir/fmap/sub-"$partic"_magnitude1_e2.json $particDir/fmap/sub-"$partic"_magnitude2.json
           fi
 
           magCheckString=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
@@ -1111,6 +1123,14 @@ for partic in ${particArr[*]}; do
               echo "Running dcm2nii for Phase fieldmaps"
               dcm2niix -b y -ba y -f sub-"$partic"_phasediff -o $particDir/fmap "$phaseDir"
 			  sed -i '/COL/ a "IntendedFor": ["'func/sub-$partic_task-rest_run-01_bold.nii'", "'func/sub-$partic_task-msit_run-01_bold.nii'","'func/sub-$partic_task-nback_run-01_bold.nii'"],' $particDir/fmap/*phasediff*.json
+			  
+			  # Rename phasediff file
+			  mv $particDir/fmap/sub-"$partic"_phasediff_e2.nii $particDir/fmap/sub-"$partic"_phasediff.nii
+			  mv $particDir/fmap/sub-"$partic"_phasediff_e2.json $particDir/fmap/sub-"$partic"_phasediff.json
+			  
+			  # Add appropriate echo times to phasediff JSON
+			  sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1/" $targetDir/sub-"$subject"_phasediff.json
+			  sed -i '/EchoTime1/ a "EchoTime2": '"$echo2"'' $targetDir/sub-"$subject"_phasediff.json
             fi
           fi
         else
