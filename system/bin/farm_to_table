@@ -1081,7 +1081,7 @@ for partic in ${particArr[*]}; do
 						boldIntendedFor='"'"$boldFileName"'"'
 					else
 						tmpBoldName='"'"$boldFileName"'"'
-						boldIntendedFor="$intendedFor, "${tmpBoldName}""
+						boldIntendedFor="$boldIntendedFor, "${tmpBoldName}""
 					fi
 				done
             fi
@@ -1124,8 +1124,8 @@ for partic in ${particArr[*]}; do
 			mv $particDir/fmap/sub-"$partic"_magnitude1_e2.json $particDir/fmap/sub-"$partic"_magnitude2.json
 			
 			# Edit IntendedFor field of the JSONs
-			sed -i '/COL/ a "IntendedFor": ["${boldIntendedFor}"],' $particDir/fmap/sub-"$partic"_magnitude1.json
-			sed -i '/COL/ a "IntendedFor": ["${boldIntendedFor}"],' $particDir/fmap/sub-"$partic"_magnitude2.json
+			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedFor}"'],' $particDir/fmap/sub-"$partic"_magnitude1.json
+			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedFor}"'],' $particDir/fmap/sub-"$partic"_magnitude2.json
           fi
 
           magCheckString=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
@@ -1146,11 +1146,11 @@ for partic in ${particArr[*]}; do
 			  mv $particDir/fmap/sub-"$partic"_phasediff_e2.json $particDir/fmap/sub-"$partic"_phasediff.json
 			  
 			  # Add appropriate echo times to phasediff JSON
-			  sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1/" $targetDir/sub-"$partic"_phasediff.json
-			  sed -i '/EchoTime1/ a "EchoTime2": '"$echo2"'' $targetDir/sub-"$partic"_phasediff.json
+			  sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1/" $particDir/fmap/sub-"$partic"_phasediff.json
+			  sed -i '/EchoTime1/ a "EchoTime2": '"$echo2"'' $particDir/fmap/sub-"$partic"_phasediff.json
 			  
 			  # Add IntendedFor field to PhaseDiff JSON
-			  sed -i '/COL/ a "IntendedFor": ["$boldIntendedFor"],' $particDir/fmap/sub-"$partic"_phasediff*.json
+			  sed -i '/COL/ a "IntendedFor": ['"$boldIntendedFor"'],' $particDir/fmap/sub-"$partic"_phasediff.json
             fi
           fi
         else
@@ -1183,9 +1183,26 @@ for partic in ${particArr[*]}; do
 			# Matt: I added this here without the -r to address the correct ordering of run numbers.
 			for dtiAPRun in ${dtiAPDir[@]}; do
 				echo "Running dcm2nii for DTI A -> P"
-				dcm2niix -b y -ba y -f sub-"$partic"_run-0$dtiAPNum"_dwi" -o $particDir/dwi "$dtiAPRun"
+				dcm2niix -b y -ba y -f sub-"$partic"_run-0"$dtiAPNum"_dwi -o $particDir/dwi "$dtiAPRun"
 				dtiAPNum=$((dtiAPNum+1))
 			done
+			
+			# Get the file names for the EPI JSON files
+			dwiFiles=($particDir/dwi/*.nii)
+			
+			
+			dwiIntendedFor=""
+			for dwiFile in ${dwiFiles[@]}; do
+				dwiFileName=${dwiFile#/data*"$partic"/}
+				
+				if [ -z "$dwiIntendedFor" ]; then
+					dwiIntendedFor='"'"$dwiFileName"'"'
+				else
+					tmpDWIName='"'"$dwiFileName"'"'
+					dwiIntendedFor="$dwiIntendedFor, "${tmpDWIName}""
+				fi
+			done
+			
           fi
 
           # Running same system for DTI P -> A
@@ -1213,10 +1230,10 @@ for partic in ${particArr[*]}; do
 				
 				for bzero in ${dtiPADir[@]}; do
 					echo "Running dcm2nii for DTI P -> A"
-					dcm2niix -b y -ba y -f sub-"$partic"_run-$dtiPANum"_epi" -o $particDir/fmap "$bzero"
+					dcm2niix -b y -ba y -f sub-"$partic"_run-0"$dtiPANum"_epi -o $particDir/fmap "$bzero"
 					dtiPANum=$((dtiPANum+1))
 				done
-				sed -i '/COL/ a "IntendedFor": ["'dwi/sub-${partic}_run-01_dwi.nii'"],' $particDir/fmap/*epi.json				
+				sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedFor}"'],' $particDir/fmap/*epi.json				
             fi
           fi
           
