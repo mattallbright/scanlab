@@ -1069,6 +1069,21 @@ for partic in ${particArr[*]}; do
 					sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/func/*${boldType}_run-0${boldNum}*.json
 					boldNum=$((boldNum+1))
 				done
+				
+				# Get the file names for the fieldmap JSON files
+				boldFiles=($particDir/func/*.nii)
+				
+				boldIntendedFor=""
+				for boldFile in ${boldFiles[@]}; do
+					boldFileName=${boldFile#/data*"$partic"/}
+					
+					if [ -z "$boldIntendedFor" ]; then
+						boldIntendedFor='"'"$boldFileName"'"'
+					else
+						tmpBoldName='"'"$boldFileName"'"'
+						boldIntendedFor="$intendedFor, "${tmpBoldName}""
+					fi
+				done
             fi
           else
             echo "No data for $bold_type in $partic directory."
@@ -1095,7 +1110,22 @@ for partic in ${particArr[*]}; do
             fi
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -b y -ba y -f sub-"$partic"_magnitude1 -o $particDir/fmap "$magDir"
-			sed -i '/COL/ a "IntendedFor": ["'func/sub-$partic_task-rest_run-01_bold.nii'", "'func/sub-$partic_task-msit_run-01_bold.nii'","'func/sub-$partic_task-nback_run-01_bold.nii'"],' $particDir/fmap/*magnitude1*.json
+			
+			# Get echo times for PhaseDiff files
+			echo1=$(cat $particDir/fmap/sub-"$partic"_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
+			echo2=$(cat $particDir/fmap/sub-"$partic"_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
+			
+			# Rename Echo 1 files
+			mv $particDir/fmap/sub-"$partic"_magnitude1_e1.nii $particDir/fmap/sub-"$partic"_magnitude1.nii
+			mv $particDir/fmap/sub-"$partic"_magnitude1_e1.json $particDir/fmap/sub-"$partic"_magnitude1.json
+			
+			# Rename Echo 2 files
+			mv $particDir/fmap/sub-"$partic"_magnitude1_e2.nii $particDir/fmap/sub-"$partic"_magnitude2.nii
+			mv $particDir/fmap/sub-"$partic"_magnitude1_e2.json $particDir/fmap/sub-"$partic"_magnitude2.json
+			
+			# Edit IntendedFor field of the JSONs
+			sed -i '/COL/ a "IntendedFor": ["${boldIntendedFor}"],' $particDir/fmap/sub-"$partic"_magnitude1.json
+			sed -i '/COL/ a "IntendedFor": ["${boldIntendedFor}"],' $particDir/fmap/sub-"$partic"_magnitude2.json
           fi
 
           magCheckString=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
@@ -1110,7 +1140,17 @@ for partic in ${particArr[*]}; do
             else
               echo "Running dcm2nii for Phase fieldmaps"
               dcm2niix -b y -ba y -f sub-"$partic"_phasediff -o $particDir/fmap "$phaseDir"
-			  sed -i '/COL/ a "IntendedFor": ["'func/sub-$partic_task-rest_run-01_bold.nii'", "'func/sub-$partic_task-msit_run-01_bold.nii'","'func/sub-$partic_task-nback_run-01_bold.nii'"],' $particDir/fmap/*phasediff*.json
+			  			  
+			  # Rename phasediff file
+			  mv $particDir/fmap/sub-"$partic"_phasediff_e2.nii $particDir/fmap/sub-"$partic"_phasediff.nii
+			  mv $particDir/fmap/sub-"$partic"_phasediff_e2.json $particDir/fmap/sub-"$partic"_phasediff.json
+			  
+			  # Add appropriate echo times to phasediff JSON
+			  sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1/" $targetDir/sub-"$partic"_phasediff.json
+			  sed -i '/EchoTime1/ a "EchoTime2": '"$echo2"'' $targetDir/sub-"$partic"_phasediff.json
+			  
+			  # Add IntendedFor field to PhaseDiff JSON
+			  sed -i '/COL/ a "IntendedFor": ["$boldIntendedFor"],' $particDir/fmap/sub-"$partic"_phasediff*.json
             fi
           fi
         else
