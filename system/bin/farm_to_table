@@ -1141,9 +1141,7 @@ for partic in ${particArr[*]}; do
             fi
 			
 			# Matt: I added this here without the -r to address the correct ordering of run numbers.
-			dtiAPDir=`find $particRawDir -maxdepth 2 -iname "*A-P -*" -print | sort -r | tail -1`
-			
-			for ditAPRun in ${dtiAPDir[@]}; do
+			for dtiAPRun in ${dtiAPDir[@]}; do
 				echo "Running dcm2nii for DTI A -> P"
 				dcm2niix -b y -ba y -f sub-"$partic"_run-0$dtiAPNum"_dwi" -o $particDir/dwi "$dtiAPRun"
 				dtiAPNum=$((dtiAPNum+1))
