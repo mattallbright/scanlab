@@ -371,37 +371,38 @@ for partic in ${particArr[*]}; do
 					fi
 				fi
 			fi
-		fi
 		
-        echo -e "${red}BaselineRawDir is $baselineRawDir${noColor}"
-        if [ $dirAlreadyExists -eq 1 ]; then
-          if [ $bypassIndivOverwrite -eq 0 ]; then
-            echo "The indiv_analysis directory already exists."
-            echo "Would you like to copy and possibly overwrite your Baseline indiv_analysis images?"
-            read overwriteBaseline
-          elif [ $bypassIndivOverwrite -eq 1 ]; then
-            baselineBool=1
-          fi
-          if [[ "$overwriteBaseline" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-            baselineBool=1
-            if [ $overwriteIndivCount -eq 0 ]; then
-              overwriteIndivCount=$((overwriteIndivCount + 1))
-              echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
-              echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
-              read overwriteIndivResponse
-              if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-                bypassIndivOverwrite=1
-              fi
-            fi
-            overwriteIndivCount=$((overwriteIndivCount + 1))
-          fi
-        else
-          baselineBool=1
-        fi
-      else
-        echo "######Baseline not detected.######"
-        baselineBool=0
-      fi
+		
+			echo -e "${red}BaselineRawDir is $baselineRawDir${noColor}"
+			if [ $dirAlreadyExists -eq 1 ]; then
+				if [ $bypassIndivOverwrite -eq 0 ]; then
+					echo "The indiv_analysis directory already exists."
+					echo "Would you like to copy and possibly overwrite your Baseline indiv_analysis images?"
+					read overwriteBaseline
+				elif [ $bypassIndivOverwrite -eq 1 ]; then
+					baselineBool=1
+				fi
+				
+				if [[ "$overwriteBaseline" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+					baselineBool=1
+					if [ $overwriteIndivCount -eq 0 ]; then
+						overwriteIndivCount=$((overwriteIndivCount + 1))
+						echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
+						echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
+						read overwriteIndivResponse
+						if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+							bypassIndivOverwrite=1
+						fi
+					fi
+					overwriteIndivCount=$((overwriteIndivCount + 1))
+				fi
+			else
+				baselineBool=1
+			fi
+		else
+			echo "######Baseline not detected.######"
+			baselineBool=0
+		fi
 		
 		# Check if post-treatment folders exist
 		if [ $study = "blt" ]; then
@@ -427,35 +428,37 @@ for partic in ${particArr[*]}; do
 				fi
 			fi
 			
-        echo -e "${red}PostTXRawDir is $postTXRawDir${noColor}"
-        if [ $dirAlreadyExists -eq 1 ]; then
-          if [ $bypassIndivOverwrite -eq 0 ]; then
-            echo "The indiv_analysis directory already exists."
-            echo "Would you like to copy and possibly overwrite your PostTX indiv_analysis images?"
-            read overwritePostTX
-          elif [ $bypassIndivOverwrite -eq 1 ]; then
-            postTXBool=1
-          fi
-          if [[ "$overwritePostTX" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-            postTXBool=1
-            if [ $overwriteIndivCount -eq 0 ]; then
-              overwriteIndivCount=$((overwriteIndivCount + 1))
-              echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
-              echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
-              read overwriteIndivResponse
-              if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-                bypassIndivOverwrite=1
-              fi
-            fi
-            overwriteIndivCount=$((overwriteIndivCount + 1))
-          fi
-        else
-          postTXBool=1
-        fi
-      else
-        echo "###### PostTX not detected. ######"
-        postTXBool=0
-      fi
+			echo -e "${red}PostTXRawDir is $postTXRawDir${noColor}"
+			
+			if [ $dirAlreadyExists -eq 1 ]; then
+			  if [ $bypassIndivOverwrite -eq 0 ]; then
+				echo "The indiv_analysis directory already exists."
+				echo "Would you like to copy and possibly overwrite your PostTX indiv_analysis images?"
+				read overwritePostTX
+			  elif [ $bypassIndivOverwrite -eq 1 ]; then
+				postTXBool=1
+			  fi
+			  
+			  if [[ "$overwritePostTX" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+				postTXBool=1
+				if [ $overwriteIndivCount -eq 0 ]; then
+				  overwriteIndivCount=$((overwriteIndivCount + 1))
+				  echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
+				  echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
+				  read overwriteIndivResponse
+				  if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+					bypassIndivOverwrite=1
+				  fi
+				fi
+				overwriteIndivCount=$((overwriteIndivCount + 1))
+			  fi
+			else
+			  postTXBool=1
+			fi
+		else
+			echo "###### PostTX not detected. ######"
+			postTXBool=0
+		fi
 
       if [ $baselineBool -eq 1 ]; then
         echo "Running for Baseline."
