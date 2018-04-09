@@ -620,6 +620,22 @@ for partic in ${particArr[*]}; do
 				  sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Pre/func/*${boldType}_run-0${baseBoldNum}*.json
                   baseBoldNum=$((baseBoldNum+1))
                 done
+				
+				# Get the file names for the fieldmap JSON files
+				boldFiles=($particDir/ses-Pre/func/*.nii)
+				
+				boldIntendedForPre=""
+				for boldFile in ${boldFiles[@]}; do
+					boldFileName=${boldFile#/data*"$partic"/}
+					
+					if [ -z "$boldIntendedForPre" ]; then
+						boldIntendedForPre='"'"$boldFileName"'"'
+					else
+						tmpBoldName='"'"$boldFileName"'"'
+						boldIntendedForPre="$boldIntendedForPre, "${tmpBoldName}""
+					fi
+				done
+				
               fi
             else
               echo "No data for $bold_type in baseline $partic directory."
@@ -685,6 +701,21 @@ for partic in ${particArr[*]}; do
 				  sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Post/func/*${boldType}_run-0${postBoldNum}*.json
                   postBoldNum=$((postBoldNum+1))
                 done
+				
+				# Get the file names for the fieldmap JSON files
+				boldFiles=($particDir/ses-Post/func/*.nii)
+				
+				boldIntendedForPost=""
+				for boldFile in ${boldFiles[@]}; do
+					boldFileName=${boldFile#/data*"$partic"/}
+					
+					if [ -z "$boldIntendedForPost" ]; then
+						boldIntendedForPost='"'"$boldFileName"'"'
+					else
+						tmpBoldName='"'"$boldFileName"'"'
+						boldIntendedForPost="$boldIntendedForPost, "${tmpBoldName}""
+					fi
+				done
               fi
             else
               echo "No data for $bold_type in post-treatment $partic directory."
@@ -710,9 +741,25 @@ for partic in ${particArr[*]}; do
             if [ ! -d $particDir/ses-Pre/fmap ]; then
               mkdir -p $particDir/ses-Pre/fmap
             fi
+			
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_magnitude1 -o $particDir/ses-Pre/fmap "$magBaselineDir"
-			sed -i '/COL/ a "IntendedFor": ["'ses-Pre/func/sub-$partic_ses-Pre_task-rest_run-01_bold.nii'", "'ses-Pre/func/sub-$partic_ses-Pre_task-msit_run-01_bold.nii'","'ses-Pre/func/sub-$partic_ses-Pre_task-nback_run-01_bold.nii'"],' $particDir/ses-Pre/fmap/*magnitude1*.json
+			
+			# Get echo times for PhaseDiff files
+			echo1_pre=$(cat $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
+			echo2_pre=$(cat $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
+			
+			# Rename Echo 1 files
+			mv $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e1.nii $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1.nii
+			mv $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e1.json $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1.json
+			
+			# Rename Echo 2 files
+			mv $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e2.nii $particDir/ses-Pre/fmap/sub-"$partic"_magnitude2.nii
+			mv $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e2.json $particDir/ses-Pre/fmap/sub-"$partic"_magnitude2.json
+			
+			# Edit IntendedFor field of the JSONs
+			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPre}"'],' $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1.json
+			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPre}"'],' $particDir/ses-Pre/fmap/sub-"$partic"_magnitude2.json
           fi
         fi
         # PostTX
@@ -730,7 +777,22 @@ for partic in ${particArr[*]}; do
             fi
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_magnitude1 -o $particDir/ses-Post/fmap "$magPostTXDir"
-			sed -i '/COL/ a "IntendedFor": ["'ses-Post/func/sub-${partic}_ses-Post_task-rest_run-01_bold.nii'", "'ses-Post/func/sub-${partic}_ses-Post_task-msit_run-01_bold.nii'","'ses-Post/func/sub-${partic}_ses-Post_task-nback_run-01_bold.nii'"],' $particDir/ses-Post/fmap/*magnitude1*.json
+			
+						# Get echo times for PhaseDiff files
+			echo1_post=$(cat $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
+			echo2_post=$(cat $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
+			
+			# Rename Echo 1 files
+			mv $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e1.nii $particDir/ses-Post/fmap/sub-"$partic"_magnitude1.nii
+			mv $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e1.json $particDir/ses-Post/fmap/sub-"$partic"_magnitude1.json
+			
+			# Rename Echo 2 files
+			mv $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e2.nii $particDir/ses-Post/fmap/sub-"$partic"_magnitude2.nii
+			mv $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e2.json $particDir/ses-Post/fmap/sub-"$partic"_magnitude2.json
+			
+			# Edit IntendedFor field of the JSONs
+			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPost}"'],' $particDir/ses-Post/fmap/sub-"$partic"_magnitude1.json
+			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPost}"'],' $particDir/ses-Post/fmap/sub-"$partic"_magnitude2.json
           fi
         fi
 
@@ -747,7 +809,17 @@ for partic in ${particArr[*]}; do
             fi
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_phasediff -o $particDir/ses-Pre/fmap "$phaseBaselineDir"
-			sed -i '/COL/ a "IntendedFor": ["'ses-Pre/func/sub-${partic}_ses-Pre_task-rest_run-01_bold.nii'", "'ses-Pre/func/sub-${partic}_ses-Pre_task-msit_run-01_bold.nii'","'ses-Pre/func/sub-${partic}_ses-Pre_task-nback_run-01_bold.nii'"],' $particDir/ses-Pre/fmap/*phasediff*.json
+			
+			# Rename phasediff file
+			mv $particDir/ses-Pre/fmap/sub-"$partic"_phasediff_e2.nii $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.nii
+			mv $particDir/ses-Pre/fmap/sub-"$partic"_phasediff_e2.json $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.json
+
+			# Add appropriate echo times to phasediff JSON
+			sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1_pre/" $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.json
+			sed -i '/EchoTime1/ a "EchoTime2": '"$echo2_pre"'' $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.json
+
+			# Add IntendedFor field to PhaseDiff JSON
+			sed -i '/COL/ a "IntendedFor": ['"$boldIntendedForPre"'],' $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.json
           fi
         fi
         # PostTX
@@ -762,7 +834,17 @@ for partic in ${particArr[*]}; do
             fi
             echo "Running dcm2nii for Mag fieldmaps"
             dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_phasediff -o $particDir/ses-Post/fmap "$phasePostTXDir"
-			sed -i '/COL/ a "IntendedFor": ["'ses-Post/func/sub-${partic}_ses-Post_task-rest_run-01_bold.nii'", "'ses-Post/func/sub-${partic}_ses-Post_task-msit_run-01_bold.nii'","'ses-Post/func/sub-${partic}_ses-Post_task-nback_run-01_bold.nii'"],' $particDir/ses-Post/fmap/*phasediff*.json
+			
+			# Rename phasediff file
+			mv $particDir/ses-Post/fmap/sub-"$partic"_phasediff_e2.nii $particDir/ses-Post/fmap/sub-"$partic"_phasediff.nii
+			mv $particDir/ses-Post/fmap/sub-"$partic"_phasediff_e2.json $particDir/ses-Post/fmap/sub-"$partic"_phasediff.json
+
+			# Add appropriate echo times to phasediff JSON
+			sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1_post/" $particDir/ses-Post/fmap/sub-"$partic"_phasediff.json
+			sed -i '/EchoTime1/ a "EchoTime2": '"$echo2_post"'' $particDir/ses-Post/fmap/sub-"$partic"_phasediff.json
+
+			# Add IntendedFor field to PhaseDiff JSON
+			sed -i '/COL/ a "IntendedFor": ['"$boldIntendedForPost"'],' $particDir/ses-Post/fmap/sub-"$partic"_phasediff.json
           fi
         fi
       else
@@ -794,6 +876,22 @@ for partic in ${particArr[*]}; do
                 dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiAPBaselineNum"_dwi -o $particDir/ses-Pre/dwi "$dtiAPBaselineFile" # Follow up with Adam
                 dtiAPBaselineNum=$((dtiAPBaselineNum+1))
               done
+			  
+				# Get the file names for the EPI JSON files
+				dwiFiles=($particDir/ses-Pre/dwi/*.nii)
+				
+				
+				dwiIntendedForPre=""
+				for dwiFile in ${dwiFiles[@]}; do
+					dwiFileName=${dwiFile#/data*"$partic"/}
+					
+					if [ -z "$dwiIntendedForPre" ]; then
+						dwiIntendedForPre='"'"$dwiFileName"'"'
+					else
+						tmpDWIName='"'"$dwiFileName"'"'
+						dwiIntendedForPre="$dwiIntendedForPre, "${tmpDWIName}""
+					fi
+				done
             fi
 
             # Running same system for DTI P -> A
@@ -823,7 +921,8 @@ for partic in ${particArr[*]}; do
                 dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiPABaselineNum"_epi -o $particDir/ses-Pre/fmap "$dtiPABaselineFile"
                 dtiPABaselineNum=$((dtiPABaselineNum+1))
               done
-			  sed -i '/COL/ a "IntendedFor": ["'ses-Pre/dwi/sub-${partic}_ses-Pre_run-01_dwi.nii'"],' $particDir/ses-Pre/fmap/*epi.json
+			  
+				sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedForPre}"'],' $particDir/ses-Pre/fmap/*epi.json	
             fi
             if [ "$legacyBool" = "True" ]; then
               bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
@@ -880,6 +979,22 @@ for partic in ${particArr[*]}; do
                 dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0"$dtiAPPostTXNum"_dwi -o $particDir/ses-Post/dwi "$dtiAPBaselineDir" # Follow up with Adam
                 dtiAPPostTXNum=$((dtiAPPostTXNum+1))
               done
+			  				
+				# Get the file names for the EPI JSON files
+				dwiFiles=($particDir/ses-Post/dwi/*.nii)
+				
+				
+				dwiIntendedForPost=""
+				for dwiFile in ${dwiFiles[@]}; do
+					dwiFileName=${dwiFile#/data*"$partic"/}
+					
+					if [ -z "$dwiIntendedForPre" ]; then
+						dwiIntendedForPost='"'"$dwiFileName"'"'
+					else
+						tmpDWIName='"'"$dwiFileName"'"'
+						dwiIntendedForPost="$dwiIntendedForPost, "${tmpDWIName}""
+					fi
+				done
             fi
 
             # Running same system for DTI P -> A
@@ -901,7 +1016,8 @@ for partic in ${particArr[*]}; do
                 fi
 				# Same as with Baseline. For BIDS format, these P -> A files will go in the fmap folder as acq-PtoA_epi
                 dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_epi -o $particDir/ses-Post/fmap "$dtiPAPostTXDir" # Follow up with Adam
-				sed -i '/COL/ a "IntendedFor": ["'ses-Post/dwi/sub-${partic}_ses-Post_run-01_dwi.nii'"],' $particDir/ses-Post/fmap/*epi.json
+			  
+				sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedForPost}"'],' $particDir/ses-Post/fmap/*epi.json
               fi
             fi
             if [ "$legacyBool" = "True" ]; then
@@ -1259,7 +1375,7 @@ for partic in ${particArr[*]}; do
 				if [ "$legacyBool" = "True" ]; then
 					mv $bvec $particDir/dti/bvecs
 				else
-					cp $bval $particDir/dwi/bvals
+					cp $bval $particDir/dwi/bvecs
 				fi
 			else
 				echo "###### bvec not found ######"
