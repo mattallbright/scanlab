@@ -252,7 +252,7 @@ read particNums # Pull the numbers as delimited variables
 particReadArr=($particNums) # Shove said numbers into an array
 
 if [ $particNums = "all" ]; then
-	if [ $hermesBool = "True" ]; then 
+	if [ $hermesBool -eq 0 ]; then 
 		particNumArr=( $(ls /Hermes/"$study"_scans/ | grep -Eo '[0-9][0-9][0-9]') )
 	else
 		particNumArr=( $(ls $studyDir/RAW_data | grep -Eo '[0-9][0-9][0-9]') )
@@ -291,7 +291,7 @@ for partic in ${particArr[*]}; do
 	fi
 	echo -e "${red}ParticRawDir is $particRawDir${noColor}"
 	
-	if [ $hermesBool = "True" ]; then
+	if [ $hermesBool -eq 1 ]; then
 		HermesFetch $partic
 
 		if [ $dataNotFound -eq 1 ]; then
