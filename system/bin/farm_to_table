@@ -34,15 +34,19 @@ getInfo() {
     boldValues=("resting" "msit" "nback")
     magPhaseBool=1
     dtiBool=1
+	hermesBool=1
   elif [ $study = "blt" ]; then
     longitudinalBool=1
     studyPrefix="BL"
     boldValues=("resting" "msit" "nback")
-    magPhaseBool=0
-    dtiBool=0
-    echo "$study is not set up properly with this system."
-    echo "Contact a system administrator."
-    exit 1
+    magPhaseBool=1
+    dtiBool=1
+	hermesBool=0
+	blinePattern="$particRawDir"_1
+	posttxPattern="$particRawDir"_2
+#    echo "$study is not set up properly with this system."
+#    echo "Contact a system administrator."
+#    exit 1
   elif [ $study = "BLPTSD" ]; then
     longitudinalBool=1
     studyPrefix="BLPTSD_"
@@ -243,10 +247,16 @@ particArr=()
 echo "What are the number(s) of the participants you would like to process?"
 echo "Separate each with a space (e.g. 005 006 016 185). You can also type 'all'"
 echo "to run through all subjects."
+
 read particNums # Pull the numbers as delimited variables
 particReadArr=($particNums) # Shove said numbers into an array
+
 if [ $particNums = "all" ]; then
-  particNumArr=( $(ls /Hermes/"$study"_scans/ | grep -Eo '[0-9][0-9][0-9]') )
+	if [ $hermesBool = "True" ]; then 
+		particNumArr=( $(ls /Hermes/"$study"_scans/ | grep -Eo '[0-9][0-9][0-9]') )
+	else
+		particNumArr=( $(ls $studyDir/RAW_data | grep -Eo '[0-9][0-9][0-9]') )
+	fi
 else
   particNumArr=($particNums)
 fi
@@ -273,63 +283,96 @@ noColor='\e[0m'
 
 # Get data from Hermes for the participant(s)
 for partic in ${particArr[*]}; do
-	echo "Starting download for $partic"
+
 	if [ "$legacyBool" = "True" ]; then
 	  particRawDir="$studyDir/RAW_data/$partic"
 	else
 	  particRawDir="$studyDir/RAW_data/$studyPrefix$partic"
 	fi
 	echo -e "${red}ParticRawDir is $particRawDir${noColor}"
-	HermesFetch $partic
+	
+	if [ $hermesBool = "True" ]; then
+		HermesFetch $partic
 
-
-
-  if [ $dataNotFound -eq 1 ]; then
-    echo "-----------------------------------------------"
-    echo "No Osirix data found for $partic. Moving on..."
-    echo "-----------------------------------------------"
-  else
-    # Create directory structure
-    if [ "$legacyBool" = "True" ]; then
-      particDir=$studyDir/indiv_analysis/$partic
-    else
-      particNum2=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
-      particDir=$studyDir/BIDS_indiv_analysis/sub-$particNum2
-    fi
-    echo "ParticDir is $particDir"
-    if [ ! -d $particDir ]; then
-      echo "Creating directory for $partic"
-      dirAlreadyExists=0
-      mkdir -p $particDir
-    else
-      echo "Directory detected."
-      dirAlreadyExists=1
-    fi
+		if [ $dataNotFound -eq 1 ]; then
+			echo "-----------------------------------------------"
+			echo "No Osirix data found for $partic. Moving on..."
+			echo "-----------------------------------------------"
+		else
+			# Create directory structure
+			if [ "$legacyBool" = "True" ]; then
+				particDir=$studyDir/indiv_analysis/$partic
+			else
+				particDir=$studyDir/BIDS_indiv_analysis/sub-$partic
+			fi
+			
+			echo "ParticDir is $particDir"
+			if [ ! -d $particDir ]; then
+				echo "Creating directory for $partic"
+				dirAlreadyExists=0
+				mkdir -p $particDir
+			else
+				echo "Directory detected."
+				dirAlreadyExists=1
+			fi
+		fi
+	else
+		# Create directory structure
+		if [ "$legacyBool" = "True" ]; then
+			particDir=$studyDir/indiv_analysis/$partic
+		else
+			particDir=$studyDir/BIDS_indiv_analysis/sub-$partic
+		fi
+		
+		echo "ParticDir is $particDir"
+		if [ ! -d $particDir ]; then
+			echo "Creating directory for $partic"
+			dirAlreadyExists=0
+			mkdir -p $particDir
+		else
+			echo "Directory detected."
+			dirAlreadyExists=1
+		fi
+	fi
 
 ################################################################################
     # Longitudinal structuring
     if [ $longitudinalBool -eq 1 ]; then
-      echo "Logitudinal study detected."
-      # Check baseline directory existence
-      baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
-      if [[ ! "$baseCheckString" =~ "$partic" ]]; then
-        echo "*_BV not found."
-        baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
-        if [[ ! "$baseCheckString" =~ "$partic" ]]; then
-          echo "*_BL not found."
-          baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_baseline" -print | sort | head -1`
-        fi
-      fi
-      echo "baseCheckString is $baseCheckString"
-      if [[ "$baseCheckString" = *"$partic"* ]]; then
-        echo "Baseline detected."
-        baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
-        if [[ ! "$baselineRawDir" =~ "$partic" ]]; then
-          baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
-          if [[ ! "$baselineRawDir" =~ "$partic" ]]; then
-            baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_baseline" -print | sort | head -1`
-          fi
-        fi
+		echo "Logitudinal study detected."
+		# Check baseline directory existence
+	  
+		if [ $study = "blt" ]; then
+			baseCheckString=`find $blinePattern -print | sort | head -l`
+		else
+			baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
+			if [[ ! "$baseCheckString" =~ "$partic" ]]; then
+				echo "*_BV not found."
+				baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
+				if [[ ! "$baseCheckString" =~ "$partic" ]]; then
+					echo "*_BL not found."
+					baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_baseline" -print | sort | head -1`
+				fi
+			fi
+		fi
+      
+		echo "baseCheckString is $baseCheckString"
+		
+		if [[ "$baseCheckString" = *"$partic"* ]]; then
+			echo "Baseline detected."
+			
+			if [ $study = "blt" ]; then
+				baselineRawDir=`find $blinePattern -print | sort | head -l`
+			else
+				baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
+				if [[ ! "$baselineRawDir" =~ "$partic" ]]; then
+					baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BL" -print | sort | head -1`
+					if [[ ! "$baselineRawDir" =~ "$partic" ]]; then
+						baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_baseline" -print | sort | head -1`
+					fi
+				fi
+			fi
+		fi
+		
         echo -e "${red}BaselineRawDir is $baselineRawDir${noColor}"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
@@ -359,19 +402,31 @@ for partic in ${particArr[*]}; do
         echo "######Baseline not detected.######"
         baselineBool=0
       fi
-      # Check post-treament directory existence
-      postCheckString=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
-      echo "postCheckString is $postCheckString"
-      if [[ ! "$postCheckString" =~ "$partic" ]]; then
-        echo "*_PTX not found."
-        postCheckString=`find $particRawDir -maxdepth 2 -iname "*_posttx" -print | sort | head -1`
-      fi
-      if [[ "${postCheckString}" = *"$partic"* ]]; then
-        echo "PostTX detected."
-        postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
-        if [[ ! "$postTXRawDir" =~ "$partic" ]]; then
-          postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_posttx" -print | sort | head -1`
-        fi
+		
+		# Check if post-treatment folders exist
+		if [ $study = "blt" ]; then
+			postCheckString=`find $posttxPattern -print | sort | head -l`
+		else
+			postCheckString=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
+			if [[ ! "$postCheckString" =~ "$partic" ]]; then
+				echo "*_PTX not found."
+				postCheckString=`find $particRawDir -maxdepth 2 -iname "*_posttx" -print | sort | head -1`
+			fi
+		fi	  
+	  
+		
+		if [[ "${postCheckString}" = *"$partic"* ]]; then
+			echo "PostTX detected."
+			
+			if [ $study = "blt" ]; then
+				postTXRawDir=`find $posttxPattern -print | sort | head -l`
+			else
+				postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
+				if [[ ! "$postTXRawDir" =~ "$partic" ]]; then
+					postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_posttx" -print | sort | head -1`
+				fi
+			fi
+			
         echo -e "${red}PostTXRawDir is $postTXRawDir${noColor}"
         if [ $dirAlreadyExists -eq 1 ]; then
           if [ $bypassIndivOverwrite -eq 0 ]; then
@@ -407,7 +462,7 @@ for partic in ${particArr[*]}; do
       elif [ $baselineBool -eq 0 ]; then
         echo "###### Not running for Baseline ######"
       else
-        echo "Non-logitudinal detected"
+        echo "Non-longitudinal detected"
       fi
 
       if [ $postTXBool -eq 1 ]; then
