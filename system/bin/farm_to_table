@@ -6,175 +6,236 @@
 # individual files into the proper study directory. It is based on ideas from
 # previous "convertit"-type scripts used in the lab.
 
-#Functions
+# Function definitions
 
 # Function necessary to figure out the intracacies of each study
 # Why they were set up in completely different ways, and in completely different
-# structures, is beyond me
+# structures, is beyond me.
 getInfo() {
-  if [ $study = "tbimodel" ] || [ $study = "TBIMODEL" ]; then
-    longitudinalBool=0
-    # Forcing new prefix to TBIMODEL_000 standard
-    studyPrefix="TM"
-    boldValues=("resting")
-    magPhaseBool=1
-    dtiBool=1
-  elif [ $study = "BLHC" ]; then
-    longitudinalBool=0
-    studyPrefix="BLHC"
-    boldValues=("resting" "msit" "nback")
-    magPhaseBool=0
-    dtiBool=0
-    echo "$study is not set up properly with this system."
-    echo "Contact a system administrator."
-    exit 1
-  elif [ $study = "BL2" ]; then
-    longitudinalBool=1
-    studyPrefix="BL2_"
-    boldValues=("resting" "msit" "nback")
-    magPhaseBool=1
-    dtiBool=1
-	hermesBool=1
-  elif [ $study = "blt" ]; then
-    longitudinalBool=1
-    studyPrefix="BL"
-    boldValues=("resting" "msit" "nback")
-    magPhaseBool=1
-    dtiBool=1
-	hermesBool=0
-	blinePattern="$particRawDir"_1
-	posttxPattern="$particRawDir"_2
-#    echo "$study is not set up properly with this system."
-#    echo "Contact a system administrator."
-#    exit 1
-  elif [ $study = "BLPTSD" ]; then
-    longitudinalBool=1
-    studyPrefix="BLPTSD_"
-    boldValues=("resting" "anticipation" "bmat_fear" "bmat_happy" "dot_probe" "fear_conditioning")
-    magPhaseBool=1
-    dtiBool=1
-  elif [ $study = "EWM" ]; then
-    longitudinalBool=0
-    studyPrefix="EWM_"
-    boldValues=("resting" "faces" "iaps")
-    magPhaseBool=0
-    dtiBool=0
-  elif [ $study = "EIT" ]; then
-    longitudinalBool=0
-    studyPrefix="EIT_"
-    boldValues=()
-    magPhaseBool=0
-    dtiBool=0
-  elif [ $study = "emot" ]; then
-    longitudinalBool=0
-    studyPrefix="emot"
-    boldValues=("anger" "emotdist" "faceint" "fear" "food" "happy" "memsupp" "sceneint" "trust" "resting")
-    magPhaseBool=0
-    dtiBool=0
-    echo "$study is not set up properly with this system."
-    echo "Contact a system administrator."
-    exit 1
-  elif [ $study = "ICBT" ]; then
-    longitudinalBool=1
-    studyPrefix="ICBT"
-    boldValues=("eit")
-    magPhaseBool=0
-    dtiBool=0
-    echo "$study is not set up properly with this system."
-    echo "Contact a system administrator."
-    exit 1
-  elif [ $study = "Cogr" ]; then
-    longitudinalBool=0
-    studyPrefix="CR"
-    boldValues=("resting" "msit" "nback")
-    magPhaseBool=0
-    dtiBool=0
-  elif [ $study = "Cogr2" ]; then
-    longitudinalBool=0
-    studyPrefix="CRG_"
-    boldValues=("resting" "msit" "nback")
-    magPhaseBool=0
-    dtiBool=0
-  else
-    echo "Study not found: $study"
-    exit 1
-  fi
+	if [ $study = "tbimodel" ] || [ $study = "TBIMODEL" ]; then
+		longitudinalBool=0
+		# Forcing new prefix to TBIMODEL_000 standard
+		studyPrefix="TM"
+		boldValues=("resting")
+		magPhaseBool=1
+		dtiBool=1
+
+		# Set specific parameters for Mclean TBI Model
+		if [ $study = "tbimodel" ]; then
+			azBool=0
+			t1wPath="*1mm -*"
+			flairPath="*Flair *"
+			dwiPath="*gr2 -*"
+			restingPath1="fMRI_resting_state*"
+			restingPath2="Resting -*"
+			fieldmapPath="*mapping -*"
+			maxDepth=1
+		# Set specific parameters for UA TBI Model
+		else
+			azBool=1
+			skipHermes=0
+		fi
+
+	elif [ $study = "BLHC" ]; then
+		longitudinalBool=0
+		studyPrefix="BLHC"
+		boldValues=("resting" "msit" "nback")
+		magPhaseBool=1
+		dtiBool=1
+		azBool=1
+		skipHermes=1
+		maxDepth=2
+
+	elif [ $study = "BL2" ]; then
+		longitudinalBool=1
+		studyPrefix="BL2_"
+		boldValues=("resting" "msit" "nback")
+		magPhaseBool=1
+		dtiBool=1
+		azBool=1
+		skipHermes=0
+
+	elif [ $study = "blt" ]; then
+		longitudinalBool=1
+		studyPrefix="BL"
+		boldValues=("resting" "msit" "nback")
+		magPhaseBool=1
+		dtiBool=1
+		azBool=0
+		identifierDigits=2
+
+	elif [ $study = "BLPTSD" ]; then
+		longitudinalBool=1
+		studyPrefix="BLPTSD_"
+		boldValues=("resting" "anticipation" "bmat_fear" "bmat_happy" "dot_probe" "fear_conditioning")
+		magPhaseBool=1
+		dtiBool=1
+		azBool=1
+		skipHermes=0
+
+	elif [ $study = "EWM" ]; then
+		longitudinalBool=0
+		studyPrefix="EWM_"
+		boldValues=("resting" "faces" "iaps")
+		magPhaseBool=0
+		dtiBool=0
+
+	elif [ $study = "EIT" ]; then
+		longitudinalBool=0
+		studyPrefix="EIT_"
+		boldValues=()
+		magPhaseBool=0
+		dtiBool=0
+		echo "$study is not set up properly with this system."
+		echo "Contact a system administrator."
+		exit 1
+
+	elif [ $study = "emot" ]; then
+		longitudinalBool=0
+		studyPrefix="emot"
+		boldValues=("anger" "emotdist" "faceint" "fear" "food" "happy" "memsupp" "sceneint" "trust" "resting")
+		magPhaseBool=0
+		dtiBool=0
+		echo "$study is not set up properly with this system."
+		echo "Contact a system administrator."
+		exit 1
+
+	elif [ $study = "ICBT" ]; then
+		longitudinalBool=1
+		studyPrefix="ICBT"
+		boldValues=("eit")
+		magPhaseBool=0
+		dtiBool=0
+		azBool=0
+		identifierDigits=3
+		echo "$study is not set up properly with this system."
+		echo "Contact a system administrator."
+		exit 1
+
+	elif [ $study = "Cogr" ]; then
+		longitudinalBool=0
+		studyPrefix="CR"
+		boldValues=("resting" "msit" "nback")
+		magPhaseBool=1
+		dtiBool=1
+		azBool=0
+		t1wPath="*1mm -*"
+		flairPath="*axial -*"
+		dwiPath="*gr2 -*"
+		restingPath1="fMRI_resting_state*"
+		restingPath2="Resting -*"
+		fieldmapPath="*mapping -*"
+		maxDepth=2
+		identifierDigits=2
+		
+
+	elif [ $study = "Cogr2" ]; then
+		longitudinalBool=0
+		studyPrefix="CRG_"
+		boldValues=("resting" "msit" "nback")
+		magPhaseBool=0
+		dtiBool=0
+		echo "$study is not set up properly with this system."
+		echo "Contact a system administrator."
+		exit 1
+
+	else
+		echo "Study not found: $study"
+    	exit 1
+  	fi
 }
 
 # Just grabs data from Hermes
 HermesFetch(){
-  # Bunch of error checking before forcing a fetch
-  if [ ! -d /Hermes ]; then
-    echo "Hermes directory doesn't exist!"
-    exit 1
-  elif [ -z "$(ls -A /Hermes)" ]; then
-    echo "Hermes isn't mounted properly!"
-    exit 1
-  fi
-  if [ ! -d $studyDir ]; then
-    echo "$study directory doesn't exist!"
-    exit 1
-  elif [ -z "$(ls -A $studyDir)" ]; then
-    echo "$study isn't mounted properly!"
-    exit 1
-  fi
+	echo "Check"
+	# Bunch of error checking before forcing a fetch
+	if [ ! -d /Hermes ]; then
+		echo "Hermes directory doesn't exist!"
+		exit 1
+	elif [ -z "$(ls -A /Hermes)" ]; then
+		echo "Hermes isn't mounted properly!"
+		exit 1
+	fi
 
-  if [ ! -d $particRawDir ]; then
-    # Fetch data from RAW for $partic
-    echo "Locating data for $partic..."
-    # Strip partic to just the numbers
-    particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
-    # Find folder where number pattern is present
-    rawCheckString=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
-    if [[ "${rawCheckString}" = *"$particNumber"* ]]; then
-      mkdir -p $particRawDir
-      osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
-      echo "Copying data from shared mount..."
-      cp -r "$osirixDir/." $particRawDir/
-      dataNotFound=0
-    else
-      echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
-      dataNotFound=1
-    fi
-  else
-    if [ $bypassOverwrite -eq 0 ]; then
-      echo "The RAW directory already exists for this user. Would you like to copy"
-      echo "anyway? Typically RAW_data can be overwritten without consequence."
-      read rawResponse
-    fi
-    if [[ "$rawResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-      # Fetch data from RAW for $partic
-      echo "Locating data for $partic..."
-      # Strip partic to just the numbers
-      particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
-      # Find folder where number pattern is present
-      rawCheckString2=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
-      if [[ "${rawCheckString2}" = *"$particNumber"* ]]; then
-        osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
-        echo "Found $particNumber at $osirixDir"
-        echo "Copying data from shared mount..."
-        cp -r "$osirixDir/." $particRawDir/
-        dataNotFound=0
-      else
-        echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
-        dataNotFound=1
-      fi
-      if [ $overwriteTriggerCount -eq 0 ]; then
-        overwriteTriggerCount=$((overwriteTriggerCount + 1))
-        echo "It appears that there are a number of overwritable RAW directories which you have chosen."
-        echo "Would you like to overwrite all future RAW directories and bypass the prompt?"
-        read overwriteResponse
-        if [[ "$rawResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-          bypassOverwrite=1
-        fi
-      fi
-      overwriteTriggerCount=$((overwriteTriggerCount + 1))
-    else
-      echo "Data will not be modified. Continuing with structure..."
-      dataNotFound=0
-    fi
-  fi
+	if [ ! -d $studyDir ]; then
+		echo "$study directory doesn't exist!"
+		exit 1
+	elif [ -z "$(ls -A $studyDir)" ]; then
+		echo "$study isn't mounted properly!"
+		exit 1
+	fi
+
+	if [ ! -d $particRawDir ]; then
+		# Fetch data from RAW for $partic
+		echo "Locating data for $partic..."
+		# Strip partic to just the numbers
+		particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
+		# Find folder where number pattern is present
+		rawCheckString=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
+		if [[ "${rawCheckString}" = *"$particNumber"* ]]; then
+			mkdir -p $particRawDir
+			osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
+			echo "Copying data from shared mount..."
+			cp -r "$osirixDir/." $particRawDir/
+			dataNotFound=0
+		else
+			echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
+			dataNotFound=1
+		fi
+	else
+		if [ $bypassOverwrite -eq 0 ]; then
+			echo "The RAW directory already exists for this user. Would you like to copy"
+			echo "anyway? Typically RAW_data can be overwritten without consequence."
+			read rawResponse
+		fi
+
+		if [[ "$rawResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+			# Fetch data from RAW for $partic
+			echo "Locating data for $partic..."
+			# Strip partic to just the numbers
+			particNumber=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
+			# Find folder where number pattern is present
+			rawCheckString2=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1`
+
+			if [[ "${rawCheckString2}" = *"$particNumber"* ]]; then
+				osirixDir=`find /Hermes/"$study"_scans -maxdepth 1 -iname "*$particNumber*" -print | sort | head -1` #| sed 's/.*\///'
+				echo "Found $particNumber at $osirixDir"
+				echo "Copying data from shared mount..."
+				cp -r "$osirixDir/." $particRawDir/
+				dataNotFound=0
+			else
+				echo "No data found for $partic. Make sure Osirix data is anonymized and organized."
+			dataNotFound=1
+			fi
+
+			if [ $overwriteTriggerCount -eq 0 ]; then
+				overwriteTriggerCount=$((overwriteTriggerCount + 1))
+				echo "It appears that there are a number of overwritable RAW directories which you have chosen."
+				echo "Would you like to overwrite all future RAW directories and bypass the prompt?"
+				read overwriteResponse
+
+				if [[ "$overwriteResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+					bypassOverwrite=1
+				fi
+			fi
+			overwriteTriggerCount=$((overwriteTriggerCount + 1))
+
+		else
+			echo "It appears that there are a number of overwritable RAW directories which you have chosen."
+			echo "Would you like to use all existing RAW directories and bypass the prompt?"
+			read overwriteResponse
+			if [[ "$overwriteResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+				bypassOverwrite=2
+				echo "Not overwriting any future RAW directories"
+			fi
+			
+      		echo "Data will not be modified. Continuing with structure..."
+      		dataNotFound=0
+    	fi
+	fi
 }
+
+# Set some global variables
 
 overwriteTriggerCount=0
 overwriteIndivCount=0
@@ -182,15 +243,25 @@ overwriteLongCount=0
 bypassOverwrite=0
 bypassIndivOverwrite=0
 
+
+IFS=$'\n'
+
+red='\033[0;31m'
+noColor='\e[0m'
+
 while [ -n "$1" ]; do
-case "$1" in
--l) legacyBool="True" ;;
-*) echo "Option $1 not recognized" ;;
-esac
-shift
+	case "$1" in
+		-l) legacyBool="True" ;;
+		*) echo "Option $1 not recognized" ;;
+	esac
+	shift
 done
 
-# Start program
+###########################################
+###										###
+###			RUN FARM TO TABLE			###
+###										###
+###########################################
 
 if [ "$legacyBool" = "True" ]; then
   echo "LEGACY MODE ACTIVE"
@@ -209,35 +280,39 @@ studySelectArr=(/data/* "New study")
 
 # Create menu
 select studyDir in "${studySelectArr[@]}"; do
-  case $studyDir in
-    "New study")
-      echo "Creating new study..."
-      echo "This system is not implemented yet."
-      newStudyBool=1
-      break
-      ;;
-    *)
-      echo "Selected $studyDir"
-      newStudyBool=0
-      break
-      ;;
-  esac
+	case $studyDir in
+		"New study")
+			echo "Creating new study..."
+			echo "This system is not implemented yet."
+			newStudyBool=1
+			break
+			;;
+		*)
+			echo "Selected $studyDir"
+			newStudyBool=0
+			break
+			;;
+	esac
 done
 
+# If a new study is selected, get information about it.
 if [ $newStudyBool -eq 1 ]; then
-  echo "What is the name of the study you would like to create? (e.g. EIT, tbimodel)"
-  echo "Please refrain from using spaces or non-letter characters."
-  read study
-  studyDir="/data/$study"
-  if [ -d /data/$study ]; then
-    echo "Study already exists!"
-    exit 1
-  else
-    echo "New study system not implemented"
-    exit 1
-  fi
+	echo "What is the name of the study you would like to create? (e.g. EIT, tbimodel)"
+	echo "Please refrain from using spaces or non-letter characters."
+	read study
+	studyDir="/data/$study"
+
+	# Do some error catching
+	if [ -d /data/$study ]; then
+		echo "Study already exists!"
+		exit 1
+	else
+		echo "New study system not implemented"
+		exit 1
+	fi
 fi
 
+# Get metadata for the selected study
 study=${studyDir#*/data/}
 getInfo $study
 
@@ -252,38 +327,52 @@ read particNums # Pull the numbers as delimited variables
 particReadArr=($particNums) # Shove said numbers into an array
 
 if [ $particNums = "all" ]; then
-	if [ $hermesBool -eq 0 ]; then 
+	if [ $azBool -eq 1 ] & [ $skipHermes -eq 0 ]; then 
 		particNumArr=( $(ls /Hermes/"$study"_scans/ | grep -Eo '[0-9][0-9][0-9]') )
+
 	else
+		# The original Mclean Bright Light study used two digit identifiers. 
+		# The session was also included in the folder name as a number.
+		# This is the work around to get only the digit pair as the identifier.
 		particNumArr=( $(ls $studyDir/RAW_data | grep -Eo '[0-9][0-9][0-9]') )
+		if [ ${#particNumArr[@]} -eq 0 ]; then 			
+			NumArr=( $(ls $studyDir/RAW_data | grep -Eo '[0-9][0-9]') )
+			particNumArr=($(echo "${NumArr[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ' ))
+			echo ${particNumArr[*]}
+		fi
 	fi
 else
-  particNumArr=($particNums)
+	particNumArr=($particNums)
 fi
 
-for partic in ${particNumArr[*]}; do
-  particNum=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
-  if [ "$partic" = x"$partic" ]; then
-    echo "Not a valid id. Skipping.."
-  else
-  	if [ "$legacyBool" = "True" ]; then
-        particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
-  		echo "Found $partic..."
-  	else
-  		particArr+=("$particNum") # Clean up the numbers array by adding a prefix (eg 102 stays 102)
-  		echo "Found $partic..."
-  	fi
-  fi
+echo ${particNumArr[@]}
+
+for partic in ${particNumArr[@]}; do
+	
+	if [ $identifierDigits -eq 2 ]; then
+		particNum=`echo $partic | grep -Eo '[0-9][0-9]'`
+	else
+		particNum=`echo $partic | grep -Eo '[0-9][0-9][0-9]'`
+	fi
+
+	echo "Participant: $particNum"
+
+	if [ "$partic" = x"$partic" ]; then
+		echo "Not a valid id. Skipping.."
+	else
+		if [ "$legacyBool" = "True" ]; then
+			particArr+=("$studyPrefix$particNum") # Clean up the numbers array by adding a prefix (eg 102 becomes TM_102)
+			echo "Found $partic..."
+		else
+			particArr+=("$particNum") # Clean up the numbers array by adding a prefix (eg 102 stays 102)
+			echo "Found $particNum..."
+		fi
+	fi
 done
 
-IFS=$'\n'
-
-red='\033[0;31m'
-noColor='\e[0m'
 
 # Get data from Hermes for the participant(s)
 for partic in ${particArr[*]}; do
-
 	if [ "$legacyBool" = "True" ]; then
 	  particRawDir="$studyDir/RAW_data/$partic"
 	else
@@ -291,8 +380,10 @@ for partic in ${particArr[*]}; do
 	fi
 	echo -e "${red}ParticRawDir is $particRawDir${noColor}"
 	
-	if [ $hermesBool -eq 1 ]; then
-		HermesFetch $partic
+	if [ $azBool -eq 1 ] & [ $skipHermes -eq 0 ]; then
+		if [ $bypassOverwrite -eq 0 ]; then
+			HermesFetch $partic
+		fi
 
 		if [ $dataNotFound -eq 1 ]; then
 			echo "-----------------------------------------------"
@@ -336,13 +427,25 @@ for partic in ${particArr[*]}; do
 	fi
 
 ################################################################################
-    # Longitudinal structuring
-    if [ $longitudinalBool -eq 1 ]; then
-		echo "Logitudinal study detected."
-		# Check baseline directory existence
-	  
+    	# Longitudinal structuring
+	if [ $longitudinalBool -eq 1 ]; then
+
+		# Temporary solve
 		if [ $study = "blt" ]; then
-			baseCheckString=`find $blinePattern -print | sort | head -l`
+			blinePattern=""$particRawDir"_1"
+			posttxPattern1=""$particRawDir"_2"
+			posttxPattern2=""$particRawDir"_2_merge"
+		fi
+
+		echo "Longitudinal study detected."
+
+		# Check baseline directory existence
+		echo "Participant: $partic"
+	  
+		if [ $azBool -eq 0 ]; then
+			echo "We are looking for a baseline directory"
+			echo "It should look like $blinePattern"
+			baseCheckString=`find $blinePattern -print | sort | head -1`
 		else
 			baseCheckString=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
 			if [[ ! "$baseCheckString" =~ "$partic" ]]; then
@@ -360,8 +463,8 @@ for partic in ${particArr[*]}; do
 		if [[ "$baseCheckString" = *"$partic"* ]]; then
 			echo "Baseline detected."
 			
-			if [ $study = "blt" ]; then
-				baselineRawDir=`find $blinePattern -print | sort | head -l`
+			if [ $azBool -eq 0 ]; then
+				baselineRawDir=`find $blinePattern -print | sort | head -1`
 			else
 				baselineRawDir=`find $particRawDir -maxdepth 2 -iname "*_BV" -print | sort | head -1`
 				if [[ ! "$baselineRawDir" =~ "$partic" ]]; then
@@ -405,8 +508,9 @@ for partic in ${particArr[*]}; do
 		fi
 		
 		# Check if post-treatment folders exist
-		if [ $study = "blt" ]; then
-			postCheckString=`find $posttxPattern -print | sort | head -l`
+		if [ $azBool -eq 0 ]; then
+			postCheckString=`find \( "$posttxPattern1" -o -"$posttxPattern2" \) -print | sort | head -1`
+			
 		else
 			postCheckString=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
 			if [[ ! "$postCheckString" =~ "$partic" ]]; then
@@ -419,8 +523,8 @@ for partic in ${particArr[*]}; do
 		if [[ "${postCheckString}" = *"$partic"* ]]; then
 			echo "PostTX detected."
 			
-			if [ $study = "blt" ]; then
-				postTXRawDir=`find $posttxPattern -print | sort | head -l`
+			if [ $azBool -eq 0 ]; then
+				postTXRawDir=`find \( "$posttxPattern1" -o -"$posttxPattern2" \) -print | sort | head -1`
 			else
 				postTXRawDir=`find $particRawDir -maxdepth 2 -iname "*_PTX" -print | sort | head -1`
 				if [[ ! "$postTXRawDir" =~ "$partic" ]]; then
@@ -460,313 +564,375 @@ for partic in ${particArr[*]}; do
 			postTXBool=0
 		fi
 
-      if [ $baselineBool -eq 1 ]; then
-        echo "Running for Baseline."
-      elif [ $baselineBool -eq 0 ]; then
-        echo "###### Not running for Baseline ######"
-      else
-        echo "Non-longitudinal detected"
-      fi
+		if [ $baselineBool -eq 1 ]; then
+			echo "Running for Baseline."
+		elif [ $baselineBool -eq 0 ]; then
+			echo "###### Not running for Baseline ######"
+		else
+			echo "Non-longitudinal detected"
+		fi
 
-      if [ $postTXBool -eq 1 ]; then
-        echo "Running for PostTX."
-      elif [ $postTXBool -eq 0 ]; then
-        echo "###### Not running for PostTX ######"
-      else
-        echo "Non-logitudinal detected"
-      fi
+		if [ $postTXBool -eq 1 ]; then
+			echo "Running for PostTX."
+		elif [ $postTXBool -eq 0 ]; then
+			echo "###### Not running for PostTX ######"
+		else
+			echo "Non-logitudinal detected"
+		fi
 
-      # Baseline Anatomical
-      if [ $baselineBool -eq 1 ]; then
-        anatDirArr=($(find $baselineRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
-        anatNum=1
-        if [ "$legacyBool" = "True" ]; then
-          if [ ! -d $particDir/anatomicals/Baseline ]; then
-            mkdir -p $particDir/anatomicals/Baseline
-          fi
-          for anatomical in ${anatDirArr[@]}; do
-            echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-            dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/Baseline "${anatomical}"
-            anatNum=$((anatNum+1))
-          done
-        else
-          if [ ! -d $particDir/ses-Pre/anat ]; then
-            mkdir -p $particDir/ses-Pre/anat
-          fi
-          for anatomical in ${anatDirArr[@]}; do
-            echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-			# Matt: Original had the Baseline T1s getting numbered as run-1 while PostTX was run-01. Changed for parity..
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNum"_T1w" -o $particDir/ses-Pre/anat "${anatomical}"
-            anatNum=$((anatNum+1))
-          done
-        fi
-      fi
 
-      # PostTX Anatomical
-      if [ $postTXBool -eq 1 ]; then
-        anatDirArr=($(find $postTXRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
-        anatNum=1
-        if [ "$legacyBool" = "True" ]; then
-          if [ ! -d $particDir/anatomicals/PostTX ]; then
-            mkdir -p $particDir/anatomicals/PostTX
-          fi
-          for anatomical in ${anatDirArr[@]}; do
-            echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-            dcm2niix -f "$partic"_anatomical_0$anatNum -o $particDir/anatomicals/PostTX "${anatomical}"
-            anatNum=$((anatNum+1))
-          done
-        else
-          if [ ! -d $particDir/ses-Post/anat ]; then
-            mkdir -p $particDir/ses-Post/anat
-          fi
-          for anatomical in ${anatDirArr[@]}; do
-            echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0$anatNum"_T1w" -o $particDir/ses-Post/anat "${anatomical}"
-            anatNum=$((anatNum+1))
-          done
-        fi
-      fi
+####### LONGITUDINAL STRUCTURAL IMAGING #######
+####### INCLUDES: T1w AND FLAIR         #######
 
-      # Baseline FLAIR
-      if [ $baselineBool -eq 1 ]; then
-        anatBDirArr=($(find $baselineRawDir -maxdepth 2 -iname "*FLAIR?axial*" -print | sort))
-        anatNumB=1
-        if [ "$legacyBool" = "True" ]; then
-          if [ ! -d $particDir/anatomicals/Baseline ]; then
-            mkdir -p $particDir/anatomicals/Baseline
-          fi
-          for anatomical in ${anatBDirArr[@]}; do
-            echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-            dcm2niix -f "$partic"_t2_$anatNumB -o $particDir/anatomicals/Baseline "${anatomical}"
-            anatNumB=$((anatNumB+1))
-          done
-        else
-          if [ ! -d $particDir/ses-Pre/anat ]; then
-            mkdir -p $particDir/ses-Pre/anat
-          fi
-          for anatomical in ${anatBDirArr[@]}; do
-            echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-			#Matt: Your version originally had anatNum, so the FLAIRs were getting numbered based on the T1s.
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNumB"_FLAIR" -o $particDir/ses-Pre/anat "${anatomical}"
-            anatNumB=$((anatNumB+1))
-          done
-        fi
-      fi
+		# Baseline T1w
+		if [ $baselineBool -eq 1 ]; then
+			anatDirArr=($(find $baselineRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
+			anatNum=1
+			if [ "$legacyBool" = "True" ]; then
+				if [ ! -d $particDir/anatomicals/Baseline ]; then
+					mkdir -p $particDir/anatomicals/Baseline
+		 		fi
 
-      # In the case that T2 FLAIR and Flair axial are the same, uncomment and fix the below
+		  		for anatomical in ${anatDirArr[@]}; do
+		    			echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+		    			dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals/Baseline "${anatomical}"
+		    			anatNum=$((anatNum+1))
+		  		done
+			else
+				if [ ! -d $particDir/ses-Pre/anat ]; then
+					mkdir -p $particDir/ses-Pre/anat
+				fi
+	
+				for anatomical in ${anatDirArr[@]}; do
+					echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+					# Matt: Original had the Baseline T1s getting numbered as run-1 while PostTX was run-01. Changed for parity..
+					dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNum"_T1w" -o $particDir/ses-Pre/anat "${anatomical}"
+					anatNum=$((anatNum+1))
+				done
+			fi
+		fi
 
-      # if [ $baselineBool -eq 1 ]; then
-      #   anatB2DirArr=($(find $baselineRawDir -maxdepth 2 -iname "*T2?FLAIR*" -print | sort))
-      #   anatNumB=1
-      #   if [ $anatB2DirArr = $anatBDirArr ]; then
-      #     echo "Flair Axial is already run..."
-      #   else
-      #     if [ "$legacyBool" = "True" ]; then
-      #       if [ ! -d $particDir/anatomicals/Baseline ]; then
-      #         mkdir -p $particDir/anatomicals/Baseline
-      #       fi
-      #       for anatomical in ${anatBDirArr[@]}; do
-      #         echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-      #         dcm2niix -f "$partic"_t2_$anatNumB -o $particDir/anatomicals/Baseline "${anatomical}"
-      #         anatNumB=$((anatNumB+1))
-      #       done
-      #     else
-      #       if [ ! -d $particDir/ses-Pre/anat ]; then
-      #         mkdir -p $particDir/ses-Pre/anat
-      #       fi
-      #       for anatomical in ${anatBDirArr[@]}; do
-      #         echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-      #         dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNumB"_FLAIR" -o $particDir/ses-Pre/anat "${anatomical}"
-      #         anatNumB=$((anatNumB+1))
-      #       done
-      #     fi
-      #   fi
+  		# PostTX T1w
+		if [ $postTXBool -eq 1 ]; then
+			anatDirArr=($(find $postTXRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
+			anatNum=1
 
-      # PostTX FLAIR
-      if [ $postTXBool -eq 1 ]; then
-        anatBDirArr=($(find $postTXRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
-        anatNumB=1
-        if [ "$legacyBool" = "True" ]; then
-          if [ ! -d $particDir/anatomicals/PostTX ]; then
-            mkdir -p $particDir/anatomicals/PostTX
-          fi
-          for anatomical in ${anatBDirArr[@]}; do
-            echo "Running dcm2nii for Anatomical $anatNum2 located in $anatomical"
-            dcm2niix -f "$partic"_t2_$anatNumB -o $particDir/anatomicals/PostTX "${anatomical}"
-            anatNumB=$((anatNumB+1))
-          done
-        else
-          if [ ! -d $particDir/ses-Post/anat ]; then
-            mkdir -p $particDir/ses-Post/anat
-          fi
-          for anatomical in ${anatBDirArr[@]}; do
-            echo "Running dcm2nii for Anatomical $anatNum2 located in $anatomical"
-			#Matt: Your version originally had anatNum, so the FLAIRs were getting numbered based on the T1s.
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0$anatNumB"_FLAIR" -o $particDir/ses-Post/anat "${anatomical}"
-            anatNumB=$((anatNumB+1))
-          done
-        fi
-      fi
-
-      # Checks if bold array is empty
-      if [ ${#boldValues[@]} -eq 0 ]; then
-        echo "No BOLD tasks for $partic"
-      else
-        echo "Running BOLD for $partic"
-        # Run bold sorting
-        for bold_type in ${boldValues[*]}; do
-          # Checks postTX bool
-          echo "Running $bold_type"
-          if [ $baselineBool -eq 1 ]; then
-            # If task directory exists run dcm2niix on it
-            baseCheckString2=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [[ "${baseCheckString2}" = *"${partic}"* ]]; then
-              echo "Check passed..."
-              if [ "$legacyBool" = "True" ]; then
-                # Makes directory if it doesn't exist
-                if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
-                  mkdir -p $particDir/bold/${bold_type}/Baseline
-                fi
-                # Takes latest directory with bold
-                baseboldDirRun=($(find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
-                baseBoldNum=1
-                echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
-                for bold_run in ${baseboldDirRun}; do
-                  dcm2niix -f "$partic"_${bold_type}_run-0$baseBoldNum -o $particDir/bold/${bold_type}/Baseline "$baseboldDirRun"
-                  baseBoldNum=$((baseBoldNum+1))
-                done
-              else
-                if [ ! -d $particDir/ses-Pre/func ]; then
-                  mkdir -p $particDir/ses-Pre/func
-                fi
-
-				if [ "$bold_type" = "resting" ]; then
-					boldType="rest"
-					taskName="rest"
-				elif [ "$bold_type" = "nback" ]; then
-					boldType="nback"
-					taskName="n-back"
-				elif [ "$bold_type" = "msit" ]; then
-					boldType="msit"
-					taskName="msit"
-				elif [ "$bold_type" = "anticipation" ]; then
-					boldType="anticipation"
-					taskName="anticipation"
-				elif [ "$bold_type" = "bmat_fear" ]; then
-					boldType="bmatfear"
-					taskName="bmat-fear"
-				elif [ "$bold_type" = "bmat_happy" ]; then
-					boldType="bmathappy"
-					taskName="bmat-happy"
-				elif [ "$bold_type" = "dot_probe" ]; then
-					boldType="dotprobe"
-					taskName="dot probe"
-				elif [ "$bold_type" = "fear_conditioning" ]; then
-					boldType="fearcond"
-					taskName="fear conditioning"
-				else
-					boldType="'$bold_type'"
-					taskName="'$bold_type'"
+			if [ "$legacyBool" = "True" ]; then
+				if [ ! -d $particDir/anatomicals/PostTX ]; then
+					mkdir -p $particDir/anatomicals/PostTX
 				fi
 
-                # Takes latest directory with bold
-                baseboldDirRun=($(find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
-                echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
-                baseBoldNum=1
-                for bold_run in ${baseboldDirRun[@]}; do
-                  dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_task-${boldType}_run-0$baseBoldNum"_bold" -o $particDir/ses-Pre/func "$bold_run"
-				  sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Pre/func/*${boldType}_run-0${baseBoldNum}*.json
-                  baseBoldNum=$((baseBoldNum+1))
-                done
-				
-				# Get the file names for the fieldmap JSON files
+			for anatomical in ${anatDirArr[@]}; do
+				echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+				dcm2niix -f "$partic"_anatomical_0$anatNum -o $particDir/anatomicals/PostTX "${anatomical}"
+				anatNum=$((anatNum+1))
+			done
+
+			else
+				if [ ! -d $particDir/ses-Post/anat ]; then
+					mkdir -p $particDir/ses-Post/anat
+				fi
+
+				for anatomical in ${anatDirArr[@]}; do
+					echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+					dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0$anatNum"_T1w" -o $particDir/ses-Post/anat "${anatomical}"
+					anatNum=$((anatNum+1))
+				done
+			fi
+		fi
+
+  		# Baseline FLAIR
+		if [ $baselineBool -eq 1 ]; then
+			anatBDirArr=($(find $baselineRawDir -maxdepth 2 -iname "*FLAIR?axial*" -print | sort))
+			anatNumB=1
+
+			if [ "$legacyBool" = "True" ]; then
+				if [ ! -d $particDir/anatomicals/Baseline ]; then
+					mkdir -p $particDir/anatomicals/Baseline
+				fi
+
+				for anatomical in ${anatBDirArr[@]}; do
+					echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+					dcm2niix -f "$partic"_t2_$anatNumB -o $particDir/anatomicals/Baseline "${anatomical}"
+					anatNumB=$((anatNumB+1))
+				done
+			else
+				if [ ! -d $particDir/ses-Pre/anat ]; then
+					mkdir -p $particDir/ses-Pre/anat
+				fi
+
+				for anatomical in ${anatBDirArr[@]}; do
+					echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+						#Matt: Your version originally had anatNum, so the FLAIRs were getting numbered based on the T1s.
+					dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNumB"_FLAIR" -o $particDir/ses-Pre/anat "${anatomical}"
+					anatNumB=$((anatNumB+1))
+				done
+			fi
+		fi
+
+	      # In the case that T2 FLAIR and Flair axial are the same, uncomment and fix the below
+
+	      # if [ $baselineBool -eq 1 ]; then
+	      #   anatB2DirArr=($(find $baselineRawDir -maxdepth 2 -iname "*T2?FLAIR*" -print | sort))
+	      #   anatNumB=1
+	      #   if [ $anatB2DirArr = $anatBDirArr ]; then
+	      #     echo "Flair Axial is already run..."
+	      #   else
+	      #     if [ "$legacyBool" = "True" ]; then
+	      #       if [ ! -d $particDir/anatomicals/Baseline ]; then
+	      #         mkdir -p $particDir/anatomicals/Baseline
+	      #       fi
+	      #       for anatomical in ${anatBDirArr[@]}; do
+	      #         echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+	      #         dcm2niix -f "$partic"_t2_$anatNumB -o $particDir/anatomicals/Baseline "${anatomical}"
+	      #         anatNumB=$((anatNumB+1))
+	      #       done
+	      #     else
+	      #       if [ ! -d $particDir/ses-Pre/anat ]; then
+	      #         mkdir -p $particDir/ses-Pre/anat
+	      #       fi
+	      #       for anatomical in ${anatBDirArr[@]}; do
+	      #         echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+	      #         dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0$anatNumB"_FLAIR" -o $particDir/ses-Pre/anat "${anatomical}"
+	      #         anatNumB=$((anatNumB+1))
+	      #       done
+	      #     fi
+	      #   fi
+
+		# PostTX FLAIR
+		if [ $postTXBool -eq 1 ]; then
+			anatBDirArr=($(find $postTXRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
+			anatNumB=1
+
+			if [ "$legacyBool" = "True" ]; then
+				if [ ! -d $particDir/anatomicals/PostTX ]; then
+					mkdir -p $particDir/anatomicals/PostTX
+				fi
+
+				for anatomical in ${anatBDirArr[@]}; do
+					echo "Running dcm2nii for Anatomical $anatNum2 located in $anatomical"
+					dcm2niix -f "$partic"_t2_$anatNumB -o $particDir/anatomicals/PostTX "${anatomical}"
+					anatNumB=$((anatNumB+1))
+				done
+			else
+				if [ ! -d $particDir/ses-Post/anat ]; then
+					mkdir -p $particDir/ses-Post/anat
+				fi
+	
+				for anatomical in ${anatBDirArr[@]}; do
+					echo "Running dcm2nii for Anatomical $anatNum2 located in $anatomical"
+						#Matt: Your version originally had anatNum, so the FLAIRs were getting numbered based on the T1s.
+					dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0$anatNumB"_FLAIR" -o $particDir/ses-Post/anat "${anatomical}"
+					anatNumB=$((anatNumB+1))
+				done
+			fi
+		fi
+
+####### LONGITUDINAL BOLD IMAGING #######
+		if [ ${#boldValues[@]} -eq 0 ]; then
+			echo "No BOLD tasks for $partic"
+		else
+			echo "Running BOLD for $partic"
+
+			# Run bold sorting
+			for bold_type in ${boldValues[*]}; do
+		
+			# Checks baseline bool
+				echo "Running $bold_type"
+
+		  		if [ $baselineBool -eq 1 ]; then
+
+		   		 	# If task directory exists run dcm2niix on it
+					baseCheckString2=`find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+					if [[ "${baseCheckString2}" = *"${partic}"* ]]; then
+						echo "Check passed..."
+						if [ "$legacyBool" = "True" ]; then
+
+							# Makes directory if it doesn't exist
+							if [ ! -d $particDir/bold/${bold_type}/Baseline ]; then
+								mkdir -p $particDir/bold/${bold_type}/Baseline
+							fi
+
+							# Takes latest directory with bold
+							baseboldDirRun=($(find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
+							baseBoldNum=1
+
+							echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
+							for bold_run in ${baseboldDirRun}; do
+							  dcm2niix -f "$partic"_${bold_type}_run-0$baseBoldNum -o $particDir/bold/${bold_type}/Baseline "$baseboldDirRun"
+							  baseBoldNum=$((baseBoldNum+1))
+							done
+
+		  				else
+							# BIDS compliant structure
+							if [ ! -d $particDir/ses-Pre/func ]; then
+								mkdir -p $particDir/ses-Pre/func
+							fi
+
+							# Case by case bold type names.
+							if [ "$bold_type" = "resting" ]; then
+								boldType="rest"
+								taskName="rest"
+							elif [ "$bold_type" = "nback" ]; then
+								boldType="nback"
+								taskName="n-back"
+							elif [ "$bold_type" = "msit" ]; then
+								boldType="msit"
+								taskName="msit"
+							elif [ "$bold_type" = "anticipation" ]; then
+								boldType="anticipation"
+								taskName="anticipation"
+							elif [ "$bold_type" = "bmat_fear" ]; then
+								boldType="bmatfear"
+								taskName="bmat-fear"
+							elif [ "$bold_type" = "bmat_happy" ]; then
+								boldType="bmathappy"
+								taskName="bmat-happy"
+							elif [ "$bold_type" = "dot_probe" ]; then
+								boldType="dotprobe"
+								taskName="dot probe"
+							elif [ "$bold_type" = "fear_conditioning" ]; then
+								boldType="fearcond"
+								taskName="fear conditioning"
+							else
+								boldType="'$bold_type'"
+								taskName="'$bold_type'"
+							fi
+
+							# Takes latest directory with bold
+							baseboldDirRun=($(find $baselineRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
+
+							echo -e "${red}Baseline BOLD dir is $baselineRawDir${noColor}"
+							baseBoldNum=1
+							for bold_run in ${baseboldDirRun[@]}; do
+							  dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_task-${boldType}_run-0$baseBoldNum"_bold" \
+								-o $particDir/ses-Pre/func "$bold_run"
+
+							  sed -i '/COL/ a "TaskName": "'$taskName'",' \
+								$particDir/ses-Pre/func/*${boldType}_run-0${baseBoldNum}*.json
+							  baseBoldNum=$((baseBoldNum+1))
+							done
+						# Close if-else for running dcm2niix in the appropriate structure.
+						fi
+
+					else
+						echo "No data for $bold_type in baseline $partic directory."
+					# Close if-else for check string
+					fi
+				# Close if-else for whether baseline should be present
+				fi
+
+				# Checks postTX bool
+				if [ $postTXBool -eq 1 ]; then
+
+		        # If task directory exists run dcm2niix on it
+					postCheckString2=`find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
+					if [[ "${postCheckString2}" = *"${partic}"* ]]; then
+
+						if [ "$legacyBool" = "True" ]; then
+
+							# Makes legacy directory if it doesn't exist
+							if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
+								mkdir -p $particDir/bold/${bold_type}/PostTX
+							fi
+						
+							# Set bold directory
+							postboldDir=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
+							postBoldNum=1
+
+							echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
+
+							# Loop through bold folders
+							for bold_runB in ${postboldDirRun}; do
+								dcm2niix -f "$partic"_${bold_type}_run-0$postBoldNum -o $particDir/bold/${bold_type}/PostTX "$postboldDirRun"
+								postBoldNum=$((postBoldNum+1))
+							done
+						else
+							# Create BIDS directory
+							if [ ! -d $particDir/ses-Post/func ]; then
+								mkdir -p $particDir/ses-Post/func
+							fi
+					
+							# Set bold-level attributes
+							if [ "$bold_type" = "resting" ]; then
+								boldType="rest"
+								taskName="rest"
+							elif [ "$bold_type" = "nback" ]; then
+								boldType="nback"
+								taskName="n-back"
+							elif [ "$bold_type" = "msit" ]; then
+								boldType="msit"
+								taskName="msit"
+							elif [ "$bold_type" = "anticipation" ]; then
+								boldType="anticipation"
+								taskName="anticipation"
+							elif [ "$bold_type" = "bmat_fear" ]; then
+								boldType="bmatfear"
+								taskName="bmat-fear"
+							elif [ "$bold_type" = "bmat_happy" ]; then
+								boldType="bmathappy"
+								taskName="bmat-happy"
+							elif [ "$bold_type" = "dot_probe" ]; then
+								boldType="dotprobe"
+								taskName="dot probe"
+							elif [ "$bold_type" = "fear_conditioning" ]; then
+								boldType="fearcond"
+								taskName="fear conditioning"
+							else
+								boldType="'$bold_type'"
+								taskName="'$bold_type'"
+							fi
+
+		            		# Takes latest directory with bold
+						    postboldDirRun=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
+						    postBoldNum=1
+		            		echo -e "${red}PostTX BOLD dir is $postboldDirRun${noColor}"
+					
+							# Loop through bold directories
+						    for bold_run in ${postboldDirRun[@]}; do
+								dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_task-${boldType}_run-0$postBoldNum"_bold" -o $particDir/ses-Post/func "$bold_run"
+								sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Post/func/*${boldType}_run-0${postBoldNum}*.json
+								postBoldNum=$((postBoldNum+1))
+						    done
+						# Close if-else for running dcm2niix with the appropriate folder structure.
+						fi
+					else
+						echo "No data for $bold_type in post-treatment $partic directory."
+					# Close if-else for post-treatment check string
+		        	fi
+				# Close if-else for whether there should be a post-treatment folder.
+				fi
+			# Close for loop for bold types
+			done
+
+			# Get the files names for the BOLD files to populate the intended for field in the 
+			# mag and phasediff JSONs
+			# This only applies to BIDS. 
+			if [ $legacyBool = "False" ]; then
+				# Get the baseline BOLD file names for the fieldmap JSON files
 				boldFiles=($particDir/ses-Pre/func/*.nii)
-				
+
 				boldIntendedForPre=""
+
 				for boldFile in ${boldFiles[@]}; do
 					boldFileName=${boldFile#/data*"$partic"/}
-					
+
 					if [ -z "$boldIntendedForPre" ]; then
 						boldIntendedForPre='"'"$boldFileName"'"'
 					else
-						tmpBoldName='"'"$boldFileName"'"'
-						boldIntendedForPre="$boldIntendedForPre, "${tmpBoldName}""
+
+					tmpBoldName='"'"$boldFileName"'"'
+					boldIntendedForPre="$boldIntendedForPre, "${tmpBoldName}""
 					fi
 				done
-				
-              fi
-            else
-              echo "No data for $bold_type in baseline $partic directory."
-            fi
-          fi
-          # Checks postTX bool
-          if [ $postTXBool -eq 1 ]; then
-            # If task directory exists run dcm2niix on it
-            postCheckString2=`find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-            if [[ "${postCheckString2}" = *"${partic}"* ]]; then
-              if [ "$legacyBool" = "True" ]; then
-              # Makes directory if it doesn't exist
-                if [ ! -d $particDir/bold/${bold_type}/PostTX ]; then
-                  mkdir -p $particDir/bold/${bold_type}/PostTX
-                fi
-                postboldDir=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
-                postBoldNum=1
-                echo -e "${red}PostTX BOLD dir is $postboldDir${noColor}"
-                for bold_runB in ${postboldDirRun}; do
-                  dcm2niix -f "$partic"_${bold_type}_run-0$postBoldNum -o $particDir/bold/${bold_type}/PostTX "$postboldDirRun"
-                  postBoldNum=$((postBoldNum+1))
-                done
-              else
-                if [ ! -d $particDir/ses-Post/func ]; then
-                  mkdir -p $particDir/ses-Post/func
-                fi
 
-				if [ "$bold_type" = "resting" ]; then
-					boldType="rest"
-					taskName="rest"
-				elif [ "$bold_type" = "nback" ]; then
-					boldType="nback"
-					taskName="n-back"
-				elif [ "$bold_type" = "msit" ]; then
-					boldType="msit"
-					taskName="msit"
-				elif [ "$bold_type" = "anticipation" ]; then
-					boldType="anticipation"
-					taskName="anticipation"
-				elif [ "$bold_type" = "bmat_fear" ]; then
-					boldType="bmatfear"
-					taskName="bmat-fear"
-				elif [ "$bold_type" = "bmat_happy" ]; then
-					boldType="bmathappy"
-					taskName="bmat-happy"
-				elif [ "$bold_type" = "dot_probe" ]; then
-					boldType="dotprobe"
-					taskName="dot probe"
-				elif [ "$bold_type" = "fear_conditioning" ]; then
-					boldType="fearcond"
-					taskName="fear conditioning"
-				else
-					boldType="'$bold_type'"
-					taskName="'$bold_type'"
-				fi
-
-                # Takes latest directory with bold
-                postboldDirRun=($(find $postTXRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort))
-                postBoldNum=1
-                echo -e "${red}PostTX BOLD dir is $postboldDirRun${noColor}"
-                for bold_run in ${postboldDirRun[@]}; do
-                  dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_task-${boldType}_run-0$postBoldNum"_bold" -o $particDir/ses-Post/func "$bold_run"
-				  sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/ses-Post/func/*${boldType}_run-0${postBoldNum}*.json
-                  postBoldNum=$((postBoldNum+1))
-                done
-				
-				# Get the file names for the fieldmap JSON files
+				# Get the post-tx BOLD file names for the fieldmap JSON files
 				boldFiles=($particDir/ses-Post/func/*.nii)
-				
+
 				boldIntendedForPost=""
 				for boldFile in ${boldFiles[@]}; do
 					boldFileName=${boldFile#/data*"$partic"/}
-					
+
 					if [ -z "$boldIntendedForPost" ]; then
 						boldIntendedForPost='"'"$boldFileName"'"'
 					else
@@ -774,683 +940,1038 @@ for partic in ${particArr[*]}; do
 						boldIntendedForPost="$boldIntendedForPost, "${tmpBoldName}""
 					fi
 				done
-              fi
-            else
-              echo "No data for $bold_type in post-treatment $partic directory."
-            fi
-          fi
-        done
-      fi
+	   		fi
+		# Close if-else for whether the BOLD type array is empty.
+		fi
 
-      # Baseline fieldmaps
-      if [ $magPhaseBool -eq 1 ]; then
-        # Running for Mag (note the sort -r)
-        echo "Beginning Magnitude-Phase fieldmap conversion..."
-        # Baseline
-        if [ $baselineBool -eq 1 ]; then
-          magBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*field*" -print | sort -r | tail -1`
-          if [ "$legacyBool" = "True" ]; then
-            if [ ! -d $particDir/fieldmaps/Baseline ]; then
-              mkdir -p $particDir/fieldmaps/Baseline
-            fi
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/Baseline "$magBaselineDir"
-          else
-            if [ ! -d $particDir/ses-Pre/fmap ]; then
-              mkdir -p $particDir/ses-Pre/fmap
-            fi
-			
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_magnitude1 -o $particDir/ses-Pre/fmap "$magBaselineDir"
-			
-			# Get echo times for PhaseDiff files
-			echo1_pre=$(cat $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
-			echo2_pre=$(cat $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
-			
-			# Rename Echo 1 files
-			mv $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e1.nii $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1.nii
-			mv $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e1.json $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1.json
-			
-			# Rename Echo 2 files
-			mv $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e2.nii $particDir/ses-Pre/fmap/sub-"$partic"_magnitude2.nii
-			mv $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1_e2.json $particDir/ses-Pre/fmap/sub-"$partic"_magnitude2.json
-			
-			# Edit IntendedFor field of the JSONs
-			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPre}"'],' $particDir/ses-Pre/fmap/sub-"$partic"_magnitude1.json
-			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPre}"'],' $particDir/ses-Pre/fmap/sub-"$partic"_magnitude2.json
-          fi
-        fi
-        # PostTX
-        if [ $postTXBool -eq 1 ]; then
-          magPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*field*" -print | sort -r | tail -1`
-          if [ "$legacyBool" = "True" ]; then
-            if [ ! -d $particDir/fieldmaps/PostTX ]; then
-              mkdir -p $particDir/fieldmaps/PostTX
-            fi
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/PostTX "$magPostTXDir"
-          else
-            if [ ! -d $particDir/ses-Post/fmap ]; then
-              mkdir -p $particDir/ses-Post/fmap
-            fi
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_magnitude1 -o $particDir/ses-Post/fmap "$magPostTXDir"
-			
-						# Get echo times for PhaseDiff files
-			echo1_post=$(cat $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
-			echo2_post=$(cat $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
-			
-			# Rename Echo 1 files
-			mv $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e1.nii $particDir/ses-Post/fmap/sub-"$partic"_magnitude1.nii
-			mv $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e1.json $particDir/ses-Post/fmap/sub-"$partic"_magnitude1.json
-			
-			# Rename Echo 2 files
-			mv $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e2.nii $particDir/ses-Post/fmap/sub-"$partic"_magnitude2.nii
-			mv $particDir/ses-Post/fmap/sub-"$partic"_magnitude1_e2.json $particDir/ses-Post/fmap/sub-"$partic"_magnitude2.json
-			
-			# Edit IntendedFor field of the JSONs
-			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPost}"'],' $particDir/ses-Post/fmap/sub-"$partic"_magnitude1.json
-			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPost}"'],' $particDir/ses-Post/fmap/sub-"$partic"_magnitude2.json
-          fi
-        fi
+####### LONGITUDINAL FIELD MAPPING #######
+		if [ $magPhaseBool -eq 1 ]; then
 
-        # Running same system for Phase
-        # Baseline
-        if [ $baselineBool -eq 1 ]; then
-          phaseBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-          if [ "$legacyBool" = "True" ]; then
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/Baseline "$phaseBaselineDir"
-          else
-            if [ ! -d $particDir/ses-Pre/fmap ]; then
-              mkdir -p $particDir/ses-Pre/fmap
-            fi
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_phasediff -o $particDir/ses-Pre/fmap "$phaseBaselineDir"
-			
-			# Rename phasediff file
-			mv $particDir/ses-Pre/fmap/sub-"$partic"_phasediff_e2.nii $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.nii
-			mv $particDir/ses-Pre/fmap/sub-"$partic"_phasediff_e2.json $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.json
+			# Running for Mag (note the sort -r)
+			echo "Beginning Magnitude-Phase fieldmap conversion..."
 
-			# Add appropriate echo times to phasediff JSON
-			sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1_pre/" $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.json
-			sed -i '/EchoTime1/ a "EchoTime2": '"$echo2_pre"'' $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.json
+			# Baseline
+			if [ $baselineBool -eq 1 ]; then
 
-			# Add IntendedFor field to PhaseDiff JSON
-			sed -i '/COL/ a "IntendedFor": ['"$boldIntendedForPre"'],' $particDir/ses-Pre/fmap/sub-"$partic"_phasediff.json
-          fi
-        fi
-        # PostTX
-        if [ $postTXBool -eq 1 ]; then
-          phasePostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-          if [ "$legacyBool" = "True" ]; then
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/PostTX "$phasePostTXDir"
-          else
-            if [ ! -d $particDir/ses-Post/fmap ]; then
-              mkdir -p $particDir/ses-Post/fmap
-            fi
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_phasediff -o $particDir/ses-Post/fmap "$phasePostTXDir"
-			
-			# Rename phasediff file
-			mv $particDir/ses-Post/fmap/sub-"$partic"_phasediff_e2.nii $particDir/ses-Post/fmap/sub-"$partic"_phasediff.nii
-			mv $particDir/ses-Post/fmap/sub-"$partic"_phasediff_e2.json $particDir/ses-Post/fmap/sub-"$partic"_phasediff.json
+				# Check for directory
+				magBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*field*" -print | sort -r | tail -1`
 
-			# Add appropriate echo times to phasediff JSON
-			sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1_post/" $particDir/ses-Post/fmap/sub-"$partic"_phasediff.json
-			sed -i '/EchoTime1/ a "EchoTime2": '"$echo2_post"'' $particDir/ses-Post/fmap/sub-"$partic"_phasediff.json
-
-			# Add IntendedFor field to PhaseDiff JSON
-			sed -i '/COL/ a "IntendedFor": ['"$boldIntendedForPost"'],' $particDir/ses-Post/fmap/sub-"$partic"_phasediff.json
-          fi
-        fi
-      else
-        echo "No Magnitude of Phase fieldmaps found for $partic"
-      fi
-      if [ $dtiBool -eq 1 ]; then
-        echo "Beginning DTI conversion..."
-        # Baseline DTI
-        if [ $baselineBool -eq 1 ]; then
-          baseCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
-          if [[ "${baseCheckString3}" = *"${partic}"* ]]; then
-            dtiAPBaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1))
-            dtiAPBaselineNum=1
-            if [ "$legacyBool" = "True" ]; then
-              if [ ! -d $particDir/dti/Baseline ]; then
-                mkdir -p $particDir/dti/Baseline
-              fi
-              echo "Running dcm2nii for DTI A -> P"
-              for dtiAPBaselineFile in ${dtiAPBaselineDir}; do
-                dcm2niix -f "$partic"_A2P_run-0$dtiAPBaselineNum -o $particDir/dti/Baseline "$dtiAPBaselineFile"
-                dtiAPBaselineNum=$((dtiAPBaselineNum+1))
-              done
-            else
-              if [ ! -d $particDir/ses-Pre/dwi ]; then
-                mkdir -p $particDir/ses-Pre/dwi
-              fi
-              echo "Running dcm2nii for DTI A -> P"
-              for dtiAPBaselineFile in ${dtiAPBaselineDir}; do
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiAPBaselineNum"_dwi -o $particDir/ses-Pre/dwi "$dtiAPBaselineFile" # Follow up with Adam
-                dtiAPBaselineNum=$((dtiAPBaselineNum+1))
-              done
-			  
-				# Get the file names for the EPI JSON files
-				dwiFiles=($particDir/ses-Pre/dwi/*.nii)
-				
-				
-				dwiIntendedForPre=""
-				for dwiFile in ${dwiFiles[@]}; do
-					dwiFileName=${dwiFile#/data*"$partic"/}
-					
-					if [ -z "$dwiIntendedForPre" ]; then
-						dwiIntendedForPre='"'"$dwiFileName"'"'
-					else
-						tmpDWIName='"'"$dwiFileName"'"'
-						dwiIntendedForPre="$dwiIntendedForPre, "${tmpDWIName}""
-					fi
-				done
-            fi
-
-            # Running same system for DTI P -> A
-            if [ -n $(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1) ]; then
-              dtiPABaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1))
-            else
-              echo "P->A file not found, searching bzero identifier"
-              if [ -n $(find $baselineRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1) ]; then
-                dtiPABaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1))
-                echo "Utilizing Bzero for P->A"
-              fi
-            fi
-            dtiPABaselineNum=1
-            if [ "$legacyBool" = "True" ]; then
-              echo "Running dcm2nii for DTI P -> A"
-              for dtiPABaselineFile in ${dtiPABaselineDir}; do
-                dcm2niix -f "$partic"_P2A_run-0$dtiPABaselineNum -o $particDir/dti/Baseline "$dtiPABaselineFile"
-                dtiPABaselineNum=$((dtiPABaselineNum+1))
-              done
-            else
-              if [ ! -d $particDir/ses-Pre/fmap ]; then
-                mkdir -p $particDir/ses-Pre/fmap
-                mkdir -p $particDir/ses-Post/dwi
-              fi
-              echo "Running dcm2nii for DTI P -> A"
-              for dtiPABaselineFile in ${dtiPABaselineDir}; do
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiPABaselineNum"_epi -o $particDir/ses-Pre/fmap "$dtiPABaselineFile"
-                dtiPABaselineNum=$((dtiPABaselineNum+1))
-              done
-			  
-				sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedForPre}"'],' $particDir/ses-Pre/fmap/*epi.json	
-            fi
-            if [ "$legacyBool" = "True" ]; then
-              bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-              bvec=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-            else
-              bval=`find $particDir/ses-Pre/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-              bvec=`find $particDir/ses-Pre/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-            fi
-            if [[ "${bval}" = *"bval"* ]]; then
-              if [ "$legacyBool" = "True" ]; then
-                mv $bval $particDir/dti/Baseline/bvals
-              else
-                cp $bval $particDir/ses-Pre/dwi/bvals
-              fi
-            else
-              echo "###### bval not found ######"
-            fi
-            if [[ "${bvec}" = *"bvec"* ]]; then
-              if [ "$legacyBool" = "True" ]; then
-                mv $bvec $particDir/dti/Baseline/bvecs
-              else
-                cp $bvec $particDir/ses-Pre/dwi/bvecs
-              fi
-            else
-              echo "###### bvec not found ######"
-            fi
-          else
-            echo "###### No DTI images found for $partic Baseline ######"
-          fi
-        fi
-
-        # PostTX DTI A -> P
-        if [ $postTXBool -eq 1 ]; then
-          postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
-          if [[ "${postCheckString3}" = *"$partic"* ]]; then
-            dtiAPPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1))
-            dtiAPPostTXNum=1
-            if [ "$legacyBool" = "True" ]; then
-              if [ ! -d $particDir/dti/PostTX ]; then
-                mkdir -p $particDir/dti/PostTX
-              fi
-              echo "Running dcm2nii for DTI A -> P"
-              for dtiAPPostTXFile in ${dtiAPPostTXDir}; do
-                dcm2niix -f "$partic"_A2P_run-0$dtiPAPostTXNum -o $particDir/dti/PostTX "$dtiAPPostTXFile"
-                dtiAPPostTXNum=$((dtiAPPostTXNum+1))
-              done
-            else
-              if [ ! -d $particDir/ses-Post/dwi ]; then
-                mkdir -p $particDir/ses-Post/dwi
-                mkdir -p $particDir/ses-Post/fmap
-              fi
-              echo "Running dcm2nii for DTI A -> P"
-              for dtiAPPostTXFile in ${dtiAPPostTXDir}; do
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0"$dtiAPPostTXNum"_dwi -o $particDir/ses-Post/dwi "$dtiAPBaselineDir" # Follow up with Adam
-                dtiAPPostTXNum=$((dtiAPPostTXNum+1))
-              done
-			  				
-				# Get the file names for the EPI JSON files
-				dwiFiles=($particDir/ses-Post/dwi/*.nii)
-				
-				
-				dwiIntendedForPost=""
-				for dwiFile in ${dwiFiles[@]}; do
-					dwiFileName=${dwiFile#/data*"$partic"/}
-					
-					if [ -z "$dwiIntendedForPre" ]; then
-						dwiIntendedForPost='"'"$dwiFileName"'"'
-					else
-						tmpDWIName='"'"$dwiFileName"'"'
-						dwiIntendedForPost="$dwiIntendedForPost, "${tmpDWIName}""
-					fi
-				done
-            fi
-
-            # Running same system for DTI P -> A
-            if [ -n $(find $postTXRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1) ]; then
-              dtiPAPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1))
-            else
-                echo "P__A file not found, searching bzero identifier"
-                dtiPAPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1))
-            fi
-            if [ ! -n "$dtiPAPostTXDir" ]; then
-              echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
-            else
-              if [ "$legacyBool" = "True" ]; then
-                echo "Running dcm2nii for DTI P -> A"
-                dcm2niix -f "$partic"_P2A -o $particDir/dti/PostTX "$dtiPAPostTXDir"
-              else
-                if [ ! -d $particDir/ses-Post/fmap ]; then
-                  mkdir -p $particDir/ses-Post/fmap
-                fi
-				# Same as with Baseline. For BIDS format, these P -> A files will go in the fmap folder as acq-PtoA_epi
-                dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_epi -o $particDir/ses-Post/fmap "$dtiPAPostTXDir" # Follow up with Adam
-			  
-				sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedForPost}"'],' $particDir/ses-Post/fmap/*epi.json
-              fi
-            fi
-            if [ "$legacyBool" = "True" ]; then
-              bval=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-              bvec=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-            else
-              bval=`find $particDir/ses-Post/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-              bvec=`find $particDir/ses-Post/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-            fi
-            if [[ "${bval}" = *"bval"* ]]; then
-              if [ "$legacyBool" = "True" ]; then
-                mv $bval $particDir/dti/PostTX/bvals
-              else
-                cp $bval $particDir/ses-Post/dwi/bvals
-              fi
-            else
-              echo "###### bval not found ######"
-            fi
-            if [[ "${bvec}" = *"bvec"* ]]; then
-              if [ "$legacyBool" = "True" ]; then
-                mv $bvec $particDir/dti/PostTX/bvecs
-              else
-                cp $bvec $particDir/ses-Post/dwi/bvecs
-              fi
-            else
-              echo "###### bvec not found ######"
-            fi
-          else
-            echo "###### No DTI images found for $partic PostTX ######"
-          fi
-        fi
-      else
-        echo "DTI images are not taken for $study"
-      fi
-      echo "Finished transfer and conversion for $partic"
-
-################################################################################
-    # Non-logitudinal structuring
-    else
-      echo "Non-logitudinal study detected."
-      if [ $dirAlreadyExists -eq 1 ]; then
-        if [ $bypassIndivOverwrite -eq 0 ]; then
-          echo "The indiv_analysis directory already exists."
-          echo "Would you like to copy and possibly overwrite your indiv_analysis images?"
-          read overwritePartic
-        fi
-        if [[ "$overwritePartic" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-          echo "Continuing with copy..."
-          if [ $overwriteLongCount = 0 ]; then
-            overwriteLongCount=$((overwriteLongCount + 1))
-            echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
-            echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
-            read overwriteIndivResponse
-            if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-              bypassIndivOverwrite=1
-            fi
-          fi
-          overwriteIndivCount=$((overwriteIndivCount + 1))
-        else
-          particBool=0
-        fi
-      fi
-      
-	  #T1
-      echo "Running dcm2nii for T1 Anatomicals"
-      anatDirArr=($(find $particRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
-      anatNum=1
-      if [ "$legacyBool" = "True" ]; then
-        if [ ! -d $particDir/anatomicals ]; then
-          mkdir -p $particDir/anatomicals
-        fi
-        for anatomical in ${anatDirArr[@]}; do
-          echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-          dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals "${anatomical}"
-          anatNum=$((anatNum+1))
-        done
-      else
-        if [ ! -d $particDir/anat ]; then
-          mkdir -p $particDir/anat
-        fi
-        for anatomical in ${anatDirArr[@]}; do
-          echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
-          dcm2niix -b y -ba y -f sub-"$partic"_run-0$anatNum"_T1w" -o $particDir/anat "${anatomical}"
-          anatNum=$((anatNum+1))
-        done
-      fi
-
-      # FLAIR
-      echo "Running dcm2nii for FLAIRs"
-      anatBDirArr=($(find $particRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
-      anatNumB=1
-      if [ "$legacyBool" = "True" ]; then
-        if [ ! -d $particDir/anatomicals ]; then
-          mkdir -p $particDir/anatomicals
-        fi
-        for anatomical in ${anatBDirArr[@]}; do
-          echo "Running dcm2nii for Anatomical $anatNumB located in $anatomical"
-          dcm2niix -f "$partic"_t2_$anatNumB -o $particDir/anatomicals "${anatomical}"
-          anatNumB=$((anatNumB+1))
-        done
-      else
-        if [ ! -d $particDir/anat ]; then
-          mkdir -p $particDir/anat
-        fi
-        for anatomical in ${anatBDirArr[@]}; do
-          echo "Running dcm2nii for Anatomical $anatNumB located in $anatomical"
-          dcm2niix -b y -ba y -f sub-"$partic"_run-0$anatNumB"_FLAIR" -o $particDir/anat "${anatomical}"
-          anatNumB=$((anatNumB+1))
-        done
-      fi
-
-      if [ ${#boldValues[@]} -eq 0 ]; then
-        echo "No BOLD values for $partic"
-      else
-        echo "Running BOLD for $partic"
-        for bold_type in ${boldValues[*]}; do
-          # If task directory exists run dcm2niix on it
-          boldCheckString=`find $particRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-          if [[ "${boldCheckString,,}" = *"${bold_type,,}"* ]]; then
-            boldDir=`find $particRawDir -maxdepth 2 -iname "*${bold_type}*" -print | sort | tail -1`
-			boldNum=1
-            if [ "$legacyBool" = "True" ]; then
-              # Makes directory if it doesn't exist
-              if [ ! -d $particDir/bold/${bold_type} ]; then
-                mkdir -p $particDir/bold/${bold_type}
-              fi
-              dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type} "$boldDir"
-            else
-              if [ ! -d $particDir/func ]; then
-                mkdir -p $particDir/func
-              fi
-			
-				if [ "$bold_type" = "resting" ]; then
-					boldType="rest"
-					taskName="rest"
-				elif [ "$bold_type" = "nback" ]; then
-					boldType="nback"
-					taskName="n-back"
-				elif [ "$bold_type" = "msit" ]; then
-					boldType="msit"
-					taskName="msit"
-				elif [ "$bold_type" = "anticipation" ]; then
-					boldType="anticipation"
-					taskName="anticipation"
-				elif [ "$bold_type" = "bmat_fear" ]; then
-					boldType="bmatfear"
-					taskName="bmat-fear"
-				elif [ "$bold_type" = "bmat_happy" ]; then
-					boldType="bmathappy"
-					taskName="bmat-happy"
-				elif [ "$bold_type" = "dot_probe" ]; then
-					boldType="dotprobe"
-					taskName="dot probe"
-				elif [ "$bold_type" = "fear_conditioning" ]; then
-					boldType="fearcond"
-					taskName="fear conditioning"
-				else
-					boldType="'$bold_type'"
-					taskName="'$bold_type'"
-				fi
-              
-				for bold_run in ${boldDir[@]}; do
-					echo "Running dcm2niix for ${bold_type} located in ${bold_run}"
-					dcm2niix -b y -ba y -f sub-"$partic"_task-${boldType}_run-0$boldNum"_bold" -o $particDir/func "$bold_run"
-					sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/func/*${boldType}_run-0${boldNum}*.json
-					boldNum=$((boldNum+1))
-				done
-				
-				# Get the file names for the fieldmap JSON files
-				boldFiles=($particDir/func/*.nii)
-				
-				boldIntendedFor=""
-				for boldFile in ${boldFiles[@]}; do
-					boldFileName=${boldFile#/data*"$partic"/}
-					
-					if [ -z "$boldIntendedFor" ]; then
-						boldIntendedFor='"'"$boldFileName"'"'
-					else
-						tmpBoldName='"'"$boldFileName"'"'
-						boldIntendedFor="$boldIntendedFor, "${tmpBoldName}""
-					fi
-				done
-            fi
-          else
-            echo "No data for $bold_type in $partic directory."
-          fi
-        done
-      fi
-
-      if [ $magPhaseBool -eq 1 ]; then
-        fieldCheckString=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-        if [[ "${fieldCheckString}" = *"field"* ]]; then
-          # Running for Mag (note the sort -r)
-          echo "Beginning Magnitude-Phase fieldmap conversion..."
-
-          magDir=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort -r | tail -1`
-          if [ "$legacyBool" = "True" ]; then
-            if [ ! -d $particDir/fieldmaps ]; then
-              mkdir -p $particDir/fieldmaps
-            fi
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps "$magDir"
-          else
-            if [ ! -d $particDir/fmap ]; then
-              mkdir -p $particDir/fmap
-            fi
-            echo "Running dcm2nii for Mag fieldmaps"
-            dcm2niix -b y -ba y -f sub-"$partic"_magnitude1 -o $particDir/fmap "$magDir"
-			
-			# Get echo times for PhaseDiff files
-			echo1=$(cat $particDir/fmap/sub-"$partic"_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
-			echo2=$(cat $particDir/fmap/sub-"$partic"_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
-			
-			# Rename Echo 1 files
-			mv $particDir/fmap/sub-"$partic"_magnitude1_e1.nii $particDir/fmap/sub-"$partic"_magnitude1.nii
-			mv $particDir/fmap/sub-"$partic"_magnitude1_e1.json $particDir/fmap/sub-"$partic"_magnitude1.json
-			
-			# Rename Echo 2 files
-			mv $particDir/fmap/sub-"$partic"_magnitude1_e2.nii $particDir/fmap/sub-"$partic"_magnitude2.nii
-			mv $particDir/fmap/sub-"$partic"_magnitude1_e2.json $particDir/fmap/sub-"$partic"_magnitude2.json
-			
-			# Edit IntendedFor field of the JSONs
-			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedFor}"'],' $particDir/fmap/sub-"$partic"_magnitude1.json
-			sed -i '/COL/ a "IntendedFor": ['"${boldIntendedFor}"'],' $particDir/fmap/sub-"$partic"_magnitude2.json
-          fi
-
-          magCheckString=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-          if [ "$magDir" = "$magCheckString" ]; then
-            echo "Only one fieldmap was found. Verify files."
-          else
-            # Running same system for Phase
-            phaseDir=`find $particRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
-            if [ "$legacyBool" = "True" ]; then
-              echo "Running dcm2nii for Phase fieldmaps"
-              dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps "$phaseDir"
-            else
-              echo "Running dcm2nii for Phase fieldmaps"
-              dcm2niix -b y -ba y -f sub-"$partic"_phasediff -o $particDir/fmap "$phaseDir"
-			  			  
-			  # Rename phasediff file
-			  mv $particDir/fmap/sub-"$partic"_phasediff_e2.nii $particDir/fmap/sub-"$partic"_phasediff.nii
-			  mv $particDir/fmap/sub-"$partic"_phasediff_e2.json $particDir/fmap/sub-"$partic"_phasediff.json
-			  
-			  # Add appropriate echo times to phasediff JSON
-			  sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1/" $particDir/fmap/sub-"$partic"_phasediff.json
-			  sed -i '/EchoTime1/ a "EchoTime2": '"$echo2"'' $particDir/fmap/sub-"$partic"_phasediff.json
-			  
-			  # Add IntendedFor field to PhaseDiff JSON
-			  sed -i '/COL/ a "IntendedFor": ['"$boldIntendedFor"'],' $particDir/fmap/sub-"$partic"_phasediff.json
-            fi
-          fi
-        else
-          echo "No Magnitude or Phase fieldmaps found for $partic"
-        fi
-      else
-        echo "Magnitude or Phase fieldmaps are not taken for $study"
-      fi
-      
-	  # Convert DWI images
-	  if [ $dtiBool -eq 1 ]; then
-        dtiCheckString=`find $particRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
-        if [[ "${dtiCheckString,,}" = *"dti"* ]]; then
-          # Running for DTI A -> P (note the sort -r)
-          echo "Beginning DTI conversion..."
-
-          dtiAPDir=`find $particRawDir -maxdepth 2 -iname "*A-P -*" -print | sort -r | tail -1`
-		  dtiAPNum=1
-          if [ "$legacyBool" = "True" ]; then
-            if [ ! -d $particDir/dti ]; then
-              mkdir -p $particDir/dti
-            fi
-            echo "Running dcm2nii for DTI A -> P"
-            dcm2niix -f "$partic"_A2P -o $particDir/dti "$dtiAPDir"
-          else
-            if [ ! -d $particDir/dwi ]; then
-              mkdir -p $particDir/dwi
-            fi
-			
-			# Matt: I added this here without the -r to address the correct ordering of run numbers.
-			for dtiAPRun in ${dtiAPDir[@]}; do
-				echo "Running dcm2nii for DTI A -> P"
-				dcm2niix -b y -ba y -f sub-"$partic"_run-0"$dtiAPNum"_dwi -o $particDir/dwi "$dtiAPRun"
-				dtiAPNum=$((dtiAPNum+1))
-			done
-			
-			# Get the file names for the EPI JSON files
-			dwiFiles=($particDir/dwi/*.nii)
-			
-			
-			dwiIntendedFor=""
-			for dwiFile in ${dwiFiles[@]}; do
-				dwiFileName=${dwiFile#/data*"$partic"/}
-				
-				if [ -z "$dwiIntendedFor" ]; then
-					dwiIntendedFor='"'"$dwiFileName"'"'
-				else
-					tmpDWIName='"'"$dwiFileName"'"'
-					dwiIntendedFor="$dwiIntendedFor, "${tmpDWIName}""
-				fi
-			done
-			
-          fi
-
-          # Running same system for DTI P -> A
-          dtiPADir=`find $particRawDir -maxdepth 2 -iname "*P-?A*" -print | sort | tail -1`
-          if [ "$dtiPADir" == "x$dtiPADir" ]; then
-            echo "P->A file not found, searching P__A"
-            dtiPADir=`find $particRawDir -maxdepth 2 -iname "*P_?A*" -print | sort | tail -1`
-            if [ "$dtiPADir" == "x$dtiPADir" ]; then
-              echo "P__A file not found, searching bzero identifier"
-              dtiPADir=`find $particRawDir -maxdepth 2 -iname "*bzero*" -print | sort | tail -1`
-            fi
-          fi
-          
-		  if [ "$dtiAPDir" == "$dtiPADir" ]; then
-            echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
-          else
-            if [ "$legacyBool" = "True" ]; then
-              echo "Running dcm2nii for DTI P -> A"
-              dcm2niix -f "$partic"_P2A -o $particDir/dti "$dtiPADir"
-            else
-				dtiPANum=1
-				if [ ! -d $particDir/fmap ]; then
-					mkdir -p $particDir/fmap
-				fi
-				
-				for bzero in ${dtiPADir[@]}; do
-					echo "Running dcm2nii for DTI P -> A"
-					dcm2niix -b y -ba y -f sub-"$partic"_run-0"$dtiPANum"_epi -o $particDir/fmap "$bzero"
-					dtiPANum=$((dtiPANum+1))
-				done
-				sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedFor}"'],' $particDir/fmap/*epi.json				
-            fi
-          fi
-          
-			if [ "$legacyBool" = "True" ]; then
-				bval=`find $particDir/dti -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-				bvec=`find $particDir/dti -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-			else
-				bval=`find $particDir/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
-				bvec=`find $particDir/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
-			fi
-			
-			if [[ "${bval}" = *"bval"* ]]; then
 				if [ "$legacyBool" = "True" ]; then
-					mv $bval $particDir/dti/bvals
-				else	
-					cp $bval $particDir/dwi/bvals
-				fi
-			else
-				echo "###### bval not found ######"
-			fi
-			
-			if [[ "${bvec}" = *"bvec"* ]]; then
-				if [ "$legacyBool" = "True" ]; then
-					mv $bvec $particDir/dti/bvecs
+				
+					# Make legacy directory if it doesn't exist
+					if [ ! -d $particDir/fieldmaps/Baseline ]; then
+						mkdir -p $particDir/fieldmaps/Baseline
+					fi
+
+					echo "Running dcm2nii for Mag fieldmaps"
+					dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/Baseline "$magBaselineDir"
+
 				else
-					cp $bval $particDir/dwi/bvecs
-				fi
-			else
-				echo "###### bvec not found ######"
+					
+					# Make BIDS compliant target directory
+					if [ ! -d $particDir/ses-Pre/fmap ]; then
+						mkdir -p $particDir/ses-Pre/fmap
+					fi
+
+					echo "Running dcm2nii for Mag fieldmaps"
+					dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_magnitude1 -o $particDir/ses-Pre/fmap "$magBaselineDir"
+		
+					# Get echo times for PhaseDiff files
+					echo1_pre=$(cat $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
+					echo2_pre=$(cat $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
+
+					# Rename Echo 1 files
+					mv $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1_e1.nii $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1.nii
+					mv $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1_e1.json $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1.json
+
+					# Rename Echo 2 files
+					mv $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1_e2.nii $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude2.nii
+					mv $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1_e2.json $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude2.json
+
+					# Edit IntendedFor field of the JSONs
+					sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPre}"'],' $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude1.json
+					sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPre}"'],' $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_magnitude2.json
+      			fi
 			fi
-        
+
+			# Post-treatment
+			if [ $postTXBool -eq 1 ]; then
+
+				# Check if post-treatment field map files exist.
+				magPostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*field*" -print | sort -r | tail -1`
+      
+				if [ "$legacyBool" = "True" ]; then
+					
+					# Create legacy target directory if it doesn't already exist.
+					if [ ! -d $particDir/fieldmaps/PostTX ]; then
+						mkdir -p $particDir/fieldmaps/PostTX
+					fi
+
+					# Run dcm2niix
+					echo "Running dcm2nii for Mag fieldmaps"
+					dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps/PostTX "$magPostTXDir"
+
+      			else
+			
+					# Create BIDS compliant target directory if it doesn't already exist.
+					if [ ! -d $particDir/ses-Post/fmap ]; then
+					  mkdir -p $particDir/ses-Post/fmap
+					fi
+
+					# Run dcm2niix
+					echo "Running dcm2nii for Mag fieldmaps"
+					dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_magnitude1 -o $particDir/ses-Post/fmap "$magPostTXDir"
+		
+					# Get echo times for PhaseDiff files
+					echo1_post=$(cat $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
+					echo2_post=$(cat $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
+		
+					# Rename Echo 1 files
+					mv $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1_e1.nii $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1.nii
+					mv $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1_e1.json $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1.json
+		
+					# Rename Echo 2 files
+					mv $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1_e2.nii $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude2.nii
+					mv $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1_e2.json $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude2.json
+		
+					# Edit IntendedFor field of the JSONs
+					sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPost}"'],' $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude1.json
+					sed -i '/COL/ a "IntendedFor": ['"${boldIntendedForPost}"'],' $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_magnitude2.json
+      			fi
+			fi
+
+			# Running same system for Phase
+			# Baseline
+			if [ $baselineBool -eq 1 ]; then
+				phaseBaselineDir=`find $baselineRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
+
+				if [ "$legacyBool" = "True" ]; then
+					echo "Running dcm2nii for Phase fieldmaps"
+					dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/Baseline "$phaseBaselineDir"
+				else
+				
+					# Make BIDS compliant target directory if it doesn't already exist.
+					if [ ! -d $particDir/ses-Pre/fmap ]; then
+						mkdir -p $particDir/ses-Pre/fmap
+					fi
+	
+					# Run dcm2niix
+					echo "Running dcm2nii for Phase fieldmaps"
+					dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_phasediff -o $particDir/ses-Pre/fmap "$phaseBaselineDir"
+
+					# Rename phasediff file
+					mv $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_phasediff_e2.nii $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_phasediff.nii
+					mv $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_phasediff_e2.json $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_phasediff.json
+
+					# Add appropriate echo times to phasediff JSON
+					sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1_pre/" $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_phasediff.json
+					sed -i '/EchoTime1/ a "EchoTime2": '"$echo2_pre"'' $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_phasediff.json
+
+					# Add IntendedFor field to PhaseDiff JSON
+					sed -i '/COL/ a "IntendedFor": ['"$boldIntendedForPre"'],' $particDir/ses-Pre/fmap/sub-"$partic"_ses-Pre_phasediff.json
+				fi
+			fi
+
+			# PostTX
+			if [ $postTXBool -eq 1 ]; then
+				phasePostTXDir=`find $postTXRawDir -maxdepth 2 -iname "*field*" -print | sort | tail -1`
+
+				if [ "$legacyBool" = "True" ]; then
+					echo "Running dcm2nii for Mag fieldmaps"
+					dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps/PostTX "$phasePostTXDir"
+				else
+					
+					# Create BIDS compliant target directory if it doesn't already exist.
+					if [ ! -d $particDir/ses-Post/fmap ]; then
+						mkdir -p $particDir/ses-Post/fmap
+					fi
+			
+					# Run dcm2niix
+					echo "Running dcm2nii for Mag fieldmaps"
+					dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_phasediff -o $particDir/ses-Post/fmap "$phasePostTXDir"
+
+					# Rename phasediff file
+					mv $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_phasediff_e2.nii $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_phasediff.nii
+					mv $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_phasediff_e2.json $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_phasediff.json
+
+					# Add appropriate echo times to phasediff JSON
+					sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1_post/" $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_phasediff.json
+					sed -i '/EchoTime1/ a "EchoTime2": '"$echo2_post"'' $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_phasediff.json
+
+					# Add IntendedFor field to PhaseDiff JSON
+					sed -i '/COL/ a "IntendedFor": ['"$boldIntendedForPost"'],' $particDir/ses-Post/fmap/sub-"$partic"_ses-Post_phasediff.json
+				fi
+			fi
 		else
-          echo "No DTI images found for $partic"
-        fi
+    		echo "No Magnitude of Phase fieldmaps found for $partic"
+  		fi
+
+######## LONGITUDINAL DIFFUSION WEIGHTED IMAGING ########
+
+		if [ $dtiBool -eq 1 ]; then
+			echo "Beginning DTI conversion..."
+	
+			# Baseline DTI
+			if [ $baselineBool -eq 1 ]; then
+
+				# Temporary fix for Mclean-styled folder naming.
+				# Identify whether a diffusion weighted imaging folder exists at baseline.
+				if [ $azBool -eq 0 ]; then
+					baseCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*gr2 -*" -print | sort | tail -1`
+				else
+					baseCheckString3=`find $baselineRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
+				fi
+		
+				# Setting DWI folder if it does exist.
+				if [[ "${baseCheckString3}" = *"${partic}"* ]]; then
+					# Temporary fix for Mclean-styled folder naming.
+					if [ $azBool -eq 0 ]; then
+						dtiAPBaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*gr2 -*" -print | sort | tail -1))
+					else
+						dtiAPBaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1))
+					fi
+
+					# Set counter in case of multiple DWI folders.
+					dtiAPBaselineNum=1
+
+					if [ "$legacyBool" = "True" ]; then
+			
+						# Create legacy folder if it doesn't already exist.
+						if [ ! -d $particDir/dti/Baseline ]; then
+							mkdir -p $particDir/dti/Baseline
+						fi
+					
+						echo "Running dcm2nii for DTI A -> P"
+
+						# Loop through folders and run dcm2niix.
+						for dtiAPBaselineFile in ${dtiAPBaselineDir}; do
+							dcm2niix -f "$partic"_A2P_run-0$dtiAPBaselineNum -o $particDir/dti/Baseline "$dtiAPBaselineFile"
+							dtiAPBaselineNum=$((dtiAPBaselineNum+1))
+						done
+
+					else
+
+						# Create BIDS compliant target directory if it doesn't already exist.
+						if [ ! -d $particDir/ses-Pre/dwi ]; then
+							mkdir -p $particDir/ses-Pre/dwi
+						fi
+
+			
+						echo "Running dcm2nii for DTI A -> P"
+
+						# Loop through folders and run dcm2niix.
+						for dtiAPBaselineFile in ${dtiAPBaselineDir}; do
+							dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiAPBaselineNum"_dwi -o $particDir/ses-Pre/dwi "$dtiAPBaselineFile"
+							dtiAPBaselineNum=$((dtiAPBaselineNum+1))
+						done
+
+						# Get the file names for the EPI JSON file
+						# These file names go in the IntendedFor Field.
+						dwiFiles=($particDir/ses-Pre/dwi/*.nii)
+				
+				
+						dwiIntendedForPre=""
+						for dwiFile in ${dwiFiles[@]}; do
+							dwiFileName=${dwiFile#/data*"$partic"/}
+					
+							if [ -z "$dwiIntendedForPre" ]; then
+								dwiIntendedForPre='"'"$dwiFileName"'"'
+							else
+								tmpDWIName='"'"$dwiFileName"'"'
+								dwiIntendedForPre="$dwiIntendedForPre, "${tmpDWIName}""
+							fi
+						done
+		        	fi
+
+		        	# Running same system for DTI P -> A
+					# This only applies right now to UA studies. Mclean studies did not collect reverse encoded DTI files.
+					if [ -n $(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1) ]; then
+						dtiPABaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1))
+					else
+						echo "P->A file not found, searching bzero identifier"
+						if [ -n $(find $baselineRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1) ]; then
+							dtiPABaselineDir=($(find $baselineRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1))
+							echo "Utilizing Bzero for P->A"
+						fi
+					fi
+	
+					# Error catching if the folder doesn't exist.
+            		if [ ! -n "$dtiPABaselineDir" ]; then
+              			echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
+            		else
+
+		        		dtiPABaselineNum=1
+
+						# Run dcm2niix for reverse encoded files
+
+						if [ "$legacyBool" = "True" ]; then
+							# Run dcm2niix with legacy folder names.
+							echo "Running dcm2nii for DTI P -> A"
+
+							for dtiPABaselineFile in ${dtiPABaselineDir}; do
+								dcm2niix -f "$partic"_P2A_run-0$dtiPABaselineNum -o $particDir/dti/Baseline "$dtiPABaselineFile"
+								dtiPABaselineNum=$((dtiPABaselineNum+1))
+							done
+
+		        		else
+
+							if [ ! -d $particDir/ses-Pre/fmap ]; then
+								# Make BIDS compliant target directories if missing.
+								mkdir -p $particDir/ses-Pre/fmap
+								mkdir -p $particDir/ses-Post/dwi
+							fi
+
+		          			echo "Running dcm2nii for DTI P -> A"
+				
+							# Loop through and run dcm2niix
+							for dtiPABaselineFile in ${dtiPABaselineDir}; do
+								dcm2niix -b y -ba y -f sub-"$partic"_ses-Pre_run-0"$dtiPABaselineNum"_epi -o $particDir/ses-Pre/fmap "$dtiPABaselineFile"
+								dtiPABaselineNum=$((dtiPABaselineNum+1))
+							done
+				  
+							sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedForPre}"'],' $particDir/ses-Pre/fmap/*epi.json	
+		        		fi
+
+						# Identify BVEC and BVAL files.
+						if [ "$legacyBool" = "True" ]; then
+						  bval=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+						  bvec=`find $particDir/dti/Baseline -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+						else
+						  bval=`find $particDir/ses-Pre/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+						  bvec=`find $particDir/ses-Pre/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+						fi
+
+						# Ensure that BVAL files have the right naming. Legacy naming is supported and will be 
+						# ignored via the .bidsignore file for BIDS compliant folders.
+						if [[ "${bval}" = *"bval"* ]]; then
+							if [ "$legacyBool" = "True" ]; then
+								mv $bval $particDir/dti/Baseline/bvals
+							else
+								cp $bval $particDir/ses-Pre/dwi/bvals
+							fi
+						else
+							echo "###### bval not found ######"
+						fi
+
+						# Ensure that BVAL files have the right naming. Legacy naming is supported and will be 
+						# ignored via the .bidsignore file for BIDS compliant folders.
+						if [[ "${bvec}" = *"bvec"* ]]; then
+							if [ "$legacyBool" = "True" ]; then
+								mv $bvec $particDir/dti/Baseline/bvecs
+							else
+								cp $bvec $particDir/ses-Pre/dwi/bvecs
+							fi
+						else
+							echo "###### bvec not found ######"
+						fi
+					fi
+	  			else
+	        		echo "###### No DTI images found for $partic Baseline ######"
+	     		fi
+			fi
+		
+		    # PostTX DTI A -> P
+		    if [ $postTXBool -eq 1 ]; then
+
+				# Temporary fix for Mclean-styled folder naming.
+				if [ $azBool -eq 0 ]; then
+					postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*gr2 -*" -print | sort | tail -1`
+				else
+					postCheckString3=`find $postTXRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
+				fi
+
+				# If the folder does exist, then run dcm2niix 
+				if [[ "${postCheckString3}" = *"$partic"* ]]; then
+
+					# Temporary fix for Mclean-styled folder naming.
+					if [ $azBool -eq 0 ]; then
+						dtiAPPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*gr2 -*" -print | sort | tail -1))
+					else
+						dtiAPPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1))
+					fi
+				
+					# Create counter in the event of multiple DWI folders.
+            		dtiAPPostTXNum=1
+
+					# Run dcm2niix
+					if [ "$legacyBool" = "True" ]; then
+						
+						# Create legacy folder structure.
+						if [ ! -d $particDir/dti/PostTX ]; then
+							mkdir -p $particDir/dti/PostTX
+						fi
+
+						echo "Running dcm2nii for DTI A -> P"
+
+						# Loop through folders and run dcm2niix.
+						for dtiAPPostTXFile in ${dtiAPPostTXDir}; do
+							dcm2niix -f "$partic"_A2P_run-0$dtiPAPostTXNum -o $particDir/dti/PostTX "$dtiAPPostTXFile"
+							dtiAPPostTXNum=$((dtiAPPostTXNum+1))
+						done
+
+					else
+						
+						# Create BIDS compliant target directories.
+						if [ ! -d $particDir/ses-Post/dwi ]; then
+							mkdir -p $particDir/ses-Post/dwi
+							mkdir -p $particDir/ses-Post/fmap
+						fi
+
+						echo "Running dcm2nii for DTI A -> P"
+
+						# Loop through folders and run dcm2niix.
+						for dtiAPPostTXFile in ${dtiAPPostTXDir}; do
+							dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_run-0"$dtiAPPostTXNum"_dwi -o $particDir/ses-Post/dwi "$dtiAPPostTXFile" 
+							dtiAPPostTXNum=$((dtiAPPostTXNum+1))
+						done
+			  				
+						# Get the file names for the EPI JSON files
+						dwiFiles=($particDir/ses-Post/dwi/*.nii)
+				
+				
+						dwiIntendedForPost=""
+						for dwiFile in ${dwiFiles[@]}; do
+							dwiFileName=${dwiFile#/data*"$partic"/}
+
+							if [ -z "$dwiIntendedForPre" ]; then
+								dwiIntendedForPost='"'"$dwiFileName"'"'
+							else
+								tmpDWIName='"'"$dwiFileName"'"'
+								dwiIntendedForPost="$dwiIntendedForPost, "${tmpDWIName}""
+							fi
+						done
+					fi
+
+					# Running same system for DTI P -> A
+					# This is only needed right now for the UA studies. Mclean studies do not have a reverse phase encoded DWI sequence.
+					if [ -n $(find $postTXRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1) ]; then
+						dtiPAPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*P-?A -*" -print | sort | tail -1))
+					else
+                		echo "P__A file not found, searching bzero identifier"
+                		dtiPAPostTXDir=($(find $postTXRawDir -maxdepth 2 -iname "*bzero_verify -*" -print | sort | tail -1))
+            		fi
+
+					# Error catching if P -> A folder doesn't exist.
+            		if [ ! -n "$dtiPAPostTXDir" ]; then
+              			echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
+
+            		else
+		
+						if [ "$legacyBool" = "True" ]; then
+							echo "Running dcm2nii for DTI P -> A"
+							dcm2niix -f "$partic"_P2A -o $particDir/dti/PostTX "$dtiPAPostTXDir"
+              			else
+
+							# Create BIDS compliant target folders if they don't already exist.
+							if [ ! -d $particDir/ses-Post/fmap ]; then
+								mkdir -p $particDir/ses-Post/fmap
+							fi
+					
+							# Run dcm2niix.
+						    dcm2niix -b y -ba y -f sub-"$partic"_ses-Post_epi -o $particDir/ses-Post/fmap "$dtiPAPostTXDir" # Follow up with Adam
+			  
+							sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedForPost}"'],' $particDir/ses-Post/fmap/*epi.json
+              			fi
+            		
+
+						# Identify BVEC and BVAL files.
+						if [ "$legacyBool" = "True" ]; then
+						  bval=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+						  bvec=`find $particDir/dti/PostTX -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+						else
+						  bval=`find $particDir/ses-Post/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+						  bvec=`find $particDir/ses-Post/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+						fi
+
+						# Ensure that BVAL files have the right naming. Legacy naming is supported and will be 
+						# ignored via the .bidsignore file for BIDS compliant folders.
+						if [[ "${bval}" = *"bval"* ]]; then
+							if [ "$legacyBool" = "True" ]; then
+								mv $bval $particDir/dti/PostTX/bvals
+							else
+								cp $bval $particDir/ses-Post/dwi/bvals
+							fi
+						else
+							echo "###### bval not found ######"
+						fi
+
+						# Ensure that BVEC files have the right naming. Legacy naming is supported and will be 
+						# ignored via the .bidsignore file for BIDS compliant folders.
+						if [[ "${bvec}" = *"bvec"* ]]; then
+							if [ "$legacyBool" = "True" ]; then
+								mv $bvec $particDir/dti/PostTX/bvecs
+							else
+								cp $bvec $particDir/ses-Post/dwi/bvecs
+							fi
+						else
+							echo "###### bvec not found ######"
+						fi
+					# Close error catching if-else for post-treatment P -> A
+					fi
+				# Close folder post-treatment folder if-else
+				else
+					echo "###### No DTI images found for $partic PostTX ######"
+      			fi
+			# Close if-else for post-treatment being acquired
+    		fi
+		else
+        	echo "DTI images are not taken for $study"
+		# Close if-else for DWI being collected.
+      	fi
+
+		# Show that dcm2niix has finished for all files for this longitudinal participant.
+		echo "-----------------------------------------------"
+		echo "Finished transfer and conversion for $partic"
+		echo "-----------------------------------------------"
+
+######################################################################
+#########													##########
+#########				NON-LONGITUDINAL STUDIES			##########
+#########													##########
+######################################################################
+    else
+		echo "Non-logitudinal study detected."
+
+		if [ $dirAlreadyExists -eq 1 ]; then
+			if [ $bypassIndivOverwrite -eq 0 ]; then
+				echo "The indiv_analysis directory already exists."
+				echo "Would you like to copy and possibly overwrite your indiv_analysis images?"
+				read overwritePartic
+			fi
+
+		    if [[ "$overwritePartic" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+		      	echo "Continuing with copy..."
+		      	if [ $overwriteLongCount = 0 ]; then
+		        	overwriteLongCount=$((overwriteLongCount + 1))
+		        	echo "It appears that there are a number of overwritable indiv_analysis directories which you have chosen."
+		        	echo "Would you like to overwrite all future indiv_analysis directories and bypass the prompt?"
+		        	read overwriteIndivResponse
+		        	if [[ "$overwriteIndivResponse" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+		          		bypassIndivOverwrite=1
+		        	fi
+          		fi
+          		overwriteIndivCount=$((overwriteIndivCount + 1))
+        	else
+          		particBool=0
+        	fi
+		fi
+
+################################################### 
+####### NON-LONGITUDINAL STRUCTURAL IMAGING #######
+####### INCLUDES: T1w AND FLAIR				#######
+###################################################
+     
+		# Non-longitudinal T1w anatomicals.
+		echo "Running dcm2nii for T1 Anatomicals"
+
+		# Temporary work-around for Mclean-styled folder names.
+		if [ $azBool -eq 0 ]; then
+			anatDirArr=($(find "$particRawDir" -maxdepth $maxDepth -iname "$t1wPath" -print0 | xargs -0 | sort))
+		else
+			anatDirArr=($(find $particRawDir -maxdepth 2 -iname "T1_MPRAGE_1MM*" -print | sort))
+		fi
+	
+		# Initialize counter for multiple T1w images.			
+		anatNum=1
+
+		# Run dcm2niix
+		if [ "$legacyBool" = "True" ]; then
+
+			# Create legacy folder structure.
+			if [ ! -d $particDir/anatomicals ]; then
+				mkdir -p $particDir/anatomicals
+			fi
+		
+			# Loop through folders and run dcm2niix.
+			for anatomical in ${anatDirArr[@]}; do
+				echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+				dcm2niix -f "$partic"_anatomical_$anatNum -o $particDir/anatomicals "${anatomical}"
+				anatNum=$((anatNum+1))
+			done
+
+		else
+			
+			# Create BIDS compliant folder structure.
+			if [ ! -d $particDir/anat ]; then
+				mkdir -p $particDir/anat
+			fi
+		
+			# Loop through folders and run dcm2niix.
+			for anatomical in ${anatDirArr[@]}; do
+				echo "Running dcm2nii for Anatomical $anatNum located in $anatomical"
+				dcm2niix -b y -ba y -f sub-"$partic"_run-0$anatNum"_T1w" -o $particDir/anat "${anatomical}"
+				anatNum=$((anatNum+1))
+			done
+		fi
+
+		# FLAIR
+		echo "Running dcm2nii for FLAIRs"
+
+		# Temporary work-around for Mclean-styled folder names.
+		if [ $azBool -eq 0 ]; then
+			anatBDirArr=($(find $particRawDir -maxdepth $maxDepth -iname "$flairPath" -print | xargs -0 | sort))
+		else
+			anatBDirArr=($(find $particRawDir -maxdepth 2 -iname "*FLAIR*" -print | sort))
+		fi
+
+		# Initialize counter for multiple FLAIRs	
+		anatNumB=1
+
+		# Run dcm2niix
+		if [ "$legacyBool" = "True" ]; then
+
+			# Create legacy folder structure if it doesn't already exist.
+			if [ ! -d $particDir/anatomicals ]; then
+				mkdir -p $particDir/anatomicals
+			fi
+
+			# Loop through folders and run dcm2niix.
+			for anatomical in ${anatBDirArr[@]}; do
+				echo "Running dcm2nii for FLAIR $anatNumB located in $anatomical"
+				dcm2niix -f "$partic"_t2_$anatNumB -o $particDir/anatomicals "${anatomical}"
+				anatNumB=$((anatNumB+1))
+			done
+		else
+
+			# Create BIDS compliant folder structure if it doesn't already exist.
+			if [ ! -d $particDir/anat ]; then
+				mkdir -p $particDir/anat
+			fi
+
+			# Loop through folders and run dcm2niix.
+			for anatomical in ${anatBDirArr[@]}; do
+				echo "Running dcm2nii for FLAIR $anatNumB located in $anatomical"
+				dcm2niix -b y -ba y -f sub-"$partic"_run-0$anatNumB"_FLAIR" -o $particDir/anat "${anatomical}"
+				anatNumB=$((anatNumB+1))
+			done
+		fi
+
+
+######## NON-LONGITUDINAL BOLD IMAGING ########
+
+		# Determine whether BOLD imaging was collected.
+		echo ${boldValues[@]}
+
+		if [ ${#boldValues[@]} -eq 0 ]; then
+			echo "No BOLD values for $partic"
+
+		else
+			echo "Running BOLD for $partic"
+
+			# Loop through each BOLD type used in the study and run dcm2niix.
+			for bold_type in ${boldValues[*]}; do
+
+				# If task directory exists run dcm2niix on it
+				# Right now there is a temporary fix here. The only study that is getting the BIDS compliant treatment 
+				# is Mclean's TBI Model (as of 4-10-18). There are multiple folders in the target path that contain "rest"
+				# so a manual specification of the resting state folder name is needed.
+				if [ $azBool -eq 0 ]; then
+					if [ $study = "tbimodel" ]; then
+						boldCheckString=`find $particRawDir -maxdepth 2 \( -iname "$restingPath1" -o -iname "$restingPath2" \) -print | xargs -0 | sort | tail -1`
+					elif [ $study = "Cogr" ]; then
+						boldCheckString=`find $particRawDir -maxdepth $maxDepth -iname "*${bold_type}*" -print0 | xargs -0 | sort | tail -1`
+					fi
+				else
+					boldCheckString=`find $particRawDir -maxdepth 2 -type d -iname "*${bold_type}*" -print | sort | tail -1`
+				fi
+
+				# If one or more folders do exist for this bold type, then load them into an array.
+		     	if [[ "${boldCheckString,,}" = *"${bold_type,,}"* ]]; then
+					if [ $azBool -eq 0 ]; then
+						if [ $study = "tbimodel" ]; then
+							boldDir=($(find $particRawDir  -maxdepth 2 \( -iname "$restingPath1" -o -iname "$restingPath2" \) -print | xargs -0 | sort | tail -1))
+						elif [ $study = "Cogr" ]; then
+							boldDir=($(find $particRawDir -maxdepth $maxDepth -iname "*${bold_type}*" -print0 | xargs -0 | sort | tail -1))
+						fi
+					else
+						boldDir=($(find $particRawDir -maxdepth $maxDepth -type d -iname "*${bold_type}*" -print | sort | tail -1))
+					fi
+
+					# Initialize counter if there are multiple runs of the same imaging type.
+					boldNum=1
+		        		
+					# Run dcm2niix on found folders.
+					if [ "$legacyBool" = "True" ]; then
+
+						# Create legacy directory if it doesn't exist
+						if [ ! -d $particDir/bold/${bold_type} ]; then
+							mkdir -p $particDir/bold/${bold_type}
+						fi
+
+						# Run DCM2NIIX
+		          		dcm2niix -f "$partic"_${bold_type} -o $particDir/bold/${bold_type} "$boldDir"
+
+					else
+
+						# Create BIDS compliant folder structure if it doesn't exist already.	
+						if [ ! -d $particDir/func ]; then
+							mkdir -p $particDir/func
+						fi
+				
+						# Set task options.
+						# Make robust to numerous task offerings
+						if [ "$bold_type" = "resting" ]; then
+							boldType="rest"
+							taskName="rest"
+						elif [ "$bold_type" = "nback" ]; then
+							boldType="nback"
+							taskName="n-back"
+						elif [ "$bold_type" = "msit" ]; then
+							boldType="msit"
+							taskName="msit"
+						elif [ "$bold_type" = "anticipation" ]; then
+							boldType="anticipation"
+							taskName="anticipation"
+						elif [ "$bold_type" = "bmat_fear" ]; then
+							boldType="bmatfear"
+							taskName="bmat-fear"
+						elif [ "$bold_type" = "bmat_happy" ]; then
+							boldType="bmathappy"
+							taskName="bmat-happy"
+						elif [ "$bold_type" = "dot_probe" ]; then
+							boldType="dotprobe"
+							taskName="dot probe"
+						elif [ "$bold_type" = "fear_conditioning" ]; then
+							boldType="fearcond"
+							taskName="fear conditioning"
+						else
+							boldType="'$bold_type'"
+							taskName="'$bold_type'"
+						fi
+
+						# Loop through folders for this BOLD type and run dcm2niix.              
+						for bold_run in ${boldDir[@]}; do
+							echo "Running dcm2niix for ${bold_type} located in ${bold_run}"
+							dcm2niix -b y -ba y -f sub-"$partic"_task-${boldType}_run-0$boldNum"_bold" -o $particDir/func "$bold_run"
+							sed -i '/COL/ a "TaskName": "'$taskName'",' $particDir/func/*${boldType}_run-0${boldNum}*.json
+							boldNum=$((boldNum+1))
+						done
+					# Close if-else for running dcm2niix legacy vs BIDS on a particular bold type 
+					fi
+			
+				else
+					echo "No data for $bold_type in $partic directory."
+		      	fi
+			# Close loop for running dcm2niix on all BOLD types for the study.
+			done
+
+			# Get the file names for the fieldmap JSON files
+			# These file names will go in the IntendedFor fields.
+			boldFiles=($particDir/func/*.nii)
+		
+			boldIntendedFor=""
+			for boldFile in ${boldFiles[@]}; do
+				boldFileName=${boldFile#/data*"$partic"/}
+			
+				if [ -z "$boldIntendedFor" ]; then
+					boldIntendedFor='"'"$boldFileName"'"'
+				else
+					tmpBoldName='"'"$boldFileName"'"'
+					boldIntendedFor="$boldIntendedFor, "${tmpBoldName}""
+				fi
+			done
+		# Close BOLD imaging if-else
+		fi
+
+####### NON-LONGITUDINAL FIELD MAPPING #######
+		# Run Magnitude files
+		if [ $magPhaseBool -eq 1 ]; then
+			
+			# Check if field-mapping folders exist
+			# Include work-around to ensure that Mclean studies look in the proper target.
+			if [ $azBool -eq 0 ]; then
+				fieldCheckString=`find $particRawDir -maxdepth 2 -iname "$fieldmapPath" -print | sort | tail -1`
+			else
+				fieldCheckString=`find $particRawDir -maxdepth 2 -type d \( -iname "*field*" -o -iname "*mapping*" \) -print | sort | tail -1`
+			fi
+
+			# If there are field mapping folders, then run dcm2niix.        	
+			if [[ ! "${fieldCheckString}" = " " ]] ; then
+
+				# Running for Mag (note the sort -r)
+				echo "Beginning Magnitude-Phase fieldmap conversion..."
+
+				if [ $azBool -eq 0 ]; then
+					magDir=`find $particRawDir -maxdepth $maxDepth -iname "$fieldmapPath" -print | sort -r | tail -1`
+				else
+					magDir=`find $particRawDir -maxdepth 2 -type d \( -iname "*field*" -o -iname "*mapping*" \) -print | sort -r | tail -1`
+				fi
+
+				# Run dcm2niix with the appropriate folder structure.
+				if [ "$legacyBool" = "True" ]; then
+
+					# Create legacy folder structure if not already created.
+					if [ ! -d $particDir/fieldmaps ]; then
+						mkdir -p $particDir/fieldmaps
+					fi
+
+					# Run dcm2niix
+					echo "Running dcm2nii for Mag fieldmaps"
+					dcm2niix -f "$partic"_Mag -o $particDir/fieldmaps "$magDir"
+
+				else
+			
+					# Create BIDS compliant folder structure if not already created.
+					if [ ! -d $particDir/fmap ]; then
+						mkdir -p $particDir/fmap
+					fi
+
+					# Run dcm2niix.
+					echo "Running dcm2nii for Mag fieldmaps"
+					dcm2niix -b y -ba y -f sub-"$partic"_magnitude1 -o $particDir/fmap "$magDir"
+
+					# Get echo times for PhaseDiff files
+					echo1=$(cat $particDir/fmap/sub-"$partic"_magnitude1_e1.json | grep EchoTime | cut -d ':' -f2)
+					echo2=$(cat $particDir/fmap/sub-"$partic"_magnitude1_e2.json | grep EchoTime | cut -d ':' -f2)
+
+					# Rename Echo 1 files
+					mv $particDir/fmap/sub-"$partic"_magnitude1_e1.nii $particDir/fmap/sub-"$partic"_magnitude1.nii
+					mv $particDir/fmap/sub-"$partic"_magnitude1_e1.json $particDir/fmap/sub-"$partic"_magnitude1.json
+
+					# Rename Echo 2 files
+					mv $particDir/fmap/sub-"$partic"_magnitude1_e2.nii $particDir/fmap/sub-"$partic"_magnitude2.nii
+					mv $particDir/fmap/sub-"$partic"_magnitude1_e2.json $particDir/fmap/sub-"$partic"_magnitude2.json
+
+					# Edit IntendedFor field of the JSONs
+					sed -i '/COL/ a "IntendedFor": ['"${boldIntendedFor}"'],' $particDir/fmap/sub-"$partic"_magnitude1.json
+					sed -i '/COL/ a "IntendedFor": ['"${boldIntendedFor}"'],' $particDir/fmap/sub-"$partic"_magnitude2.json
+				fi
+
+				# Double check that the Mag and Phase folders aren't the same.
+				if [ $azBool -eq 0 ]; then
+					magCheckString=`find $particRawDir -maxdepth $maxDepth -iname $fieldmapPath -print | sort | tail -1`
+				else
+					magCheckString=`find $particRawDir -maxdepth 2 -type d \( -iname "*field*" -o -iname "*mapping*" \) -print | sort | tail -1`
+				fi
+
+				# If the Mag and Phase folders aren't the same, then run dcm2niix for the phasediff files.
+          		if [ "$magDir" = "$magCheckString" ]; then
+            			echo "Only one fieldmap was found. Verify files."
+          		else
+           
+					# Get phase folder
+					# Includes Mclean workaround.
+					if [ $azBool -eq 0 ]; then
+						phaseDir=`find $particRawDir -maxdepth $maxDepth -iname $fieldmapPath -print | sort | tail -1`
+					else
+						phaseDir=`find $particRawDir -maxdepth 2 -type d \( -iname "*field*" -o -iname "*mapping*" \) -print | sort | tail -1`
+					fi
+
+					# Run dcm2niix with the apprpriate folder structure.
+					if [ "$legacyBool" = "True" ]; then
+
+						# Run dcm2niix in the legacy folder structure.
+						echo "Running dcm2nii for Phase fieldmaps"
+						dcm2niix -f "$partic"_Phase -o $particDir/fieldmaps "$phaseDir"
+        			else
+
+						# Run dcm2niix in the BIDS compliant folder structure.
+						echo "Running dcm2nii for Phase fieldmaps"
+						dcm2niix -b y -ba y -f sub-"$partic"_phasediff -o $particDir/fmap "$phaseDir"
+							  			  
+						# Rename phasediff file
+						mv $particDir/fmap/sub-"$partic"_phasediff_e2.nii $particDir/fmap/sub-"$partic"_phasediff.nii
+						mv $particDir/fmap/sub-"$partic"_phasediff_e2.json $particDir/fmap/sub-"$partic"_phasediff.json
+
+						# Add appropriate echo times to phasediff JSON
+						sed -i "s/\"EchoTime\".*/\"EchoTime1\": $echo1/" $particDir/fmap/sub-"$partic"_phasediff.json
+						sed -i '/EchoTime1/ a "EchoTime2": '"$echo2"'' $particDir/fmap/sub-"$partic"_phasediff.json
+
+						# Add IntendedFor field to PhaseDiff JSON
+						sed -i '/COL/ a "IntendedFor": ['"$boldIntendedFor"'],' $particDir/fmap/sub-"$partic"_phasediff.json
+        			fi
+				# Close if-else for whether mag and phase folders are the same folder.
+	      		fi
+			else
+          		echo "No Magnitude or Phase fieldmaps found for $partic"
+
+			# Close if-else for whether mag and phase folders exist
+        	fi
+		else
+        	echo "Magnitude or Phase fieldmaps are not taken for $study"
+		
+		# Close if-else for whether mag and phase were supposed to be collected at all.
+		fi
       
-	  else
-        echo "DTI images are not taken for $study"
-      fi
-      echo "-----------------------------------------------"
-      echo "Finished transfer and conversion for $partic"
-      echo "-----------------------------------------------"
+####### NON-LONGITUDINAL DIFFUSION WEIGHTED IMAGING #######
+		if [ $dtiBool -eq 1 ]; then
+
+			# Check if DWI imaging exists.
+			# Right now (4-10-18), Mclean's TBI Model has a particular naming convention for the
+			# DWI folders. We have identified and specified this in the getInfo() function.
+			if [ $azBool -eq 0 ]; then
+				dtiCheckString=`find $particRawDir -maxdepth $maxDepth -iname $dwiPath -print0 | xargs -0 | sort | tail -1`
+			elif [ $study = "BLHC" ]; then
+				dtiCheckString=`find $particRawDir -maxdepth 2 -type d -iname "*A_P_0*" -print | sort | tail -1`
+			else
+				dtiCheckString=`find $particRawDir -maxdepth 2 -iname "*A-P -*" -print | sort | tail -1`
+			fi
+
+			# If the DWI imaging folder exists, then run dcm2niix
+			if [[ "${dtiCheckString,,}" = *"dti"* ]]; then
+
+				# Running for DTI A -> P (note the sort -r)
+				echo "Beginning DTI conversion..."
+
+				# Set the directory for A -> P
+				if [ $azBool -eq 0 ]; then
+					dtiAPDir=`find $particRawDir -maxdepth 1 -iname $dwiPath -print0 | xargs -0 | sort -r | tail -1`
+				elif [ $study = "BLHC" ]; then
+					dtiAPDir=`find $particRawDir -maxdepth 2 -iname "*A_P_0*" -print | sort | tail -1`
+				else
+					dtiAPDir=`find $particRawDir -maxdepth 2 -iname "*A-P -*" -print | sort -r | tail -1`
+				fi
+
+				# Initialize counter if there are multiple folders.		  
+				dtiAPNum=1
+
+				# Run dcm2niix for A -> P DWI
+				if [ "$legacyBool" = "True" ]; then
+
+					# Create legacy folder structure if it doesn't already exist.
+					if [ ! -d $particDir/dti ]; then
+						mkdir -p $particDir/dti
+					fi
+	
+					# Run dcm2niix in legacy folder structure.
+					echo "Running dcm2nii for DTI A -> P"
+					dcm2niix -f "$partic"_A2P -o $particDir/dti "$dtiAPDir"
+
+				else
+		
+					# Create BIDS compliant folder structure if it doesn't already exist.
+					if [ ! -d $particDir/dwi ]; then
+						mkdir -p $particDir/dwi
+					fi
+			
+					# Loop through folders and run dcm2niix.
+					for dtiAPRun in ${dtiAPDir[@]}; do
+						echo "Running dcm2nii for DTI A -> P"
+						dcm2niix -b y -ba y -f sub-"$partic"_run-0"$dtiAPNum"_dwi -o $particDir/dwi "$dtiAPRun"
+						dtiAPNum=$((dtiAPNum+1))
+					done
+			
+					# Get the file names for the EPI JSON files
+					dwiFiles=($particDir/dwi/*.nii)
+			
+			
+					dwiIntendedFor=""
+					for dwiFile in ${dwiFiles[@]}; do
+						dwiFileName=${dwiFile#/data*"$partic"/}
+
+						if [ -z "$dwiIntendedFor" ]; then
+							dwiIntendedFor='"'"$dwiFileName"'"'
+						else
+							tmpDWIName='"'"$dwiFileName"'"'
+							dwiIntendedFor="$dwiIntendedFor, "${tmpDWIName}""
+						fi
+					done
+
+				# Close if-else for running A -> P DWI		
+				fi
+			# Close if-else for determining if A -> P folder exists
+			fi
+
+         	# Running same system for DTI P -> A
+			
+			# First, identify if a folder exists for P -> A.
+			# Mclean TBI Model did not collect a P -> A file for DWI. Therefore we will skip that study.
+			if [ $azBool -eq 1 ]; then
+
+				dtiPADir=`find $particRawDir -maxdepth 2 -iname "*P-?A*" -print | sort | tail -1`
+
+				if [ "$dtiPADir" == "x$dtiPADir" ]; then
+					echo "P->A file not found, searching P__A"
+					dtiPADir=`find $particRawDir -maxdepth 2 \( -iname "*P_A_" -o -iname "*P_?A*" \) -print | sort | tail -1`
+					if [ "$dtiPADir" == "x$dtiPADir" ]; then
+						echo "P__A file not found, searching bzero identifier"
+						dtiPADir=`find $particRawDir -maxdepth 2 -iname "*bzero*" -print | sort | tail -1`
+					fi
+				fi
+
+				# Error catching if the only folders are A -> P          
+		  		if [ ! -n "$dtiPADir" ]; then
+            			echo "###### A -> P and P -> A mismatch for $partic, verify folders exist. ######"
+          		else
+	
+					# Run dcm2niix for the P -> A files in the legacy folder structure. 
+					if [ "$legacyBool" = "True" ]; then
+						echo "Running dcm2nii for DTI P -> A"
+						dcm2niix -f "$partic"_P2A -o $particDir/dti "$dtiPADir"
+
+					# Run dcm2niix for the P -> A files in the BIDS compliant folder structure.
+        			else
+					
+						# Initialize counter if there are multiple P -> A folders.
+						dtiPANum=1
+
+						# Create BIDS compliant folder strucutre if it doesn't already exist.
+						if [ ! -d $particDir/fmap ]; then
+							mkdir -p $particDir/fmap
+						fi
+				
+						# Loop through folders and run dcm2niix.
+						for bzero in ${dtiPADir[@]}; do
+							echo "Running dcm2nii for DTI P -> A"
+							dcm2niix -b y -ba y -f sub-"$partic"_run-0"$dtiPANum"_epi -o $particDir/fmap "$bzero"
+							dtiPANum=$((dtiPANum+1))
+						done
+
+						# Add DWI files to the IntendedFor field.
+						sed -i '/COL/ a "IntendedFor": ['"${dwiIntendedFor}"'],' $particDir/fmap/*epi.json	
+					# Close if-else for running dcm2niix in the appropriate folder structure.			
+        			fi
+				# Close if-else for catching if the A -> P and P -> A folders are the same
+         		fi
+          
+				# Identify BVAL and BVEC files
+				if [ "$legacyBool" = "True" ]; then
+					bval=`find $particDir/dti -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+					bvec=`find $particDir/dti -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+				else
+					bval=`find $particDir/dwi -maxdepth 2 -iname "*bval*" -print | sort | tail -1`
+					bvec=`find $particDir/dwi -maxdepth 2 -iname "*bvec*" -print | sort | tail -1`
+				fi
+
+				# Ensure that BVAL files have the correct name. For legacy purposes, we will preserve a copy
+				# that is not BIDS compliant. This will be ignored using the .bidsignore file.			
+				if [[ "${bval}" = *"bval"* ]]; then
+					if [ "$legacyBool" = "True" ]; then
+						mv $bval $particDir/dti/bvals
+					else	
+						cp $bval $particDir/dwi/bvals
+					fi
+				else
+					echo "###### bval not found ######"
+				fi
+
+				# Ensure that BVAL files have the correct name. For legacy purposes, we will preserve a copy
+				# that is not BIDS compliant. This will be ignored using the .bidsignore file
+				if [[ "${bvec}" = *"bvec"* ]]; then
+					if [ "$legacyBool" = "True" ]; then
+						mv $bvec $particDir/dti/bvecs
+					else
+						cp $bvec $particDir/dwi/bvecs
+					fi
+				else
+					echo "###### bvec not found ######"
+				fi
+			else
+				echo "Reverse phase encoded images for use with DWI were not collected for this study."
+			# Close if-else for whether P -> A folders should be looked for.
+			fi
+		else
+			echo "DTI images are not taken for $study"
+        fi
+
+		# Show that dcm2niix has finished for all files for this longitudinal participant.
+		echo "-----------------------------------------------"
+		echo "Finished transfer and conversion for $partic"
+		echo "-----------------------------------------------"
+
+	# Close if-else for whether this is a longitudinal or cross-sectional study.
     fi
-  #fi
+# Close for loop that loops through participants.
 done
 ################################################################################
 
