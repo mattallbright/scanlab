@@ -27,7 +27,7 @@
     echo "If you do not want to install git, please crash this process (Ctrl-C)."
     wait 5
 
-    ssh root@ayumivm apt-get -y install git
+    ssh root@hope apt-get -y install git
 
   fi
 
@@ -38,38 +38,38 @@
   if [[ -d /opt/cloud/staging ]]; then
 
     # Cleans folder for git clone (required by git)
-    ssh root@ayumivm rm -rf /opt/cloud/staging
-    ssh root@ayumivm mkdir /opt/cloud/staging
+    ssh root@hope rm -rf /opt/cloud/staging
+    ssh root@hope mkdir /opt/cloud/staging
     wait
 
     if [[ -d /opt/cloud/scanlab ]]; then
-      ssh root@ayumivm rm -rf /opt/cloud/scanlab
-      ssh root@ayumivm mkdir -p /opt/cloud/scanlab
+      ssh root@hope rm -rf /opt/cloud/scanlab
+      ssh root@hope mkdir -p /opt/cloud/scanlab
       wait
     fi
     if [[ -d /opt/cloud/fsl ]]; then
-      ssh root@ayumivm rm -rf /opt/cloud/fsl
-      ssh root@ayumivm mkdir -p /opt/cloud/fsl
+      ssh root@hope rm -rf /opt/cloud/fsl
+      ssh root@hope mkdir -p /opt/cloud/fsl
       wait
     fi
   fi
 
   # Then clones git repo
   echo "Cloning git!"
-  ssh root@ayumivm git clone "git://github.com/zavaro/scanlab" /opt/cloud/scanlab/
+  ssh root@hope git clone "git://github.com/zavaro/scanlab" /opt/cloud/scanlab/
   wait
-  ssh root@ayumivm git clone "git://github.com/zavaro/fsl_slurm" /opt/cloud/fsl/
+  ssh root@hope git clone "git://github.com/zavaro/fsl_slurm" /opt/cloud/fsl/
   wait
 
-  ssh root@ayumivm mv /opt/cloud/fsl /opt/cloud/staging/fsl
-  ssh root@ayumivm mv /opt/cloud/scanlab/* /opt/cloud/staging/
-  ssh root@ayumivm rm -rf /opt/cloud/scanlab
+  ssh root@hope mv /opt/cloud/fsl /opt/cloud/staging/fsl
+  ssh root@hope mv /opt/cloud/scanlab/* /opt/cloud/staging/
+  ssh root@hope rm -rf /opt/cloud/scanlab
 
   echo -en '\n'
   echo "Resetting permissions..."
 
   # Set permissions for all files in /download/
-  ssh root@ayumivm chmod -R 755 /opt/cloud/staging/
+  ssh root@hope chmod -R 755 /opt/cloud/staging/
 
   # # Runs folder structure copy with relation to hostname
   # if [ -d /opt/cloud/staging/hostnames/$HOSTNAME ]; then
