@@ -64,9 +64,27 @@
   ssh root@hope mv /opt/cloud/fsl /opt/cloud/staging/fsl
   ssh root@hope mv /opt/cloud/scanlab/* /opt/cloud/staging/
   ssh root@hope rm -rf /opt/cloud/scanlab
-  
-  rm -rf /usr/local/bin/cloud_update
-  cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
+
+  ssh root@hope rm -rf /usr/local/bin/cloud_update
+  ssh root@hope cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
+
+  ssh root@empire rm -rf /usr/local/bin/cloud_update
+  ssh root@empire cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
+
+  ssh root@jedi rm -rf /usr/local/bin/cloud_update
+  ssh root@jedi cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
+
+  ssh root@norman rm -rf /usr/local/bin/cloud_update
+  ssh root@norman cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
+
+  ssh root@wilbur rm -rf /usr/local/bin/cloud_update
+  ssh root@wilbur cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
+
+  ssh root@rufus rm -rf /usr/local/bin/cloud_update
+  ssh root@rufus cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
+
+  ssh root@hyperion rm -rf /usr/local/bin/cloud_update
+  ssh root@hyperion cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
 
   echo -en '\n'
   echo "Resetting permissions..."
