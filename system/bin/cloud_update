@@ -64,6 +64,9 @@
   ssh root@hope mv /opt/cloud/fsl /opt/cloud/staging/fsl
   ssh root@hope mv /opt/cloud/scanlab/* /opt/cloud/staging/
   ssh root@hope rm -rf /opt/cloud/scanlab
+  
+  rm -rf /usr/local/bin/cloud_update
+  cp /opt/cloud/staging/system/bin/cloud_update /usr/local/bin/.
 
   echo -en '\n'
   echo "Resetting permissions..."
